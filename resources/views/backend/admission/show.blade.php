@@ -94,6 +94,9 @@
             min-height: auto; */
             pointer-events: none;
         }
+        .data_table_wrap{
+            overflow-x: scroll;
+        }
 
         @media screen and (max-width: 1024px) {
             .img-display {
@@ -382,7 +385,15 @@
                 <hr class="d-md-none">
                 <div class="col-md-4 border-right mb-2 mb-md-0">
                     <h6>Year of Admission</h6>
-                    <label>{{ $admission->year_of_addmission . '-' . $admission->year_of_addmission + 1 }}</label>
+                    @php
+                        $year = $admission->year_of_addmission;
+                    @endphp
+
+                    @if (strpos($year, '-') !== false)
+                        <label>{{ $year }}</label>
+                    @else
+                        <label>{{ (int) $year }}-{{ (int) $year + 1 }}</label>
+                    @endif
                 </div>
                 <hr class="d-md-none">
                 <div class="col-md-4">
@@ -520,20 +531,8 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="table-border-bottom-0">
-                                                {{-- @foreach ($activities as $key => $item)
-                                                    @php
-                                                        $activityLog = json_decode($item->properties, true);
-                                                        $oldValues = $activityLog['old'] ?? [];
-                                                        $newValues = $activityLog['attributes'] ?? [];
-
-                                                        $excludedKeys = [
-                                                            'created_by',
-                                                            'updated_at',
-                                                            'created_at',
-                                                            'deleted_at',
-                                                        ];
-                                                        $dateKeys = ['dob', 'membership_start_date'];
-
+                                                @php
+                                                    if (!function_exists('formatValue')) {
                                                         function formatValue($key, $value)
                                                         {
                                                             if (in_array($key, ['dob', 'membership_start_date'])) {
@@ -551,7 +550,9 @@
 
                                                             return $value;
                                                         }
+                                                    }
 
+                                                    if (!function_exists('prepareDisplay')) {
                                                         function prepareDisplay($data, $excludedKeys)
                                                         {
                                                             $result = '';
@@ -568,9 +569,25 @@
                                                             }
                                                             return rtrim($result, ', ');
                                                         }
+                                                    }
+                                                @endphp
+
+                                                @foreach ($activities as $key => $item)
+                                                    @php
+                                                        $activityLog = json_decode($item->properties, true);
+                                                        $oldValues = $activityLog['old'] ?? [];
+                                                        $newValues = $activityLog['attributes'] ?? [];
+
+                                                        $excludedKeys = [
+                                                            'created_by',
+                                                            'updated_at',
+                                                            'created_at',
+                                                            'deleted_at',
+                                                        ];
 
                                                         $changesOld = '';
                                                         $changesNew = '';
+
                                                         foreach ($newValues as $key => $newValue) {
                                                             if (in_array($key, $excludedKeys)) {
                                                                 continue;
@@ -593,6 +610,7 @@
 
                                                         $changesOld = rtrim($changesOld, ', ');
                                                         $changesNew = rtrim($changesNew, ', ');
+
                                                         $updatedAt =
                                                             $newValues['updated_at'] ??
                                                             ($oldValues['updated_at'] ?? null);
@@ -601,15 +619,16 @@
                                                             : '-';
                                                     @endphp
 
+
                                                     <tr>
-                                                        <td>{{ (int)$key + 1 }}</td>
+                                                        <td>{{ (int) $key + 1 }}</td>
                                                         <td>{{ $item->user->full_name }}</td>
                                                         <td>{{ ucwords($item->event) }}</td>
                                                         <td>{!! $changesOld ?: '-' !!}</td>
                                                         <td>{!! $changesNew ?: '-' !!}</td>
                                                         <td>{{ $updatedAt }}</td>
                                                     </tr>
-                                                @endforeach --}}
+                                                @endforeach 
                                             </tbody>
                                         </table>
                                     </div>

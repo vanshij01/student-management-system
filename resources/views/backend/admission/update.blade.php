@@ -507,7 +507,7 @@
                             var jsonObj = {
                                 'base64File': base64data,
                                 'admissionId': "{{ $admissionDetail->id }}",
-                                'studentId': '{{ $admissionDetail->student_id }}',
+                                'studentId': '{{ $studentData->id }}',
                                 'courseId': $('#course_id').val(),
                                 'defaultDocumentPath': "Uploads/Admission/",
                                 "config": JSON.stringify({

@@ -15,6 +15,18 @@
     </div>
     <div class="row mb-3">
         <div class="col">
+            <label for="student_id" class="form-label">Student</label>
+            <select name="student_id" id="student_id" class="select2 form-select" data-placeholder="Select student" disabled>
+                <option value="">Select Student</option>
+                @foreach ($students as $student)
+                    <option value="{{ $student->id }}" @if ($studentData->id == $student->id) selected @endif>
+                        {{ $student->full_name }}
+                    </option>
+                @endforeach
+            </select>
+            <input type="hidden" name="student_id" value="{{ $studentData->id }}">
+        </div>
+        <div class="col">
             <label for="first_name" class="form-label">First Name</label>
             <input type="text" class="form-control" name="first_name"
                 value="{{ old('first_name', $studentData->first_name) }}" id="first_name" placeholder="Enter first name"
