@@ -362,8 +362,10 @@
                 <option value="1" @if ($request->isAdmissionNew == '1') selected @endif>New</option>
                 <option value="0" @if ($request->isAdmissionNew == '0') selected @endif>Old</option>
             </select>
-            <button class="btn primary_btn" type="submit" id="filter" name="filter">Filter</button>
-            <button class="btn secondary_btn" type="submit" name="reset" id="reset">Reset</button>
+            <div class="d-flex gap-1">
+                <button class="btn primary_btn" type="submit" id="filter" name="filter">Filter</button>
+                <button class="btn secondary_btn" type="submit" name="reset" id="reset">Reset</button>
+            </div>
         </div>
     </form>
     <div class="card">

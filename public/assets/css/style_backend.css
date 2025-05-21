@@ -457,7 +457,7 @@ table#admissionsTable .btn-warning {
     padding: 20px;
     border-radius: 10px;
     margin-bottom: 20px;
-    grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
     width: 100%;
     max-width: 100%;
 }
