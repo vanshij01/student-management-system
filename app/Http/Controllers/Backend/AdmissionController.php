@@ -707,7 +707,7 @@ class AdmissionController extends Controller
     public function show(string $id)
     {
         $admission = $this->admissionRepository->getById($id);
-        // dd($admission);
+        $student_id = $this->studentRepository->getStudentIdAdmissionMap($id);
         $admission->student_file_name = ($admission->student_photo_url != "") ? basename($admission->student_photo_url) : "";
         $admission->parent_file_name = ($admission->parent_photo_url != "") ? basename($admission->parent_photo_url) : "";
 
@@ -724,7 +724,9 @@ class AdmissionController extends Controller
         $docTypes = $this->admissionRepository->getDocumentTypes();
         $countries = $this->countryRepository->getAll();
         $comments = $this->admissionRepository->getCommentsByAdmissionId($id);
-        $activities = ActivityLog::where('admission_id', $id)->get();
+        $activities = ActivityLog::where('admission_id', $id)
+            ->orWhere('student_id', $student_id)
+            ->get();
         // dd($activities);
         return view('backend.admission.show', compact('admission', 'documents', 'reservation', 'courses', 'villages', 'docTypes', 'countries', 'comments', 'activities'));
     }

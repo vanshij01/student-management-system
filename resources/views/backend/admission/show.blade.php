@@ -91,10 +91,11 @@
 
         .isAdmissionNew {
             /* padding: 6px 20px;
-            min-height: auto; */
+                    min-height: auto; */
             pointer-events: none;
         }
-        .data_table_wrap{
+
+        .data_table_wrap {
             overflow-x: scroll;
         }
 
@@ -523,9 +524,10 @@
                                             <thead>
                                                 <tr>
                                                     <th>Sr. No</th>
+                                                    <th>Module Name</th>
                                                     <th>Actioned by</th>
                                                     <th>Action</th>
-                                                    <th>Old</th>
+                                                    <th style="width: 600px;">Old</th>
                                                     <th>New</th>
                                                     <th>Updated At</th>
                                                 </tr>
@@ -621,14 +623,16 @@
 
 
                                                     <tr>
-                                                        <td>{{ (int) $key + 1 }}</td>
-                                                        <td>{{ $item->user->full_name }}</td>
+                                                        {{$key}}
+                                                        <td>{{ (int)$key + 1 }}</td>
+                                                        <td>{{ $item->log_name }}</td>
+                                                        <td>{{ $item->user->name ?? '' }}</td>
                                                         <td>{{ ucwords($item->event) }}</td>
                                                         <td>{!! $changesOld ?: '-' !!}</td>
                                                         <td>{!! $changesNew ?: '-' !!}</td>
                                                         <td>{{ $updatedAt }}</td>
                                                     </tr>
-                                                @endforeach 
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
