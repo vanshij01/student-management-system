@@ -91,7 +91,7 @@
 
         .isAdmissionNew {
             /* padding: 6px 20px;
-                    min-height: auto; */
+                        min-height: auto; */
             pointer-events: none;
         }
 
@@ -576,6 +576,7 @@
 
                                                 @foreach ($activities as $key => $item)
                                                     @php
+                                                        $index = $key;
                                                         $activityLog = json_decode($item->properties, true);
                                                         $oldValues = $activityLog['old'] ?? [];
                                                         $newValues = $activityLog['attributes'] ?? [];
@@ -623,8 +624,7 @@
 
 
                                                     <tr>
-                                                        {{$key}}
-                                                        <td>{{ (int)$key + 1 }}</td>
+                                                        <td>{{ (int) $index + 1 }}</td>
                                                         <td>{{ $item->log_name }}</td>
                                                         <td>{{ $item->user->name ?? '' }}</td>
                                                         <td>{{ ucwords($item->event) }}</td>
