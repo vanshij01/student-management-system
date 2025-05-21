@@ -1596,7 +1596,26 @@ function displaySemester(education_type) {
                 submitButton: new FormValidation.plugins.SubmitButton()
             }
         }).on('core.form.valid', function () {
-            // admissonFormVal.submit()
+            const $form = $('#admission_form');
+            const $submitBtn = $form.find('button[type="submit"]');
+            
+            const originalBtnText = $submitBtn.html();
+            
+            $form.on('submit', function(e) {
+                    $submitBtn.prop('disabled', true);
+                    $submitBtn.html('Processing...');
+                    
+                    setTimeout(function() {
+                        $submitBtn.prop('disabled', false);
+                        $submitBtn.html(originalBtnText);
+                    }, 60000); 
+            });
+            
+            if ($('.alert-danger').length > 0 || $('.invalid-feedback:visible').length > 0 || $('[data-error-message]').length > 0) {
+                $submitBtn.prop('disabled', false);
+                $submitBtn.html(originalBtnText);
+            }
+
             console.log('Submitted..!!');
         });
 
