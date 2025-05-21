@@ -42,9 +42,9 @@
     <form>
         <div class="admission-filter-bar">
             <input type="text" class="form-control" placeholder="From" name="from" id="from"
-                value="{{ old('from') }}" />
+                value="{{ old('from') }}" autocomplete="off"/>
             <input type="text" class="form-control" placeholder="To" name="to" id="to"
-                value="{{ old('to') }}" />
+                value="{{ old('to') }}" autocomplete="off"/>
             <select class="form-select select2" name="student_id" id="student_id" aria-label="Default select example"
                 data-placeholder="Select Student">
                 <option value="" selected>Select Student</option>

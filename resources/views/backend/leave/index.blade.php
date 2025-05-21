@@ -24,9 +24,9 @@
     <form>
         <div class="admission-filter-bar">
             <input type="text" class="form-control" name="from" value="{{ old('from') }}" id="from"
-                placeholder="DD/MM/YYYY">
+                placeholder="from" autocomplete="off">
             <input type="text" class="form-control" name="to" value="{{ old('to') }}" id="to"
-                placeholder="DD/MM/YYYY">
+                placeholder="to" autocomplete="off">
             <select class="form-select select2" name="student_id" id="student_id" aria-label="Default select example"
                 data-placeholder="Select Student">
                 <option value="" selected>Select Student</option>

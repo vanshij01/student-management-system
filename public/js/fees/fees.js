@@ -1,13 +1,18 @@
 $('#from').datepicker({
-    dateFormat: 'dd/mm/yY',
+    dateFormat: 'dd/mm/yY'
 });
 
+$('#to').datepicker({
+    dateFormat: 'dd/mm/yY'
+}).prop('disabled', true).css({
+    'background-color': 'white',  
+    'color': '#000',              
+    'opacity': '1'                
+  });
+
 $('#from').on('change', function () {
-    var fromDate = $(this).val();
-    $('#to').datepicker({
-        dateFormat: 'dd/mm/yY',
-        minDate: fromDate
-    });
+    var fromDate = $(this).datepicker('getDate');
+    $('#to').datepicker('option', 'minDate', fromDate).prop('disabled', false);
 });
 
 $(document).ready(function () {
@@ -195,7 +200,7 @@ $("#fees_table").on('click', '.email_button', function () {
 });
 
 $('#filter').on('click', function () {
-    feesData();
+    dataTableData();
 });
 
 $('#reset').click(function () {
@@ -204,7 +209,7 @@ $('#reset').click(function () {
     $('#gender').val('').trigger('change');
     $('#student_id').val('').trigger('change');
     $('#hostel_id').val('').trigger('change');
-    feesData();
+    dataTableData();
 });
 
 $(".fees_form").parsley();

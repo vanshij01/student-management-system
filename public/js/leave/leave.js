@@ -1,13 +1,18 @@
-$('#from').flatpickr({
-    dateFormat: 'd/m/Y',
+$('#from').datepicker({
+    dateFormat: 'dd/mm/yY'
+});
+
+$('#to').datepicker({
+    dateFormat: 'dd/mm/yY'
+}).prop('disabled', true).css({
+    'background-color': 'white',
+    'color': '#000',
+    'opacity': '1'
 });
 
 $('#from').on('change', function () {
-    var fromDate = $(this).val();
-    $('#to').flatpickr({
-        dateFormat: 'd/m/Y',
-        minDate: fromDate
-    });
+    var fromDate = $(this).datepicker('getDate');
+    $('#to').datepicker('option', 'minDate', fromDate).prop('disabled', false);
 });
 
 $(document).ready(function () {
@@ -197,7 +202,7 @@ $("#leave_table").on('click', '.edit_button_leave', function () {
 });
 
 $('#filter').on('click', function () {
-    leaveData();
+    dataTableData();
 });
 
 $('#reset').click(function () {
@@ -205,7 +210,7 @@ $('#reset').click(function () {
     $('#to').val('');
     $('#student_id').val('').trigger('change');
     $('#leave_status').val('').trigger('change');
-    leaveData();
+    dataTableData();
 });
 
 $("#leave_create_form").submit(function (event) {
