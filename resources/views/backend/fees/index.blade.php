@@ -1,6 +1,24 @@
 @extends('backend.layouts.app')
 @section('title', 'Donation Listing')
 @section('styles')
+    <style>
+        .rupees-icon {
+            position: absolute;
+            right: unset;
+            left: 15px;
+            bottom: unset;
+            top: 22px;
+            background: none;
+            padding: 0px !important;
+            border: none !important;
+            font-size: 20px !important;
+        }
+
+        #fees_amount,
+        #update_fees_amount {
+            padding: 14.5px 20px 14.5px 34.5px;
+        }
+    </style>
 @endsection
 @section('content')
     <div class="dashboard-header-container">
@@ -112,7 +130,7 @@
                                 @enderror
                             </div>
                             <div class="col-sm-12 col-lg-6 mb-4">
-                                <div class="input-group input-group-merge">
+                                {{-- <div class="input-group input-group-merge">
                                     <span class="input-group-text">₹</span>
                                     <div class="form-floating form-floating-outline">
                                         <input type="number" class="form-control" step="any" min="0"
@@ -130,7 +148,33 @@
                                 </div>
                                 <span class="amount_error d-none" style="color: red;">Cash Not Allowed Above
                                     ₹20,000</span>
-                                <div id="fees_amount_errors"></div>
+                                <div id="fees_amount_errors"></div> --}}
+                                <div class="input-box">
+                                    <label for="fees_amount">Amount</label>
+                                    <div class="form-password-toggle">
+                                        <div class="input-group input-group-merge d-block">
+                                            <div>
+                                                <span class="input-group-text cursor-pointer rupees-icon"><i
+                                                        class="las la-rupee-sign"></i></span>
+                                                <input type="number" class="form-control" step="any" min="0"
+                                                    name="fees_amount" id="fees_amount" value="{{ old('fees_amount') }}"
+                                                    placeholder="Enter Amount"
+                                                    data-parsley-errors-container="#fees_amount_errors" required
+                                                    data-parsley-required-message="The amount field is required." />
+                                                @error('fees_amount')
+                                                    <small class="red-text ml-10" role="alert"
+                                                        style="position: absolute; margin-left: -25px;">
+                                                        {{ $message }}
+                                                    </small>
+                                                @enderror
+                                                <span class="amount_error d-none" style="color: red;">Cash Not Allowed
+                                                    Above
+                                                    ₹20,000</span>
+                                            </div>
+                                        </div>
+                                        <div id="password_errors"></div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-sm-12 col-lg-6 mb-4">
                                 <label for="payment_type">Payment Type</label>
@@ -287,7 +331,7 @@
                                 @enderror
                             </div>
                             <div class="col-sm-12 col-lg-6 mb-4">
-                                <div class="input-group input-group-merge">
+                                {{-- <div class="input-group input-group-merge">
                                     <span class="input-group-text">₹</span>
                                     <div class="form-floating form-floating-outline">
                                         <input type="number" class="form-control" step="any" min="0"
@@ -296,7 +340,7 @@
                                             required readonly
                                             data-parsley-required-message="The amount field is required." />
                                         <label for="fees_amount">Amount</label>
-                                        @error('fees_amount')
+                                        @error('Amount')
                                             <small class="red-text ml-10" role="alert"
                                                 style="position: absolute; margin-left: -25px;">
                                                 {{ $message }}
@@ -306,7 +350,34 @@
                                             ₹20,000</span>
                                     </div>
                                 </div>
-                                <div id="fees_amount_errors"></div>
+                                <div id="fees_amount_errors"></div> --}}
+
+                                <div class="input-box">
+                                    <label for="fees_amount">Amount</label>
+                                    <div class="form-password-toggle">
+                                        <div class="input-group input-group-merge d-block">
+                                            <div>
+                                                <span class="input-group-text cursor-pointer rupees-icon"><i
+                                                        class="las la-rupee-sign"></i></span>
+                                                <input type="number" class="form-control" step="any" min="0"
+                                                    name="fees_amount" id="update_fees_amount"
+                                                    value="{{ old('fees_amount') }}" placeholder="Enter Amount"
+                                                    data-parsley-errors-container="#fees_amount_errors" required readonly
+                                                    data-parsley-required-message="The amount field is required." />
+                                                @error('fees_amount')
+                                                    <small class="red-text ml-10" role="alert"
+                                                        style="position: absolute; margin-left: -25px;">
+                                                        {{ $message }}
+                                                    </small>
+                                                @enderror
+                                                <span class="amount_error d-none" style="color: red;">Cash Not Allowed
+                                                    Above
+                                                    ₹20,000</span>
+                                            </div>
+                                        </div>
+                                        <div id="password_errors"></div>
+                                    </div>
+                                </div>
                             </div>
                             <div class="col-sm-12 col-lg-6 mb-4">
                                 <label for="payment_type">Payment Type</label>

@@ -90,8 +90,9 @@
         }
 
         .isAdmissionNew {
-            padding: 6px 20px;
-            min-height: auto;
+            /* padding: 6px 20px;
+            min-height: auto; */
+            pointer-events: none;
         }
 
         @media screen and (max-width: 1024px) {
@@ -151,7 +152,7 @@
                 <button type="button" class="btn secondary_btn status_btn"
                     onclick="sendStatusRemark({{ $admission->admission_id }})">Admission Status</button>
                 <button type="button" class="btn secondary_btn status_btn"
-                    onclick="sendComment({{ $admission->admission_id }})">Admin Comment</button>
+                    onclick="sendComment({{ $admission->admission_id }})">Add Comment</button>
             </div>
         </div>
 
@@ -519,7 +520,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody class="table-border-bottom-0">
-                                                @foreach ($activities as $key => $item)
+                                                {{-- @foreach ($activities as $key => $item)
                                                     @php
                                                         $activityLog = json_decode($item->properties, true);
                                                         $oldValues = $activityLog['old'] ?? [];
@@ -608,7 +609,7 @@
                                                         <td>{!! $changesNew ?: '-' !!}</td>
                                                         <td>{{ $updatedAt }}</td>
                                                     </tr>
-                                                @endforeach
+                                                @endforeach --}}
                                             </tbody>
                                         </table>
                                     </div>
