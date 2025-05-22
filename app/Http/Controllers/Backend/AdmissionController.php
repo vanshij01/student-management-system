@@ -294,7 +294,7 @@ class AdmissionController extends Controller
         $params['is_have_helmet'] = ($request->is_have_helmet && $params['is_have_helmet'] == 'true') ? true : false;
         $params['is_local_guardian_in_ahmedabad'] = ($request->is_local_guardian_in_ahmedabad && $params['is_local_guardian_in_ahmedabad'] == 'true') ? true : false;
         $params['is_parent_indian_citizen'] = ($request->is_parent_indian_citizen && $params['is_parent_indian_citizen'] == 'true') ? true : false;
-        $params['addmission_date'] = \DateTime::createFromFormat('d/m/Y', $params['addmission_date'])->format('Y-m-d');
+        $params['addmission_date'] = $request->addmission_date ? \DateTime::createFromFormat('d/m/Y', $params['addmission_date'])->format('Y-m-d') : null;
         $params['arriving_date'] = \DateTime::createFromFormat('d/m/Y', $params['arriving_date'])->format('Y-m-d');
         $params['college_fees_receipt_date'] = $request->college_fees_receipt_date ? \DateTime::createFromFormat('d/m/Y', $params['college_fees_receipt_date'])->format('Y-m-d') : null;
         $params['chk_declaration'] = ($request->chk_declaration && $params['chk_declaration'] == 'on') ? true : false;
@@ -798,7 +798,7 @@ class AdmissionController extends Controller
 
         unset($payLoad['student_id'], $payLoad['village_id'], $payLoad['licenceimage'], $payLoad['rcbook_frontimage'], $payLoad['rcbook_backimage'], $payLoad['insuranceimage'], $payLoad['duration'], $payLoad['studentDocument']);
 
-        $payLoad['addmission_date'] = \DateTime::createFromFormat('d/m/Y', $payLoad['addmission_date'])->format('Y-m-d');
+        $payLoad['addmission_date'] = $request->addmission_date ? \DateTime::createFromFormat('d/m/Y', $payLoad['addmission_date'])->format('Y-m-d') : null;
         $payLoad['arriving_date'] = \DateTime::createFromFormat('d/m/Y', $payLoad['arriving_date'])->format('Y-m-d');
         $payLoad['college_fees_receipt_date'] = $request->college_fees_receipt_date ? \DateTime::createFromFormat('d/m/Y', $payLoad['college_fees_receipt_date'])->format('Y-m-d') : null;
         $payLoad['chk_declaration'] = ($request->chk_declaration && $payLoad['chk_declaration'] == 'on') ? true : false;

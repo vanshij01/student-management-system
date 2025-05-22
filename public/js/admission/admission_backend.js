@@ -428,128 +428,135 @@ function displaySemester(education_type) {
         var education_type = $('#education_type').val();
 
         // Property Area
-        const FormValidation3 = FormValidation.formValidation(admissonFormValStep3, {
-            on: 'submit',
-            fields: {
-                education_type: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Please select an education type.'
-                        }
+        const formValidationFields = {
+            education_type: {
+                validators: {
+                    notEmpty: {
+                        message: 'Please select an education type.'
                     }
-                },
-                course_id: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Please select a course.',
-                            callback: function (input) {
-                                const educationType = $('#education_type').val();
-                                // Skip course validation for 'Other' education type
-                                if (educationType === 'Other') {
-                                    return true;
-                                }
-                                return input.value !== '';
-                            }
-                        },
-                        callback: {
-                            message: 'You have already completed this course. Please select a different one.',
-                            callback: function (input) {
-                                const educationType = $('#education_type').val();
-                                const excludedTypes = ['Job', 'Internship'];
-                                window.selectedCourseId = input.value;
-
-                                // Always enable first
-                                $('#course_id').prop('disabled', false);
-
-                                // Skip this validation for excluded types
-                                if (excludedTypes.includes(educationType)) {
-                                    return true;
-                                }
-
-                                // Skip for new students or update mode
-                                if (window.isNewStudent === 'true' || window.isUpdateMode) {
-                                    return true;
-                                }
-
-                                const completed = window.completedCourseYears?.[selectedCourseId] || 0;
-                                const duration = window.courseDurations?.[selectedCourseId] || 0;
-
-                                const isCompleted = completed >= duration;
-
-                                if (isCompleted) {
-
-                                    // Optionally show a toast/alert here
-                                    if (completed == 0) {
-                                        $('#course_id').prop('disabled', false);
-                                    }
-
-                                    return false;
-                                } else {
-                                    $('#course_id').prop('disabled', !isCompleted);
-                                    // Optionally show a toast/alert here
-                                    if (completed == 0) {
-                                        $('#course_id').prop('disabled', false);
-                                    }
-
-                                }
-
+                }
+            },
+            course_id: {
+                validators: {
+                    notEmpty: {
+                        message: 'Please select a course.',
+                        callback: function (input) {
+                            const educationType = $('#education_type').val();
+                            // Skip course validation for 'Other' education type
+                            if (educationType === 'Other') {
                                 return true;
                             }
+                            return input.value !== '';
                         }
                     },
-                    trigger: 'change' // Important: ensure validation runs on change
-                },
-                board_type: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Please select the board type.'
-                        }
-                    }
-                },
-                semester: {
-                    validators: {
-                        callback: {
-                            message: 'Please select a semester.',
-                            callback: function (input) {
-                                const educationType = $('#education_type').val();
-                                const requiredTypes = ["HSC", "Bachelor's Degree", "Master's Degree"];
-                                if (requiredTypes.includes(educationType)) {
-                                    return input.value !== '';
-                                }
-                                return true; // Not required for other education types
+                    callback: {
+                        message: 'You have already completed this course. Please select a different one.',
+                        callback: function (input) {
+                            const educationType = $('#education_type').val();
+                            const excludedTypes = ['Job', 'Internship'];
+                            window.selectedCourseId = input.value;
+
+                            // Always enable first
+                            $('#course_id').prop('disabled', false);
+
+                            // Skip this validation for excluded types
+                            if (excludedTypes.includes(educationType)) {
+                                return true;
                             }
+
+                            // Skip for new students or update mode
+                            if (window.isNewStudent === 'true' || window.isUpdateMode) {
+                                return true;
+                            }
+
+                            const completed = window.completedCourseYears?.[selectedCourseId] || 0;
+                            const duration = window.courseDurations?.[selectedCourseId] || 0;
+
+                            const isCompleted = completed >= duration;
+
+                            if (isCompleted) {
+
+                                // Optionally show a toast/alert here
+                                if (completed == 0) {
+                                    $('#course_id').prop('disabled', false);
+                                }
+
+                                return false;
+                            } else {
+                                $('#course_id').prop('disabled', !isCompleted);
+                                // Optionally show a toast/alert here
+                                if (completed == 0) {
+                                    $('#course_id').prop('disabled', false);
+                                }
+                            }
+
+                            return true;
                         }
                     }
                 },
-                institute_name: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Please enter the institute name.'
-                        }
+                trigger: 'change' // Important: ensure validation runs on change
+            },
+            board_type: {
+                validators: {
+                    notEmpty: {
+                        message: 'Please select the board type.'
                     }
-                },
-                year_of_addmission: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Please select the admission year.'
-                        }
-                    }
-                },
-                addmission_date: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Please select the admission date.'
-                        }
-                    }
-                },
-                arriving_date: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Please select the arriving date.'
+                }
+            },
+            semester: {
+                validators: {
+                    callback: {
+                        message: 'Please select a semester.',
+                        callback: function (input) {
+                            const educationType = $('#education_type').val();
+                            const requiredTypes = ["HSC", "Bachelor's Degree", "Master's Degree"];
+                            if (requiredTypes.includes(educationType)) {
+                                return input.value !== '';
+                            }
+                            return true; // Not required for other education types
                         }
                     }
                 }
             },
+            year_of_addmission: {
+                validators: {
+                    notEmpty: {
+                        message: 'Please select the admission year.'
+                    }
+                }
+            },
+            arriving_date: {
+                validators: {
+                    notEmpty: {
+                        message: 'Please select the arriving date.'
+                    }
+                }
+            }
+        };
+
+        // Add institute_name and admission_date validation only for old students
+        if (window.isNewStudent === 'false') {
+            formValidationFields.institute_name = {
+                validators: {
+                    notEmpty: {
+                        message: 'Please enter the institute name.'
+                    }
+                }
+            };
+            
+            formValidationFields.addmission_date = {
+                validators: {
+                    notEmpty: {
+                        message: 'Please select the admission date.'
+                    }
+                }
+            };
+        }
+
+        // Property Area
+        const FormValidation3 = FormValidation.formValidation(admissonFormValStep3, {
+            on: 'submit',
+            fields: formValidationFields,
             plugins: {
                 trigger: new FormValidation.plugins.Trigger(),
                 bootstrap5: new FormValidation.plugins.Bootstrap5({
@@ -574,7 +581,8 @@ function displaySemester(education_type) {
                 });
             }
         });
-
+        
+        console.log("window.isNewStudent",window.isNewStudent);
         console.log("window.selectedCourseId", window.selectedCourseId);
         function ensureOtherDoc0Validation() {
             const typeSelector = '[name="otherDoc[0][type]"]';
