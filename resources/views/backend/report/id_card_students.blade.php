@@ -41,8 +41,10 @@
                 <option value="girl">Girl</option>
                 <option value="boy">Boy</option>
             </select>
-            <button class="primary_btn" type="button" id="filter" name="filter">Filter</button>
-            <button class="secondary_btn" type="button" name="reset" id="reset">Reset</button>
+            <div class="d-flex gap-1">
+                <button class="primary_btn" type="button" id="filter" name="filter">Filter</button>
+                <button class="secondary_btn" type="button" name="reset" id="reset">Reset</button>
+            </div>
         </div>
     </form>
     <div class="table_content_wrapper">

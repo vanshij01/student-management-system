@@ -46,8 +46,10 @@
                 </option>
                 <option @if (old('status') == '4') selected @endif value="4">Completed</option>
             </select>
-            <button class="primary_btn" type="button" id="filter" name="filter">Filter</button>
-            <button class="secondary_btn" type="button" name="reset" id="reset">Reset</button>
+            <div class="d-flex gap-1">
+                <button class="primary_btn" type="button" id="filter" name="filter">Filter</button>
+                <button class="secondary_btn" type="button" name="reset" id="reset">Reset</button>
+            </div>
         </div>
     </form>
     <div class="table_content_wrapper">

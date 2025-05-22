@@ -59,7 +59,9 @@
             width: 8px;
             height: 8px;
             border-radius: 100%;
+            position: absolute;
             margin-right: 10px;
+            left: 32px;
         }
 
         .menu-item li a.active::before,
@@ -71,10 +73,10 @@
             padding-left: 60px;
         }
 
-        .menu.active > .nav-link{
-background: #FFB42D;
-    border-radius: 0.5rem;
-    color: #fff;
+        .menu.active>.nav-link {
+            background: #FFB42D;
+            border-radius: 0.5rem;
+            color: #fff;
         }
     </style>
 </head>
@@ -122,48 +124,48 @@ background: #FFB42D;
     <script src="{{ asset('assets/js/index.js') }}"></script>
     @yield('scripts')
     <script>
-    const menuButtons = document.querySelectorAll(".menu");
+        const menuButtons = document.querySelectorAll(".menu");
 
-    menuButtons.forEach((btn, index) => {
-        const panel = btn.querySelector(".menu-item");
+        menuButtons.forEach((btn, index) => {
+            const panel = btn.querySelector(".menu-item");
 
-        btn.querySelector(".nav-link").addEventListener("click", (e) => {
-            e.preventDefault();
-            const isOpen = panel.style.height && panel.style.height !== "0px";
+            btn.querySelector(".nav-link").addEventListener("click", (e) => {
+                e.preventDefault();
+                const isOpen = panel.style.height && panel.style.height !== "0px";
 
-            if (isOpen) {
-                panel.style.height = "0px";
-                btn.classList.remove("active");
-            } else {
-                panel.style.height = panel.scrollHeight + "px";
-                btn.classList.add("active");
-            }
-        });
-    });
-
-    // Auto-expand if active link
-    window.addEventListener("DOMContentLoaded", () => {
-        const currentURL = window.location.href;
-
-        document.querySelectorAll(".menu").forEach((menu) => {
-            const panel = menu.querySelector(".menu-item");
-            let hasActive = false;
-
-            menu.querySelectorAll(".nav-link").forEach(link => {
-                const href = link.getAttribute("href");
-                if (currentURL.includes(href)) {
-                    link.classList.add("active");
-                    hasActive = true;
+                if (isOpen) {
+                    panel.style.height = "0px";
+                    btn.classList.remove("active");
+                } else {
+                    panel.style.height = panel.scrollHeight + "px";
+                    btn.classList.add("active");
                 }
             });
-
-            if (hasActive) {
-                panel.style.height = panel.scrollHeight + "px";
-                menu.classList.add("active");
-            }
         });
-    });
-</script>
+
+        // Auto-expand if active link
+        window.addEventListener("DOMContentLoaded", () => {
+            const currentURL = window.location.href;
+
+            document.querySelectorAll(".menu").forEach((menu) => {
+                const panel = menu.querySelector(".menu-item");
+                let hasActive = false;
+
+                menu.querySelectorAll(".nav-link").forEach(link => {
+                    const href = link.getAttribute("href");
+                    if (currentURL.includes(href)) {
+                        link.classList.add("active");
+                        hasActive = true;
+                    }
+                });
+
+                if (hasActive) {
+                    panel.style.height = panel.scrollHeight + "px";
+                    menu.classList.add("active");
+                }
+            });
+        });
+    </script>
 
 </body>
 
