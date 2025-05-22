@@ -130,14 +130,14 @@ $(document).on('click', '.btn-release-bed', function () {
 });
 
 $('#filter').on('click', function () {
-    allotedStudentsData();
+    dataTableData();
 });
 
 $('#reset').click(function () {
     $('#student_id').val('').trigger('change');
     $('#year').val('').trigger('change');
     $('#gender').val('').trigger('change');
-    allotedStudentsData();
+    dataTableData();
 });
 
 function releaseBed(id) {

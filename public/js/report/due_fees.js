@@ -128,7 +128,7 @@ function dataTableData() {
 }
 
 $('#filter').on('click', function () {
-    dueFeesData();
+    dataTableData();
 });
 
 $('#reset').click(function () {
@@ -136,5 +136,5 @@ $('#reset').click(function () {
     $('#year').val('').trigger('change');
     $('#gender').val('').trigger('change');
     $('#hostel_id').val('').trigger('change');
-    dueFeesData();
+    dataTableData();
 });

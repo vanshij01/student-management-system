@@ -100,7 +100,7 @@ function dataTableData() {
 }
 
 $('#filter').on('click', function () {
-    dueFeesData();
+    dataTableData();
 });
 
 $('#reset').click(function () {
@@ -108,5 +108,5 @@ $('#reset').click(function () {
     $('#gender').val('').trigger('change');
     $('#hostel_id').val('').trigger('change');
     $('#course_id').val('').trigger('change');
-    dueFeesData();
+    dataTableData();
 });

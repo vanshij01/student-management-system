@@ -98,11 +98,11 @@ function dataTableData() {
 }
 
 $('#filter').on('click', function () {
-    availableBedsData();
+    dataTableData();
 });
 
 $('#reset').click(function () {
     $('#year').val('').trigger('change');
     $('#hostel_id').val('').trigger('change');
-    availableBedsData();
+    dataTableData();
 });
