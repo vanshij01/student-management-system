@@ -520,13 +520,13 @@ function displaySemester(education_type) {
                         }
                     }
                 },
-                institute_name: {
+                /* institute_name: {
                     validators: {
                         notEmpty: {
                             message: 'Please enter the institute name.'
                         }
                     }
-                },
+                }, */
                 year_of_addmission: {
                     validators: {
                         notEmpty: {
@@ -534,13 +534,13 @@ function displaySemester(education_type) {
                         }
                     }
                 },
-                addmission_date: {
+                /* addmission_date: {
                     validators: {
                         notEmpty: {
                             message: 'Please select the admission date.'
                         }
                     }
-                },
+                }, */
                 arriving_date: {
                     validators: {
                         notEmpty: {
@@ -1783,19 +1783,19 @@ function displaySemester(education_type) {
         }).on('core.form.valid', function () {
             const $form = $('#admission_form');
             const $submitBtn = $form.find('button[type="submit"]');
-            
+
             const originalBtnText = $submitBtn.html();
-            
+
             $form.on('submit', function(e) {
                     $submitBtn.prop('disabled', true);
                     $submitBtn.html('Processing...');
-                    
+
                     setTimeout(function() {
                         $submitBtn.prop('disabled', false);
                         $submitBtn.html(originalBtnText);
-                    }, 60000); 
+                    }, 60000);
             });
-            
+
             if ($('.alert-danger').length > 0 || $('.invalid-feedback:visible').length > 0 || $('[data-error-message]').length > 0) {
                 $submitBtn.prop('disabled', false);
                 $submitBtn.html(originalBtnText);
