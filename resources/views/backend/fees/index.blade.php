@@ -31,7 +31,7 @@
         </div>
 
         @php
-            $chk = \App\Models\Permission::checkCRUDPermissionToUser('Fees', 'create');
+            $chk = \App\Models\Permission::checkCRUDPermissionToUser('Fee', 'create');
 
             if ($chk) {
                 echo "<a class='btn primary_btn add_btn' id='addButton'>Add</a>";
@@ -503,9 +503,9 @@
     </div>
     <input type="hidden" id="isSuperAdmin" value="{{ \App\Models\Permission::isSuperAdmin() }}">
     <input type="hidden" id="readCheck"
-        value="{{ \App\Models\Permission::checkCRUDPermissionToUser('Fees', 'read') }}">
+        value="{{ \App\Models\Permission::checkCRUDPermissionToUser('Fee', 'read') }}">
     <input type="hidden" id="updateCheck"
-        value="{{ \App\Models\Permission::checkCRUDPermissionToUser('Fees', 'update') }}">
+        value="{{ \App\Models\Permission::checkCRUDPermissionToUser('Fee', 'update') }}">
 @endsection
 @section('scripts')
     <script src="{{ asset('js/fees/fees.js') }}"></script>

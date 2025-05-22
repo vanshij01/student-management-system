@@ -461,22 +461,22 @@ Route::middleware('auth', 'twofactor', 'adminRole')->group(function () {
     });
 
     Route::prefix('event')->group(function () {
-        Route::group(['middleware' => 'role:Warden'], function () {
+        Route::group(['middleware' => 'role:Event'], function () {
             Route::get('', [EventsController::class, 'index'])->name('event.index');
             Route::get('/eventData', [EventsController::class, 'eventData'])->name('event.eventData');
         });
-        Route::group(['middleware' => 'permission:Warden,create'], function () {
+        Route::group(['middleware' => 'permission:Event,create'], function () {
             Route::get('/create', [EventsController::class, 'create'])->name('event.create');
             Route::post('/store', [EventsController::class, 'store'])->name('event.store');
         });
-        Route::group(['middleware' => 'permission:Warden,update'], function () {
+        Route::group(['middleware' => 'permission:Event,update'], function () {
             Route::get('/{id}/edit', [EventsController::class, 'edit'])->name('event.edit');
             Route::put('/{id}', [EventsController::class, 'update'])->name('event.update');
         });
-        Route::group(['middleware' => 'permission:Warden,read'], function () {
+        Route::group(['middleware' => 'permission:Event,read'], function () {
             Route::get('/{id}', [EventsController::class, 'show'])->name('event.show');
         });
-        Route::group(['middleware' => 'permission:Warden,delete'], function () {
+        Route::group(['middleware' => 'permission:Event,delete'], function () {
             Route::get('delete/{id}', [EventsController::class, 'destroy'])->name('event.destroy');
         });
     });

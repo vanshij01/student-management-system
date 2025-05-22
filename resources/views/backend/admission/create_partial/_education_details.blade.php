@@ -199,7 +199,7 @@
             :admissionDocuments="$oldAdmissionDocuments" formType="create" />
         <x-upload-doc-no-result label="degree_certificate" docType="Degree Certificate" :admissionDetail="$oldAdmissionDetails"
             :admissionDocuments="$oldAdmissionDocuments" formType="create" />
-        <x-upload-doc label="last_qualification" docType="Qualification Result" percentageFieldName="hsc_percentage"
+        <x-upload-doc label="last_qualification" docType="Qualification Result" percentageFieldName="last_qualification_percentage"
             :admissionDetail="$oldAdmissionDetails" :admissionDocuments="$oldAdmissionDocuments" formType="create" />
         <x-upload-doc-no-result label="leaving_certificate" docType="Leaving Certificate"
             percentageFieldName="leaving_certificate_percentage" :admissionDetail="$oldAdmissionDetails" :admissionDocuments="$oldAdmissionDocuments"

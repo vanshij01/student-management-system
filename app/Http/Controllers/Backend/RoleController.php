@@ -121,6 +121,10 @@ class RoleController extends Controller
                 $filterArr['Document Type'] = 'Document Type';
             }
 
+            if ($tablesArr['events']) {
+                $filterArr['Event'] = 'Event';
+            }
+
             if ($tablesArr['fees']) {
                 $filterArr['Fee'] = 'Fee';
             }
@@ -225,6 +229,10 @@ class RoleController extends Controller
 
             if ($tablesArr['document_type']) {
                 $filterArr['Document Type'] = 'Document Type';
+            }
+
+            if ($tablesArr['events']) {
+                $filterArr['Event'] = 'Event';
             }
 
             if ($tablesArr['fees']) {

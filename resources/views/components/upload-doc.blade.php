@@ -11,7 +11,8 @@
                     <div class="percentage-error">
                         @if ($admissionDetail && $admissionDocuments)
                             @php
-                                $document = $admissionDocuments->firstWhere('doc_type', $docType);
+                                $document = $admissionDocuments->where('doc_type', $docType)->where('course_id', $admissionDetail->course_id)
+                                ->first();
                             @endphp
                             @if ($document)
                                 <input type="text" style="width: 100px" class="form-control"
@@ -80,19 +81,21 @@
         </div>
     </div>
 @else
-    <div class="col-6 {{ $label }}-doc">
-        <label class="form-label" for="{{ $docType }}_upload">Upload your {{ $docType }}</label>
-        <div class="row g-2 justify-content-between">
-            <!-- Percentage Field -->
-            <div class="col-12 col-md-4 percentage_box">
-                <div class="d-flex">
-                    <label class="form-label mb-0 me-2 align-self-center"
-                        for="{{ $label }}_percentage">Percentage:</label>
-                    <div class="percentage-error">
-                        @if ($admissionDetail && $admissionDocuments)
-                            @php
-                                $document = $admissionDocuments->firstWhere('doc_type', $docType);
+<div class="col-6 {{ $label }}-doc">
+    <label class="form-label" for="{{ $docType }}_upload">Upload your {{ $docType }}</label>
+    <div class="row g-2 justify-content-between">
+        <!-- Percentage Field -->
+        <div class="col-12 col-md-4 percentage_box">
+            <div class="d-flex">
+                <label class="form-label mb-0 me-2 align-self-center"
+                for="{{ $label }}_percentage">Percentage:</label>
+                <div class="percentage-error">
+                    @if ($admissionDetail && $admissionDocuments)
+                    @php
+                                $document = $admissionDocuments->where('doc_type', $docType)->where('course_id', $admissionDetail->course_id)
+                                ->first();
                             @endphp
+
                             @if ($document)
                                 <input type="text" style="width: 100px" class="form-control"
                                     id="{{ $label }}_percentage" name="{{ $label }}_percentage"
@@ -142,7 +145,8 @@
                             style="display: none;" />
                         @if ($admissionDetail && $admissionDocuments)
                             @php
-                                $document = $admissionDocuments->firstWhere('doc_type', $docType);
+                                $document = $admissionDocuments->where('doc_type', $docType)->where('course_id', $admissionDetail->course_id)
+                                    ->first();
                             @endphp
                             @if ($document)
                                 <div class="doc-download-box">

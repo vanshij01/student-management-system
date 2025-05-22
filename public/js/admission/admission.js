@@ -181,6 +181,8 @@ $(document).ready(function () {
     }, 3000);
 
     $('.select2').select2();
+    formatPagination();
+
 });
 
 $('.amount_error').addClass('d-none');
@@ -523,6 +525,103 @@ $("#room_id").on("change", function () {
     bindBedData(roomId);
 });
 
+function formatPagination() {
+    $(".pagination li:first-child .page-link").text("Previous");
+    $(".pagination li:last-child .page-link").text("Next");
+
+    const totalPages = Math.max(...$(".pagination li").map(function () {
+        const num = parseInt($(this).text());
+        return isNaN(num) ? 0 : num;
+    }).get());
+
+    const activePage = parseInt($(".pagination li.active .page-link").text()) || 1;
+
+    if (totalPages > 5) {
+        $(".pagination li").show();
+
+        $(".pagination li.ellipsis").remove();
+
+        let visiblePages = [];
+
+        if (activePage < 5) {
+            for (let i = 1; i <= 5 && i <= totalPages; i++) {
+                visiblePages.push(i);
+            }
+
+            if (!visiblePages.includes(totalPages)) {
+                visiblePages.push(totalPages);
+            }
+        } else {
+            visiblePages.push(1);
+            if (activePage > 2) visiblePages.push(activePage - 1);
+            visiblePages.push(activePage);
+            if (activePage < totalPages - 1) visiblePages.push(activePage + 1);
+            
+            if (!visiblePages.includes(totalPages)) {
+                visiblePages.push(totalPages);
+            }
+        }
+        
+        visiblePages = [...new Set(visiblePages)].sort((a, b) => a - b);
+
+        $(".pagination li").each(function (index) {
+            if (index === 0 || index === $(".pagination li").length - 1) return;
+
+            const pageNum = parseInt($(this).text());
+            if (isNaN(pageNum)) return; // Skip non-numeric items
+
+            if (!visiblePages.includes(pageNum)) {
+                $(this).hide();
+            }
+        });
+
+        const ellipsisAdded = new Set();
+
+        for (let i = 0; i < visiblePages.length - 2; i++) {
+            if (visiblePages[i + 1] - visiblePages[i] > 1) {
+                const gapKey = `${visiblePages[i]}-${visiblePages[i + 1]}`;
+                
+                if (activePage < 5) {
+                    if (visiblePages[i] === 5 && visiblePages[i+1] === totalPages && !ellipsisAdded.has(gapKey)) {
+                        let insertAfterElement = null;
+                        $(".pagination li").each(function () {
+                            const pageNum = parseInt($(this).text());
+                            if (pageNum === visiblePages[i]) {
+                                insertAfterElement = $(this);
+                                return false; // Break the loop
+                            }
+                        });
+
+                        if (insertAfterElement) {
+                            $('<li class="page-item disabled ellipsis"><span class="page-link">...</span></li>')
+                                .insertAfter(insertAfterElement);
+                            ellipsisAdded.add(gapKey);
+                        }
+                    }
+                } else {
+                    const isGapBeforeLastPage = visiblePages[i + 1] === totalPages && ellipsisAdded.size > 0;
+
+                    if (!ellipsisAdded.has(gapKey) && !isGapBeforeLastPage) {
+                        let insertAfterElement = null;
+                        $(".pagination li").each(function () {
+                            const pageNum = parseInt($(this).text());
+                            if (pageNum === visiblePages[i]) {
+                                insertAfterElement = $(this);
+                                return false; // Break the loop
+                            }
+                        });
+
+                        if (insertAfterElement) {
+                            $('<li class="page-item disabled ellipsis"><span class="page-link">...</span></li>')
+                                .insertAfter(insertAfterElement);
+                            ellipsisAdded.add(gapKey);
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
 
 $('#addmission_date, #college_fees_receipt_date, #arriving_date').flatpickr({
     dateFormat: 'd/m/Y',

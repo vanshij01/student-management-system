@@ -427,8 +427,8 @@ class AdmissionController extends Controller
 
             $newcourseId = $params['course_id'];
 
-            $semesters = range(1, 10);
-
+            $semesters = range(1, 12);
+            // dd($params);
             foreach ($semesters as $sem) {
                 if (!empty($params["semester_{$sem}_percentage"])) {
                     try {
@@ -438,6 +438,7 @@ class AdmissionController extends Controller
                         if ($params['is_admission_new']) {
                             $newStudent = StudentDocument::where('student_id', $studentId)
                                 ->where('doc_type', "Semester $sem")
+                                ->where('course_id', $courseId)
                                 ->first();
                             if ($newStudent) {
                                 if ($percentage !== null) {
@@ -450,6 +451,7 @@ class AdmissionController extends Controller
                         } elseif (($params['course_id'] != $params['old_course_id']) && ($params['course_id'] != 39) && ($params['course_id'] != 73)) {
                             $newStudent = StudentDocument::where('student_id', $studentId)
                                 ->where('doc_type', "Semester $sem")
+                                ->where('course_id', $params['old_course_id'])
                                 ->first();
                             if ($newStudent) {
                                 if ($percentage !== null) {
@@ -487,6 +489,7 @@ class AdmissionController extends Controller
                         if ($params['is_admission_new']) {
                             $newStudent = StudentDocument::where('student_id', $studentId)
                                 ->where('doc_type', "Semester $sem Backlog")
+                                ->where('course_id', $courseId)
                                 ->first();
                             if ($newStudent) {
                                 if ($percentage !== null) {
@@ -499,6 +502,7 @@ class AdmissionController extends Controller
                         } elseif (($params['course_id'] != $params['old_course_id']) && ($params['course_id'] != 39) && ($params['course_id'] != 73)) {
                             $newStudent = StudentDocument::where('student_id', $studentId)
                                 ->where('doc_type', "Semester $sem Backlog")
+                                ->where('course_id', $params['old_course_id'])
                                 ->first();
                             if ($newStudent) {
                                 if ($percentage !== null) {
@@ -571,6 +575,7 @@ class AdmissionController extends Controller
 
                         $existingDoc = StudentDocument::where('student_id', $studentId)
                             ->where('doc_type', $key)
+                            ->where('course_id', $courseId)
                             ->first();
 
                         if ($existingDoc) {
@@ -911,6 +916,7 @@ class AdmissionController extends Controller
                         if ($payLoad['is_admission_new']) {
                             $newStudent = StudentDocument::where('student_id', $studentId)
                                 ->where('doc_type', "Semester $sem")
+                                ->where('course_id', $courseId)
                                 ->first();
                             if ($newStudent) {
                                 if ($percentage !== null) {
@@ -923,6 +929,7 @@ class AdmissionController extends Controller
                         } elseif (($payLoad['course_id'] != $payLoad['old_course_id']) && ($payLoad['course_id'] != 39) && ($payLoad['course_id'] != 73)) {
                             $newStudent = StudentDocument::where('student_id', $studentId)
                                 ->where('doc_type', "Semester $sem")
+                                ->where('course_id', $payLoad['old_course_id'])
                                 ->first();
                             if ($newStudent) {
                                 if ($percentage !== null) {
@@ -960,6 +967,7 @@ class AdmissionController extends Controller
                         if ($payLoad['is_admission_new']) {
                             $newStudent = StudentDocument::where('student_id', $studentId)
                                 ->where('doc_type', "Semester $sem Backlog")
+                                ->where('course_id', $courseId)
                                 ->first();
                             if ($newStudent) {
                                 if ($percentage !== null) {
@@ -972,6 +980,7 @@ class AdmissionController extends Controller
                         } elseif (($payLoad['course_id'] != $payLoad['old_course_id']) && ($payLoad['course_id'] != 39) && ($payLoad['course_id'] != 73)) {
                             $newStudent = StudentDocument::where('student_id', $studentId)
                                 ->where('doc_type', "Semester $sem Backlog")
+                                ->where('course_id', $payLoad['old_course_id'])
                                 ->first();
                             if ($newStudent) {
                                 if ($percentage !== null) {
@@ -1022,6 +1031,7 @@ class AdmissionController extends Controller
 
                         $existingDoc = StudentDocument::where('student_id', $studentId)
                             ->where('doc_type', $key)
+                            ->where('course_id', $courseId)
                             ->first();
 
                         if ($existingDoc) {

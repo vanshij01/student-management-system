@@ -36,7 +36,7 @@
             <a class="nav-link {{ in_array(Route::current()->getName(), ['admission.index', 'admission.create', 'admission.edit', 'admission.show']) ? 'active' : '' }}"
                 href="{{ route('admission.index') }}"><i class="las la-id-badge"></i> Admission</a>
         @endif
-        @if ($isSuperAdmin == 1 || in_array('Donation', $permissions))
+        @if ($isSuperAdmin == 1 || in_array('Fee', $permissions))
             <a class="nav-link {{ in_array(Route::current()->getName(), ['fees.index', 'fees.create', 'fees.edit', 'fees.show']) ? 'active' : '' }}"
                 href="{{ route('fees.index') }}"><i class="las la-wallet"></i> Donation</a>
         @endif
@@ -52,7 +52,27 @@
             <a class="nav-link {{ in_array(Route::current()->getName(), ['student.index', 'student.create', 'student.edit', 'student.show']) ? 'active' : '' }}"
                 href="{{ route('student.index') }}"><i class="lar la-user"></i> Students</a>
         @endif
-        <li class="menu">
+        @if ($isSuperAdmin == 1 || in_array('Report', $permissions))
+            <li class="menu {{ in_array(Route::current()->getName(), [
+                'report.allotedStudents',
+                'report.availableBeds',
+                'report.dueFees',
+                'report.idCardStudents'
+                ]) ? 'open' : '' }}">
+                <a class="nav-link" href="#"><i class="las la-chart-bar"></i> Reports</a>
+                <ul class="menu-item">
+                    <li><a class="nav-link {{ in_array(Route::current()->getName(), ['report.allotedStudents']) ? 'active' : '' }}"
+                            href="{{ route('report.allotedStudents') }}">Allocated Student List</a></li>
+                    <li><a class="nav-link {{ in_array(Route::current()->getName(), ['report.availableBeds']) ? 'active' : '' }}"
+                            href="{{ route('report.availableBeds') }}">Available Beds</a></li>
+                    <li><a class="nav-link {{ in_array(Route::current()->getName(), ['report.dueFees']) ? 'active' : '' }}"
+                            href="{{ route('report.dueFees') }}">Due Fees</a></li>
+                    <li><a class="nav-link {{ in_array(Route::current()->getName(), ['report.idCardStudents']) ? 'active' : '' }}"
+                            href="{{ route('report.idCardStudents') }}">ID Card Student</a></li>
+                </ul>
+            </li>
+        @endif
+        {{-- <li class="menu">
             <a class="nav-link" href="#"><i class="las la-chart-bar"></i> Reports</a>
             <ul class="menu-item">
                 <li><a class="nav-link {{ in_array(Route::current()->getName(), ['report.allotedStudents']) ? 'active' : '' }}"
@@ -64,7 +84,7 @@
                 <li><a class="nav-link {{ in_array(Route::current()->getName(), ['report.idCardStudents']) ? 'active' : '' }}"
                         href="{{ route('report.idCardStudents') }}">ID Card Student</a></li>
             </ul>
-        </li>
+        </li> --}}
         @if ($isSuperAdmin == 1 || in_array('Admin User', $permissions))
             <a class="nav-link {{ in_array(Route::current()->getName(), ['admin_user.index', 'admin_user.create', 'admin_user.edit', 'admin_user.show']) ? 'active' : '' }}"
                 href="{{ route('admin_user.index') }}"><i class="lar la-user"></i> Admin Users</a>
@@ -73,7 +93,7 @@
             <a class="nav-link {{ in_array(Route::current()->getName(), ['warden.index', 'warden.create', 'warden.edit', 'warden.show']) ? 'active' : '' }}"
                 href="{{ route('warden.index') }}"><i class="las la-user-cog"></i> Wardens</a>
         @endif
-        @if ($isSuperAdmin == 1 || in_array('Activity', $permissions))
+        @if ($isSuperAdmin == 1 || in_array('Activity Log', $permissions))
             <a class="nav-link {{ in_array(Route::current()->getName(), ['activity-log.index']) ? 'active' : '' }}"
                 href="{{ route('activity-log.index') }}"><i class="las la-chart-pie"></i> Activity</a>
         @endif
@@ -86,7 +106,51 @@
             <a class="nav-link {{ in_array(Route::current()->getName(), ['event.index', 'event.create', 'event.edit', 'event.show']) ? 'active' : '' }}"
                 href="{{ route('event.index') }}"><i class="las la-microphone-alt"></i> Events</a>
         @endif
-        <li class="menu">
+        @if ($isSuperAdmin == 1 || 
+            in_array('Role', $permissions) || 
+            in_array('Hostel', $permissions) || 
+            in_array('Room', $permissions) || 
+            in_array('Bed', $permissions) || 
+            in_array('Course', $permissions) || 
+            in_array('Setting', $permissions))
+            <li class="menu {{ in_array(Route::current()->getName(), [
+                'role.index', 'role.create', 'role.edit', 'role.show',
+                'hostel.index', 'hostel.create', 'hostel.edit', 'hostel.show',
+                'room.index', 'room.create', 'room.edit', 'room.show',
+                'bed.index', 'bed.create', 'bed.edit', 'bed.show',
+                'course.index', 'course.create', 'course.edit', 'course.show',
+                'setting.index', 'setting.create'
+                ]) ? 'open' : '' }}">
+                <a class="nav-link" href="#"><i class="las la-cog"></i> Configuration</a>
+                <ul class="menu-item">
+                    @if ($isSuperAdmin == 1 || in_array('Role', $permissions))
+                        <li><a class="nav-link {{ in_array(Route::current()->getName(), ['role.index', 'role.create', 'role.edit', 'role.show']) ? 'active' : '' }}"
+                                href="{{ route('role.index') }}">Role</a></li>
+                    @endif
+                    @if ($isSuperAdmin == 1 || in_array('Hostel', $permissions))
+                        <li><a class="nav-link {{ in_array(Route::current()->getName(), ['hostel.index', 'hostel.create', 'hostel.edit', 'hostel.show']) ? 'active' : '' }}"
+                                href="{{ route('hostel.index') }}">Hostel</a></li>
+                    @endif
+                    @if ($isSuperAdmin == 1 || in_array('Room', $permissions))
+                        <li><a class="nav-link {{ in_array(Route::current()->getName(), ['room.index', 'room.create', 'room.edit', 'room.show']) ? 'active' : '' }}"
+                                href="{{ route('room.index') }}">Room</a></li>
+                    @endif
+                    @if ($isSuperAdmin == 1 || in_array('Bed', $permissions))
+                        <li><a class="nav-link {{ in_array(Route::current()->getName(), ['bed.index', 'bed.create', 'bed.edit', 'bed.show']) ? 'active' : '' }}"
+                                href="{{ route('bed.index') }}">Bed</a></li>
+                    @endif
+                    @if ($isSuperAdmin == 1 || in_array('Course', $permissions))
+                        <li><a class="nav-link {{ in_array(Route::current()->getName(), ['course.index', 'course.create', 'course.edit', 'course.show']) ? 'active' : '' }}"
+                                href="{{ route('course.index') }}">Courses</a></li>
+                    @endif
+                    @if ($isSuperAdmin == 1 || in_array('Setting', $permissions))
+                        <li><a class="nav-link {{ in_array(Route::current()->getName(), ['setting.index', 'setting.create']) ? 'active' : '' }}"
+                                href="{{ route('setting.index') }}">Setting</a></li>
+                    @endif
+                </ul>
+            </li>
+        @endif
+        {{-- <li class="menu">
             <a class="nav-link" href="#"><i class="las la-cog"></i> Configuration</a>
             <ul class="menu-item">
                 @if ($isSuperAdmin == 1 || in_array('Role', $permissions))
@@ -114,7 +178,7 @@
                             href="{{ route('setting.index') }}">Setting</a></li>
                 @endif
             </ul>
-        </li>
+        </li> --}}
         <a class="nav-link" href="{{ route('logout') }}"
             onclick="event.preventDefault();
             document.getElementById('logout-form').submit();">
