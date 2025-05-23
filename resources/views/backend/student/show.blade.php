@@ -240,26 +240,26 @@
                                     <thead>
                                         <tr>
                                             <th>SR No.</th>
-                                            <th>Year</th>
-                                            <th>Date</th>
-                                            <th>Institute Name</th>
-                                            <th>course_id</th>
-                                            <th>semester</th>
+                                            <th>Education</th>
+                                            <th>Course</th>
+                                            <th>Institute /College Name</th>
+                                            <th>Admission Date</th>
+                                            <th>Year of Admission</th>
+                                            <th>Semester</th>
+                                            <th>Arriving Date at hostel</th>
                                         </tr>
                                     </thead>
                                     <tbody class="table-border-bottom-0">
-                                        @foreach ($donations as $key => $donation)
+                                        @foreach ($admissions as $key => $admission)
                                             <tr>
                                                 <td>{{ $key + 1 }}</td>
-                                                <td>{{ $donation->serial_number . '/' . $donation->financial_year }}
-                                                </td>
-                                                <td>{{ $donation->payment_type }}</td>
-                                                <td>{{ $donation->payment_method }}</td>
-                                                <td>{{ $donation->fees_amount }}</td>
-                                                <td>{{ date('d/m/Y', strtotime($donation->paid_at)) }}</td>
-                                                <td>{{ $donation->financial_year }}</td>
-                                                <td>{{ $donation->transaction_number }}</td>
-                                                <td>{{ $donation->donation_type }}</td>
+                                                <td>{{ $admission->education_type }}</td>
+                                                <td>{{ $admission->course_name }}</td>
+                                                <td>{{ $admission->institute_name ?? '' }}</td>
+                                                <td>{{ $admission->addmission_date ? date('d/m/Y', strtotime($admission->addmission_date)) : '' }}</td>
+                                                <td>{{ $admission->year_of_addmission }}</td>
+                                                <td>{{ $admission->semester }}</td>
+                                                <td>{{ $admission->arriving_date ? date('d/m/Y', strtotime($admission->arriving_date)) : '' }}</td>
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -282,94 +282,105 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @foreach ($activities as $key => $item)
-                                            <tr>
-                                                <td>{{ $key + 1 }}</td>
-                                                <td>{{ $item->created_at->format('d/m/Y H:i:s') }}</td>
-                                                <td>{{ ucfirst($item->event) }}</td>
-                                                <td>{{ $item->log_name }}</td>
-                                                <td>{{ $item->user->name ?? '' }}</td>
-                                                <td>
-                                                    @if ($item->properties)
-                                                        @php
-                                                            $activityLog = json_decode($item->properties, true);
-
-                                                            if (
-                                                                isset($activityLog['old']) &&
-                                                                isset($activityLog['attributes'])
-                                                            ) {
+                                        @if (sizeof($activities) > 0)
+                                            @foreach ($activities as $key => $item)
+                                                <tr>
+                                                    <td>{{ $key + 1 }}</td>
+                                                    <td>{{ $item->created_at->format('d/m/Y H:i:s') }}</td>
+                                                    <td>{{ ucfirst($item->event) }}</td>
+                                                    <td>{{ $item->log_name }}</td>
+                                                    <td>{{ $item->user->name ?? '' }}</td>
+                                                    <td>
+                                                        @if ($item->properties)
+                                                            @php
                                                                 $activityLog = json_decode($item->properties, true);
-                                                                $oldData = $activityLog['old'] ?? [];
-                                                                $newData = $activityLog['attributes'] ?? [];
 
-                                                                $changedOld = '';
-                                                                $changedNew = '';
+                                                                if (
+                                                                    isset($activityLog['old']) &&
+                                                                    isset($activityLog['attributes'])
+                                                                ) {
+                                                                    $activityLog = json_decode($item->properties, true);
+                                                                    $oldData = $activityLog['old'] ?? [];
+                                                                    $newData = $activityLog['attributes'] ?? [];
 
-                                                                // Show only changed keys
-                                                                foreach ($newData as $key => $newValue) {
-                                                                    $oldValue = $oldData[$key] ?? null;
+                                                                    $changedOld = '';
+                                                                    $changedNew = '';
 
-                                                                    if ($newValue != $oldValue) {
-                                                                        $changedNew .= $key . ' - ' . $newValue . ', ';
-                                                                        $changedOld .= $key . ' - ' . $oldValue . ', ';
+                                                                    // Show only changed keys
+                                                                    foreach ($newData as $key => $newValue) {
+                                                                        $oldValue = $oldData[$key] ?? null;
+
+                                                                        if ($newValue != $oldValue) {
+                                                                            $changedNew .=
+                                                                                $key . ' - ' . $newValue . ', ';
+                                                                            $changedOld .=
+                                                                                $key . ' - ' . $oldValue . ', ';
+                                                                        }
+                                                                    }
+
+                                                                    if ($changedNew || $changedOld) {
+                                                                        echo 'New:- ' .
+                                                                            rtrim($changedNew, ', ') .
+                                                                            '<br>';
+                                                                        echo 'Old:- ' . rtrim($changedOld, ', ');
+                                                                    } elseif (!empty($newData)) {
+                                                                        // fallback if only new data exists
+                                                                        $attributesString = '';
+                                                                        foreach ($newData as $key => $value) {
+                                                                            $attributesString .=
+                                                                                $key . ' - ' . $value . ', ';
+                                                                        }
+                                                                        echo rtrim($attributesString, ', ');
+                                                                    } elseif (!empty($oldData)) {
+                                                                        // fallback if only old data exists
+                                                                        $attributesString = '';
+                                                                        foreach ($oldData as $key => $value) {
+                                                                            $attributesString .=
+                                                                                $key . ' - ' . $value . ', ';
+                                                                        }
+                                                                        echo rtrim($attributesString, ', ');
                                                                     }
                                                                 }
-
-                                                                if ($changedNew || $changedOld) {
-                                                                    echo 'New:- ' . rtrim($changedNew, ', ') . '<br>';
-                                                                    echo 'Old:- ' . rtrim($changedOld, ', ');
-                                                                } elseif (!empty($newData)) {
-                                                                    // fallback if only new data exists
+                                                                // Check if 'attributes' key exists
+                                                                elseif (isset($activityLog['attributes'])) {
                                                                     $attributesString = '';
-                                                                    foreach ($newData as $key => $value) {
+
+                                                                    // Iterate over each attribute and construct the string
+                                                                    foreach (
+                                                                        $activityLog['attributes']
+                                                                        as $key => $value
+                                                                    ) {
                                                                         $attributesString .=
                                                                             $key . ' - ' . $value . ', ';
                                                                     }
-                                                                    echo rtrim($attributesString, ', ');
-                                                                } elseif (!empty($oldData)) {
-                                                                    // fallback if only old data exists
+
+                                                                    // Remove the trailing comma and space
+                                                                    $attributesString = rtrim($attributesString, ', ');
+
+                                                                    // echo instead of return
+                                                                    echo $attributesString;
+                                                                } else {
                                                                     $attributesString = '';
-                                                                    foreach ($oldData as $key => $value) {
+
+                                                                    // Iterate over each attribute and construct the string
+                                                                    foreach ($activityLog['old'] as $key => $value) {
                                                                         $attributesString .=
                                                                             $key . ' - ' . $value . ', ';
                                                                     }
-                                                                    echo rtrim($attributesString, ', ');
+
+                                                                    // Remove the trailing comma and space
+                                                                    $attributesString = rtrim($attributesString, ', ');
+
+                                                                    // echo instead of return
+                                                                    echo $attributesString; // Handle case where 'attributes' is missing
                                                                 }
-                                                            }
-                                                            // Check if 'attributes' key exists
-                                                            elseif (isset($activityLog['attributes'])) {
-                                                                $attributesString = '';
-
-                                                                // Iterate over each attribute and construct the string
-                                                                foreach ($activityLog['attributes'] as $key => $value) {
-                                                                    $attributesString .= $key . ' - ' . $value . ', ';
-                                                                }
-
-                                                                // Remove the trailing comma and space
-                                                                $attributesString = rtrim($attributesString, ', ');
-
-                                                                // echo instead of return
-                                                                echo $attributesString;
-                                                            } else {
-                                                                $attributesString = '';
-
-                                                                // Iterate over each attribute and construct the string
-                                                                foreach ($activityLog['old'] as $key => $value) {
-                                                                    $attributesString .= $key . ' - ' . $value . ', ';
-                                                                }
-
-                                                                // Remove the trailing comma and space
-                                                                $attributesString = rtrim($attributesString, ', ');
-
-                                                                // echo instead of return
-                                                                echo $attributesString; // Handle case where 'attributes' is missing
-                                                            }
-                                                        @endphp
-                                                    @else
-                                                    @endif
-                                                </td>
-                                            </tr>
-                                        @endforeach
+                                                            @endphp
+                                                        @else
+                                                        @endif
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        @endif
                                     </tbody>
                                 </table>
                             </div>
@@ -381,6 +392,7 @@
     </div>
 @endsection
 @section('scripts')
+    <script src="{{ asset('js/student/student.js') }}"></script>
     <script>
         $(document).ready(function() {
             $('#donation_table').DataTable();

@@ -94,7 +94,7 @@
                         <label for="dob" class="form-label">DOB</label>
                         <input type="text" class="form-control" name="dob"
                             value="{{ date('d/m/Y', strtotime($student->dob)) }}" placeholder="DD/MM/YYYY" id="dob"
-                            required data-parsley-required-message="The dob field is required." />
+                            required data-parsley-required-message="The dob field is required." autocomplete="off" />
                         @error('dob')
                             <small class="red-text ml-10" role="alert">
                                 {{ $message }}
@@ -185,29 +185,6 @@
                         @enderror
                         <small id="status_error" class="errors red-text"></small>
                     </div>
-                    <div class="col-lg-4 col-md-6 mb-4">
-                        <label class="switch switch-primary mt-3 form-label">
-                            <input type="checkbox" class="switch-input" name="is_any_illness"
-                                @if ($student->is_any_illness == true) checked @endif />
-                            <span class="switch-toggle-slider">
-                                <span class="switch-on"></span>
-                                <span class="switch-off"></span>
-                            </span>
-                            <span class="switch-label">Do you have any physical or mental illness?</span>
-                        </label>
-                    </div>
-                    <div class="col-lg-4 col-md-6 mb-4 student_illness_field">
-                        <label for="illness_description" class="form-label">Describe your illness in brief</label>
-                        <input type="text" class="form-control" id="illness_description" name="illness_description"
-                            value="{{ old('illness_description', $student->illness_description) }}"
-                            id="illness_description" placeholder="Enter your illness in brief"
-                            data-parsley-required-message="The illness description field is required." />
-                        @error('illness_description')
-                            <small class="red-text ml-10" role="alert">
-                                {{ $message }}
-                            </small>
-                        @enderror
-                    </div>
                 </div>
             </div>
             <div class="card-footer text-end py-2">
@@ -228,23 +205,6 @@
                 maxDate: 'Today',
                 yearRange: "-120:+10",
             });
-
-            displayIllnessField();
-
-            $('input[name="is_any_illness"]').on('change', function() {
-                displayIllnessField();
-            });
-
-            function displayIllnessField() {
-                var value = $('input[name="is_any_illness"]:checked').val();
-                if (value == 'on') {
-                    $('.student_illness_field').show();
-                    $('#illness_description').attr('required', true);
-                } else {
-                    $('.student_illness_field').hide();
-                    $('#illness_description').attr('required', false);
-                }
-            }
         });
     </script>
 @endsection
