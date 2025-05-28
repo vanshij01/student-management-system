@@ -16,7 +16,7 @@
     if ($loggedInUser->role_id == 1) {
         $isSuperAdmin = 1;
     }
-    dd($data);
+    // dd($data);
 @endphp
 
 
