@@ -11,6 +11,7 @@ use App\Models\Student;
 use App\Models\StudentAdmissionMap;
 use App\Models\StudentDocument;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class AdmissionRepository implements AdmissionRepositoryInterface
 {
@@ -170,6 +171,7 @@ class AdmissionRepository implements AdmissionRepositoryInterface
 
     public function dueFeesReportData($data)
     {
+        // dd($data);
         $admissionIds = Fees::pluck('admission_id');
         $dueFeesReport = StudentAdmissionMap::select('f.payment_method', 'f.status', 's.first_name', 's.middle_name', 's.last_name', 'r.room_number', 'b.bed_number', 'a.gender', 'student_admission_map.admission_year', 's.phone', 'a.father_phone')
             ->leftjoin('admissions as a', 'a.id', 'student_admission_map.admission_id')
@@ -184,13 +186,13 @@ class AdmissionRepository implements AdmissionRepositoryInterface
             $year = explode('-', $data['year']);
             $dueFeesReport->whereBetween('a.created_at', ["$year[0]-04-01", "$year[1]-03-31"]);
         }
-        if ($data['hostel_id'] > 0) {
+        if (isset($data['hostel_id']) && $data['hostel_id'] > 0) {
             $dueFeesReport->where('student_admission_map.hostel_id', $data['hostel_id']);
         }
-        if ($data['student_id'] > 0) {
+        if (isset($data['hostelstudent_id_id']) && $data['student_id'] > 0) {
             $dueFeesReport->where('student_admission_map.student_id', $data['student_id']);
         }
-        if (!empty($data['gender'])) {
+        if (isset($data['gender']) && !empty($data['gender'])) {
             $dueFeesReport->where('a.gender', $data['gender']);
         }
         return $dueFeesReport->orderBy("r.room_number", "asc")->orderBy("b.bed_number", "asc")->get();
@@ -460,5 +462,108 @@ class AdmissionRepository implements AdmissionRepositoryInterface
         }
 
         return $allotedList->orderBy("r.room_number", "asc")->orderBy("b.bed_number", "asc")->get();
+    }
+
+    public function firstHalfReportData($year = null)
+    {
+        $admissionIds = Fees::pluck('admission_id');
+        // dd($admissionIds);
+        $dueFeesReport = StudentAdmissionMap::select('f.payment_method', 'f.status', 's.first_name', 's.middle_name', 's.last_name', 'r.room_number', 'b.bed_number', 'a.gender', 'student_admission_map.admission_year', 's.phone', 'a.father_phone')
+            ->leftjoin('admissions as a', 'a.id', 'student_admission_map.admission_id')
+            ->leftjoin('fees as f', 'f.admission_id', 'student_admission_map.admission_id')
+            ->leftjoin('students as s', 's.id', 'student_admission_map.student_id')
+            ->leftjoin('rooms as r', 'r.id', 'student_admission_map.room_id')
+            ->leftjoin('beds as b', 'b.id', 'student_admission_map.bed_id')
+            ->whereIn('f.payment_method', ['Half-Yearly', 'Yearly'])
+            ->whereNotIn('a.is_admission_confirm', ['2', '3']);
+        if (!empty($year)) {
+            $year = explode('-', $year);
+            $dueFeesReport
+                ->whereBetween('a.created_at', ["$year[0]-05-01", "$year[1]-04-30"])
+                ->whereBetween('f.created_at', ["$year[0]-06-01", "$year[0]-11-30"]);
+        }
+        return $dueFeesReport->orderBy("r.room_number", "asc")->orderBy("b.bed_number", "asc")->get();
+    }
+
+    public function secondHalfReportData($year = null)
+    {
+        $admissionIds = Fees::pluck('admission_id');
+
+        $dueFeesReport = StudentAdmissionMap::select(
+            'f.payment_method',
+            'f.status',
+            's.first_name',
+            's.middle_name',
+            's.last_name',
+            'r.room_number',
+            'b.bed_number',
+            'a.gender',
+            'student_admission_map.admission_year',
+            's.phone',
+            'a.father_phone'
+        )
+            ->leftJoin('admissions as a', 'a.id', 'student_admission_map.admission_id')
+            ->leftJoin('fees as f', 'f.admission_id', 'student_admission_map.admission_id')
+            ->leftJoin('students as s', 's.id', 'student_admission_map.student_id')
+            ->leftJoin('rooms as r', 'r.id', 'student_admission_map.room_id')
+            ->leftJoin('beds as b', 'b.id', 'student_admission_map.bed_id')
+            ->whereIn('f.payment_method', ['Half-Yearly', 'Yearly'])
+            ->whereNotIn('a.is_admission_confirm', ['2', '3']);
+
+        if (!empty($year)) {
+            $year = explode('-', $year);
+            $admissionStart = "{$year[0]}-05-01";
+            $admissionEnd = "{$year[1]}-04-30";
+
+            $dueFeesReport->whereBetween('a.created_at', [$admissionStart, $admissionEnd]);
+
+            // Conditional filter for fee creation dates
+            $dueFeesReport->where(function ($query) use ($year) {
+                $query->where(function ($q) use ($year) {
+                    $q->where('f.payment_method', 'Half-Yearly')
+                        ->whereBetween('f.created_at', ["{$year[0]}-12-01", "{$year[1]}-05-30"]);
+                })->orWhere(function ($q) use ($year) {
+                    $q->where('f.payment_method', 'Yearly')
+                        ->whereBetween('f.created_at', ["{$year[0]}-06-01", "{$year[1]}-05-30"]);
+                });
+            });
+        }
+
+        return $dueFeesReport->orderBy("r.room_number", "asc")
+            ->orderBy("b.bed_number", "asc")
+            ->get();
+    }
+
+    public function totalFeesReportData($data)
+    {
+        $dueFeesReport = DB::table('student_admission_map')
+            ->selectRaw('
+        MAX(f.payment_method) as payment_method,
+        MAX(f.status) as status,
+        MAX(s.first_name) as first_name,
+        MAX(s.middle_name) as middle_name,
+        MAX(s.last_name) as last_name,
+        MAX(r.room_number) as room_number,
+        MAX(b.bed_number) as bed_number,
+        MAX(a.gender) as gender,
+        student_admission_map.admission_year,
+        MAX(s.phone) as phone,
+        MAX(a.father_phone) as father_phone
+    ')
+            ->leftJoin('admissions as a', 'a.id', '=', 'student_admission_map.admission_id')
+            ->leftJoin('fees as f', 'f.admission_id', '=', 'student_admission_map.admission_id')
+            ->leftJoin('students as s', 's.id', '=', 'student_admission_map.student_id')
+            ->leftJoin('rooms as r', 'r.id', '=', 'student_admission_map.room_id')
+            ->leftJoin('beds as b', 'b.id', '=', 'student_admission_map.bed_id')
+            ->whereNotIn('a.is_admission_confirm', ['2', '3']);
+        if (!empty($data['year'])) {
+            $year = explode('-', $data['year']);
+            $dueFeesReport->whereBetween('a.created_at', ["$year[0]-05-01", "$year[1]-04-30"]);
+        }
+
+        return $dueFeesReport->groupBy('student_admission_map.admission_id', 'student_admission_map.admission_year')
+            ->orderByRaw('MAX(r.room_number)')
+            ->orderByRaw('MAX(b.bed_number)')
+            ->get();
     }
 }

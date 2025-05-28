@@ -90,6 +90,41 @@ class HostelRepository implements HostelRepositoryInterface
         return $bedArr;
     }
 
+    public function getChartDataAllocatedBed($year = null)
+    {
+        $hostels = Hostel::all();
+        $bedArr = [];
+        foreach ($hostels as $hostel) {
+            if ($year != null && $year != '' && $year != 'all') {
+                $singleYear = explode('-', $year);
+                $bedIds = StudentAdmissionMap::whereBetween('created_at', ["$singleYear[0]-05-01", "$singleYear[1]-04-30"])->where('hostel_id', $hostel->id)->pluck('bed_id');
+            } else {
+                $bedIds = StudentAdmissionMap::where('hostel_id', $hostel->id)->pluck('bed_id');
+            }
+            $cArr = [];
+            $cArr['hostel_name'] = $hostel->hostel_name;
+            $cArr['beds'] = Bed::join('rooms as r', 'r.id', 'beds.room_id')->where('r.hostel_id', $hostel->id)->whereIn('beds.id', $bedIds)->count();
+            array_push($bedArr, $cArr);
+        }
+
+        return $bedArr;
+    }
+
+    public function getChartDataAllBed($year = null)
+    {
+        $hostels = Hostel::all();
+        $bedArr = [];
+        foreach ($hostels as $hostel) {
+            // $bedIds = StudentAdmissionMap::where('hostel_id', $hostel->id)->pluck('bed_id');
+            $cArr = [];
+            $cArr['hostel_name'] = $hostel->hostel_name;
+            $cArr['beds'] = Bed::join('rooms as r', 'r.id', 'beds.room_id')->where('r.hostel_id', $hostel->id)->count();
+            array_push($bedArr, $cArr);
+        }
+
+        return $bedArr;
+    }
+
     public function getChartDataAdmissionYearwise()
     {
         $hostels = Hostel::with('student')->get();

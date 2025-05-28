@@ -29,7 +29,9 @@ $(document).ready(function () {
             success: function (response) {
                 $('#total_admission').text(response.admission);
                 $('#total_complain').text(response.complains);
-                $('#total_donors').text(response.fees);
+                $('#total_donors').text(response.totalFeesReportData);
+                $('#first_half_pending').text(response.totalFeesReportData - response.firstHalfReportData);
+                $('#second_half_pending').text(response.totalFeesReportData - response.secondHalfReportData);
                 $('#total_hostel').text(response.hostel);
                 $('#total_room').text(response.room);
                 $('#total_bed').text(response.bed);
@@ -40,6 +42,10 @@ $(document).ready(function () {
                 $('#hostelTable tfoot').empty();
                 $('#availableBedTable tfoot').empty();
                 $('#admissionStatusTable tfoot').empty();
+                var available_beds = response.available_bed;
+                var allocated_beds = response.allocated_bed;
+                var all_beds = response.all_bed;
+
                 var boystotal = 0;
                 var girlsTotal = 0;
                 var bedTotal = 0;
@@ -95,6 +101,52 @@ $(document).ready(function () {
                         $('#unsolved_complain').text(sum);
                     }
                 });
+
+                $.each(available_beds, function (indexInArray, available_bed) {
+                    if (indexInArray == 0) {
+                        $('.women_available_beds').text(available_bed.beds);
+                    }
+                    if (indexInArray == 2) {
+                        $('.men_available_beds').text(available_bed.beds);
+                    }
+                    if (indexInArray == 1) {
+                        $('.job_available_beds').text(available_bed.beds);
+                    }
+                });
+
+                $.each(allocated_beds, function (indexInArray, allocated_bed) {
+                    if (indexInArray == 0) {
+                        $('.women_allocated_beds').text(allocated_bed.beds);
+                    }
+                    if (indexInArray == 2) {
+                        $('.men_allocated_beds').text(allocated_bed.beds);
+                    }
+                    if (indexInArray == 1) {
+                        $('.job_allocated_beds').text(allocated_bed.beds);
+                    }
+                });
+
+                $.each(all_beds, function (indexInArray, all_bed) {
+                    if (indexInArray == 0) {
+                        $('.women_all_beds').text(all_bed.beds);
+                    }
+                    if (indexInArray == 2) {
+                        $('.men_all_beds').text(all_bed.beds);
+                    }
+                    if (indexInArray == 1) {
+                        $('.job_all_beds').text(all_bed.beds);
+                    }
+                });
+
+                var women_available_beds = parseInt($('.women_available_beds').text());
+                var women_allocated_beds = parseInt($('.women_allocated_beds').text());
+                womenHostelGraph(women_available_beds, women_allocated_beds);
+                var men_available_beds = parseInt($('.men_available_beds').text());
+                var men_allocated_beds = parseInt($('.men_allocated_beds').text());
+                menHostelGraph(men_available_beds, men_allocated_beds);
+                var job_available_beds = parseInt($('.job_available_beds').text());
+                var job_allocated_beds = parseInt($('.job_allocated_beds').text());
+                jobHostelGraph(job_available_beds, job_allocated_beds);
             }
         });
     }
@@ -124,5 +176,137 @@ function setDefaultAcademicYear() {
     }
 
     $("#currentYear").text(formatAcademicYear(startYear));
+}
+
+function womenHostelGraph(women_available_beds, women_allocated_beds) {
+    Highcharts.chart('women-chart', {
+        chart: {
+            type: 'pie',
+            height: '100%'
+        },
+        title: {
+            text: ''
+        },
+        subtitle: {
+            text: ''
+        },
+        colors: ['#FFB42D', '#18A8B0'],
+        plotOptions: {
+            pie: {
+                shadow: false,
+                center: ['50%', '50%'],
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}: {point.y}',
+                    distance: 30
+                },
+                size: '100%' // Makes the chart fill the container
+            }
+        },
+        series: [{
+            name: 'Beds',
+            colorByPoint: true,
+            data: [
+                {
+                    name: 'Available Beds',
+                    y: women_available_beds
+                },
+                {
+                    name: 'Allocated Beds',
+                    y: women_allocated_beds
+                }
+            ]
+        }]
+    });
+}
+
+function menHostelGraph(men_available_beds, men_allocated_beds) {
+    Highcharts.chart('men-chart', {
+        chart: {
+            type: 'pie',
+            height: '100%'
+        },
+        title: {
+            text: ''
+        },
+        subtitle: {
+            text: ''
+        },
+        colors: ['#FFB42D', '#18A8B0'],
+        plotOptions: {
+            pie: {
+                shadow: false,
+                center: ['50%', '50%'],
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}: {point.y}',
+                    distance: 30
+                },
+                size: '100%' // Makes the chart fill the container
+            }
+        },
+        series: [{
+            name: 'Beds',
+            colorByPoint: true,
+            data: [
+                {
+                    name: 'Available Beds',
+                    y: men_available_beds
+                },
+                {
+                    name: 'Allocated Beds',
+                    y: men_allocated_beds
+                }
+            ]
+        }]
+    });
+}
+
+function jobHostelGraph(job_available_beds, job_allocated_beds) {
+    Highcharts.chart('job-chart', {
+        chart: {
+            type: 'pie',
+            height: '100%'
+        },
+        title: {
+            text: ''
+        },
+        subtitle: {
+            text: ''
+        },
+        colors: ['#FFB42D', '#18A8B0'],
+        plotOptions: {
+            pie: {
+                shadow: false,
+                center: ['50%', '50%'],
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '{point.name}: {point.y}',
+                    distance: 30
+                },
+                size: '100%' // Makes the chart fill the container
+            }
+        },
+        series: [{
+            name: 'Beds',
+            colorByPoint: true,
+            data: [
+                {
+                    name: 'Available Beds',
+                    y: job_available_beds
+                },
+                {
+                    name: 'Allocated Beds',
+                    y: job_allocated_beds
+                }
+            ]
+        }]
+    });
 }
 

@@ -48,7 +48,8 @@ class DashboardController extends Controller
         $this->feesRepository = $feesRepository;
     }
 
-    public function index(Request $request) {
+    public function index(Request $request)
+    {
         $admission = $this->admissionRepository->getAll();
         $yearList = array_merge($this->lastFiveYears(), $this->nextFiveYears());
         sort($yearList);
@@ -72,8 +73,10 @@ class DashboardController extends Controller
         return $lastFiveYears;
     }
 
-    public function yearInfo(Request $request){
+    public function yearInfo(Request $request)
+    {
         $year = $request->year;
+        $data['year'] = $request->year;
         $admission = $this->admissionRepository->getAll(null, $request->year)->count();
         $student = $this->studentRepository->studentInfo($request->year)->count();
         $hostel = $this->hostelRepository->hostelData($year = null)->count();
@@ -82,9 +85,14 @@ class DashboardController extends Controller
         $course = $this->courseRepository->getAll()->count();
         $hostel_gender = $this->hostelRepository->genderStatistics($request->year);
         $available_bed = $this->hostelRepository->getChartDataAvailableBed($request->year);
+        $allocated_bed = $this->hostelRepository->getChartDataAllocatedBed($request->year);
+        $all_bed = $this->hostelRepository->getChartDataAllBed($request->year);
         $admission_status = $this->admissionRepository->admissionStatusData($request->year);
         $complains = $this->complainRepository->getAll($request->year)->count();
-        $fees = $this->feesRepository->getAll($request->year)->count();
+        $fees = $this->admissionRepository->dueFeesReportData($data)->count();
+        $totalFeesReportData = $this->admissionRepository->totalFeesReportData($data)->count();
+        $firstHalfReportData = $this->admissionRepository->firstHalfReportData($request->year)->count();
+        $secondHalfReportData = $this->admissionRepository->secondHalfReportData($request->year)->count();
         $complain_status = $this->complainRepository->complainStatusData($request->year);
 
         return response()->json([
@@ -97,10 +105,15 @@ class DashboardController extends Controller
             'course' => $course,
             'hostel_gender' => $hostel_gender,
             'available_bed' => $available_bed,
+            'allocated_bed' => $allocated_bed,
+            'all_bed' => $all_bed,
             'admission_status' => $admission_status,
             'complains' => $complains,
             'complain_status' => $complain_status,
             'fees' => $fees,
+            'totalFeesReportData' => $totalFeesReportData,
+            'firstHalfReportData' => $firstHalfReportData,
+            'secondHalfReportData' => $secondHalfReportData,
         ]);
     }
 }
