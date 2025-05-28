@@ -1,6 +1,11 @@
 @extends('backend.layouts.app')
 @section('title', 'Room Listing')
 @section('styles')
+    <style>
+        .dataTables_scrollBody {
+            overflow: unset !important;
+        }
+    </style>
 @endsection
 @section('content')
     <div class="dashboard-header-container">

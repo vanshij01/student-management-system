@@ -18,6 +18,10 @@
         #update_fees_amount {
             padding: 14.5px 20px 14.5px 34.5px;
         }
+
+        .dataTables_scrollBody{
+            overflow: unset !important;
+        }
     </style>
 @endsection
 @section('content')
