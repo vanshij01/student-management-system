@@ -35,10 +35,10 @@
         }
 
         /* .dataTables_scrollBody {
-                                                                                                                            overflow-x: scroll !important;
-                                                                                                                            overflow-y: hidden !important;
-                                                                                                                            position: static !important;
-                                                                                                                        } */
+                                                                                                                                overflow-x: scroll !important;
+                                                                                                                                overflow-y: hidden !important;
+                                                                                                                                position: static !important;
+                                                                                                                            } */
 
         .pagination .page-item {
             display: flex;
@@ -455,6 +455,8 @@
                                                 $item->id .
                                                 ')">Admission Status</a></li>';
 
+                                        }
+                                        if($chk){
                                             if ($item->is_bed_release == 0) {
                                                 if ($item->is_fees_paid == 0 && $item->is_admission_confirm == 0) {
                                                     /* $html .=
@@ -483,18 +485,17 @@
                                                 /*   */
                                                 // $html .= 'Release';
                                             }
-
+                                        }
+                                        if (!$isSuperAdmin && !$updateCheck && !$readCheck) {
+                                            $html = '';
+                                        }
+                                        if ($readCheck) {
                                             if ($item->fees_status == 'Paid') {
                                                 $html .=
                                                     '<li><a class="dropdown-item dropdown-trigger-17500btn waves-effect StatusRemark" href="javascript:void(0)" onclick="feesReceipt(' .
                                                     $item->id .
                                                     ')">View Receipt</a></li>';
                                             }
-                                        }
-                                        if (!$isSuperAdmin && !$updateCheck && !$readCheck) {
-                                            $html = '';
-                                        }
-                                        if ($readCheck) {
                                             $html .=
                                                 '<li><a class="dropdown-item dropdown-trigger-17500btn waves-effect" href="admission/' .
                                                 $item->id .

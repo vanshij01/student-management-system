@@ -535,7 +535,10 @@ function formatPagination() {
     }).get());
 
     const activePage = parseInt($(".pagination li.active .page-link").text()) || 1;
-
+    if (!$(".pagination li.active").length) {
+        $(".pagination li").eq(1).addClass("active");
+        activePage = 1;
+    }
     if (totalPages > 5) {
         $(".pagination li").show();
 
