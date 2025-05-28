@@ -190,14 +190,14 @@ $('.edit').on('click', function () {
 });
 
 $('#filter').on('click', function () {
-    complainData();
+    dataTableData();
 });
 
 $('#reset').click(function () {
     $('#complain_by').val('').trigger('change');
     $('#type').val('').trigger('change');
     $('#status').val('').trigger('change');
-    complainData();
+    dataTableData();
 });
 
 $("#complain_create_form").submit(function (event) {
