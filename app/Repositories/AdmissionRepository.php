@@ -52,21 +52,26 @@ class AdmissionRepository implements AdmissionRepositoryInterface
                 $admissions->where('admissions.course_id', $data['courseId']);
             }
 
-            if (!empty($data['isAdmissionNew']) && $data['isAdmissionNew'] != 'all') {
-                $admissions->where('admissions.is_admission_new', $data['isAdmissionNew']);
-            } else {
-                if ($data['isAdmissionNew'] == '0') {
-                    $admissions->where('admissions.is_admission_new', '0');
+            if (isset($data['isAdmissionNew'])) {
+                if (!empty($data['isAdmissionNew']) && $data['isAdmissionNew'] != 'all') {
+                    $admissions->where('admissions.is_admission_new', $data['isAdmissionNew']);
+                } else {
+                    if ($data['isAdmissionNew'] == '0') {
+                        $admissions->where('admissions.is_admission_new', '0');
+                    }
                 }
             }
 
-            if (!empty($data['status']) && $data['status'] != 'all') {
-                $admissions->where('admissions.is_admission_confirm', $data['status']);
-            } else {
-                if ($data['status'] == '0') {
-                    $admissions->where('admissions.is_admission_confirm', '0');
+            if (isset($data['status'])) {
+                if (!empty($data['status']) && $data['status'] != 'all') {
+                    $admissions->where('admissions.is_admission_confirm', $data['status']);
+                } else {
+                    if ($data['status'] == '0') {
+                        $admissions->where('admissions.is_admission_confirm', '0');
+                    }
                 }
             }
+
             if (!empty($data['roomAlloted']) && $data['roomAlloted'] != 'all') {
                 if ($data['roomAlloted'] === 'no') {
                     $admissions->where([['sam.hostel_id', '0'], ['sam.room_id', '0'], ['sam.bed_id', '0']]);
