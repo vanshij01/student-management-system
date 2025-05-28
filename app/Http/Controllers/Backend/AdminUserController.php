@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
+use App\Models\Role;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -39,7 +40,8 @@ class AdminUserController extends Controller
      */
     public function create()
     {
-        return view('backend.admin_user.create');
+        $roles = Role::where('id', '!=', 1)->get();
+        return view('backend.admin_user.create', compact('roles'));
     }
 
     /**
@@ -88,7 +90,8 @@ class AdminUserController extends Controller
     public function edit(string $id)
     {
         $admin_user = $this->userRepository->getById($id);
-        return view('backend.admin_user.update', compact('admin_user'));
+        $roles = Role::where('id', '!=', 1)->get();
+        return view('backend.admin_user.update', compact('admin_user', 'roles'));
     }
 
     /**

@@ -84,17 +84,23 @@
         </div>
         <div class="card-body">
             <div class="row">
-                <div class="col-lg-4 col-md-4 col-12 border-right">
+                <div class="col-lg-3 col-md-4 col-12 border-right">
                     <h6>Name</h6>
                     <label>{{ $admin_user->name }}</label>
                 </div>
                 <hr class="responsive_hr my-1">
-                <div class="col-lg-4 col-md-4 col-12 border-right">
+                <div class="col-lg-3 col-md-4 col-12 border-right">
                     <h6>Email</h6>
                     <label>{{ $admin_user->email }}</label>
                 </div>
                 <hr class="responsive_hr my-1">
-                <div class="col-lg-4 col-md-4 col-12">
+                <div class="col-lg-3 col-md-4 col-12 border-right border-right-md-none">
+                    <h6>Status</h6>
+                    <label>{{ $admin_user->getRole->name }}</label>
+                </div>
+                <hr class="responsive_hr my-1">
+                <hr class="my-1 d-none d-md-block d-lg-none">
+                <div class="col-lg-3 col-md-4 col-12 border-right-md-block">
                     <h6>Status</h6>
                     <label>{{ $admin_user->status == 1 ? 'Enabled' : 'Disabled' }}</label>
                 </div>

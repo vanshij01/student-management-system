@@ -92,6 +92,11 @@ class User extends Authenticatable/*  implements MustVerifyEmail */
         return $this->belongsTo(Student::class, 'user_id', 'id');
     }
 
+    public function getRole(): BelongsTo
+    {
+        return $this->belongsTo(Role::class, 'role_id', 'id');
+    }
+
     public function generateTwoFactorCode(): void
     {
         $this->timestamps = false;  // Prevent updating the 'updated_at' column

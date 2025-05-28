@@ -50,6 +50,18 @@
                         <div id="password_errors"></div>
                     </div>
                     <div class="col-lg-4 col-md-6 mb-4">
+                        <label for="role_id" class="form-label">Role</label>
+                        <select name="role_id" id="role_id" class="select2 form-select" data-placeholder="Select Role"
+                            data-parsley-errors-container="#role_id_errors" required
+                            data-parsley-required-message="The role field is required.">
+                            <option value="">Select Role</option>
+                            @foreach ($roles as $role)
+                                <option value="{{ $role->id }}">{{$role->name}}</option>
+                            @endforeach
+                        </select>
+                        <div id="role_id_errors"></div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 mb-4">
                         <label for="status" class="form-label">Status</label>
                         <select name="status" id="status" class="select2 form-select" data-placeholder="Select status"
                             data-parsley-errors-container="#status_errors" required

@@ -16,7 +16,7 @@
     if ($loggedInUser->role_id == 1) {
         $isSuperAdmin = 1;
     }
-    // dd($permissions);
+    dd($data);
 @endphp
 
 
@@ -106,12 +106,12 @@
             <a class="nav-link {{ in_array(Route::current()->getName(), ['event.index', 'event.create', 'event.edit', 'event.show']) ? 'active' : '' }}"
                 href="{{ route('event.index') }}"><i class="las la-microphone-alt"></i> Events</a>
         @endif
-        @if ($isSuperAdmin == 1 || 
-            in_array('Role', $permissions) || 
-            in_array('Hostel', $permissions) || 
-            in_array('Room', $permissions) || 
-            in_array('Bed', $permissions) || 
-            in_array('Course', $permissions) || 
+        @if ($isSuperAdmin == 1 ||
+            in_array('Role', $permissions) ||
+            in_array('Hostel', $permissions) ||
+            in_array('Room', $permissions) ||
+            in_array('Bed', $permissions) ||
+            in_array('Course', $permissions) ||
             in_array('Setting', $permissions))
             <li class="menu {{ in_array(Route::current()->getName(), [
                 'role.index', 'role.create', 'role.edit', 'role.show',
