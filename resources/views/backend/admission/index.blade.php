@@ -35,10 +35,10 @@
         }
 
         /* .dataTables_scrollBody {
-                                                                                                                                overflow-x: scroll !important;
-                                                                                                                                overflow-y: hidden !important;
-                                                                                                                                position: static !important;
-                                                                                                                            } */
+                                                                                                                                    overflow-x: scroll !important;
+                                                                                                                                    overflow-y: hidden !important;
+                                                                                                                                    position: static !important;
+                                                                                                                                } */
 
         .pagination .page-item {
             display: flex;
@@ -454,9 +454,8 @@
                                                 '<li><a class="dropdown-item dropdown-trigger-17500btn waves-effect StatusRemark" href="javascript:void(0)" onclick="sendStatusRemark(' .
                                                 $item->id .
                                                 ')">Admission Status</a></li>';
-
                                         }
-                                        if($chk){
+                                        if ($chk) {
                                             if ($item->is_bed_release == 0) {
                                                 if ($item->is_fees_paid == 0 && $item->is_admission_confirm == 0) {
                                                     /* $html .=
@@ -469,10 +468,12 @@
                                                             '<li><a class="dropdown-item dropdown-trigger-17500btn waves-effect StatusRemark" href="javascript:void(0)" onclick="addFees(' .
                                                             $item->id .
                                                             ')">Add Fees</a></li>';
-                                                        $html .=
-                                                            '<li><a class="dropdown-item dropdown-trigger-17500btn waves-effect StatusRemark" href="javascript:void(0)" onclick="roomAllocate(' .
-                                                            $item->id .
-                                                            ')">Room Allot</a></li>';
+                                                        if ($isSuperAdmin) {
+                                                            $html .=
+                                                                '<li><a class="dropdown-item dropdown-trigger-17500btn waves-effect StatusRemark" href="javascript:void(0)" onclick="roomAllocate(' .
+                                                                $item->id .
+                                                                ')">Room Allot</a></li>';
+                                                        }
                                                     } elseif ($item->is_admission_confirm == 3) {
                                                         /* $html .=
                                                             '<p class="m-0 px-3 text-info"">Admission Cancelled</p>'; */
