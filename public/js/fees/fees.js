@@ -1,9 +1,9 @@
 $('#from').datepicker({
-    dateFormat: 'dd/mm/yY'
+    dateFormat: 'dd/mm/yy'
 });
 
 $('#to').datepicker({
-    dateFormat: 'dd/mm/yY'
+    dateFormat: 'dd/mm/yy'
 }).prop('disabled', true).css({
     'background-color': 'white',  
     'color': '#000',              
