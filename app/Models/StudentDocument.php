@@ -38,7 +38,7 @@ class StudentDocument extends Model
 
         return LogOptions::defaults()
             ->logOnly(['*'])
-            ->useLogName('Room')
+            ->useLogName('Student Document')
             ->setDescriptionForEvent(function (string $eventName) use ($userName) {
                 return "{$userName} has {$eventName} StudentDocument";
             });

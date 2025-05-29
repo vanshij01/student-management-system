@@ -35,7 +35,7 @@ class DocumentType extends Model
 
         return LogOptions::defaults()
             ->logOnly(['*'])
-            ->useLogName('Course')
+            ->useLogName('Document Type')
             ->setDescriptionForEvent(function (string $eventName) use ($userName) {
                 return "{$userName} has {$eventName} Course";
             });

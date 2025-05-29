@@ -131,7 +131,7 @@
                             @if ($admissionDetail->course_id == $document->course_id)
                                 @if (Str::startsWith($document->doc_type, 'Semester') && Str::endsWith($document->doc_type, 'Fees Receipt'))
                                     <div class="fees-download-box">
-                                        <a href="{{ route('student.document.download', $document->id) }}">
+                                        <a href="{{ route('admission.images.download', $document->id) }}">
                                             <span>{{ Str::words($document->doc_type, 2, '') }}</span>
                                             <img src="{{ asset('assets/images/download-icon.svg') }}">
                                         </a>
@@ -255,7 +255,7 @@
                                     <span style="color: #18b6c1; font-weight: 600; font-size: 16px;">
                                         {{ $document->doc_type }}
                                     </span>
-                                    <a href="{{ route('student.document.download', $document->id) }}"
+                                    <a href="{{ route('admission.images.download', $document->id) }}"
                                         style="color: #18b6c1; display: flex; align-items: center;">
                                         <img src="{{ asset('assets/images/download-icon.svg') }}"
                                             style="width: 15px; height: 15px;" alt="Download">
@@ -281,7 +281,7 @@
                                 <span style="color: #18b6c1; font-weight: 600; font-size: 16px;">
                                     {{ $document->doc_type }}
                                 </span>
-                                <a href="{{ route('student.document.download', $document->id) }}"
+                                <a href="{{ route('admission.images.download', $document->id) }}"
                                     style="margin-left: 16px; color: #18b6c1; display: flex; align-items: center;">
                                     <img src="{{ asset('assets/images/download-icon.svg') }}"
                                         style="width: 15px; height: 15px;" alt="Download">

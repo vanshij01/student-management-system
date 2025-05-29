@@ -69,7 +69,7 @@
                     @if ($admissionDetail->father_photo_url != '')
                         <div class="doc-download-box">
                             <a
-                                href="{{ route('student.images.download', ['id' => $admissionDetail->id, 'fieldName' => 'father_photo_url']) }}"><span>Father’s
+                                href="{{ route('admission.images.download', ['id' => $admissionDetail->id, 'fieldName' => 'father_photo_url']) }}"><span>Father’s
                                     Passport Size Photo</span>
                                 <img src="{{ asset('assets/images/download-icon.svg') }}">
                             </a>
@@ -98,7 +98,7 @@
                     @if ($admissionDetail->mother_photo_url != '')
                         <div class="doc-download-box">
                             <a
-                                href="{{ route('student.images.download', ['id' => $admissionDetail->id, 'fieldName' => 'mother_photo_url']) }}"><span>Mother’s
+                                href="{{ route('admission.images.download', ['id' => $admissionDetail->id, 'fieldName' => 'mother_photo_url']) }}"><span>Mother’s
                                     Passport Size Photo</span>
                                 <img src="{{ asset('assets/images/download-icon.svg') }}">
                             </a>
@@ -204,7 +204,7 @@
                             @endphp
                             @if ($document)
                                 <div class="doc-download-box">
-                                    <a href="{{ route('student.document.download', $document->id) }}"><span>Aadhar
+                                    <a href="{{ route('admission.document.download', $document->id) }}"><span>Aadhar
                                             Card Front</span>
                                         <img src="{{ asset('assets/images/download-icon.svg') }}">
                                     </a>
@@ -243,7 +243,7 @@
                             @endphp
                             @if ($document)
                                 <div class="doc-download-box">
-                                    <a href="{{ route('student.document.download', $document->id) }}"><span>Aadhar
+                                    <a href="{{ route('admission.document.download', $document->id) }}"><span>Aadhar
                                             Card Back</span>
                                         <img src="{{ asset('assets/images/download-icon.svg') }}">
                                     </a>
@@ -290,7 +290,7 @@
                         @endphp
                         @if ($document)
                             <div class="doc-download-box">
-                                <a href="{{ route('student.document.download', $document->id) }}"><span>Passport
+                                <a href="{{ route('admission.document.download', $document->id) }}"><span>Passport
                                         Front</span>
                                     <img src="{{ asset('assets/images/download-icon.svg') }}">
                                 </a>
@@ -328,7 +328,7 @@
                         @endphp
                         @if ($document)
                             <div class="doc-download-box">
-                                <a href="{{ route('student.document.download', $document->id) }}"><span>Passport
+                                <a href="{{ route('admission.document.download', $document->id) }}"><span>Passport
                                         Back</span>
                                     <img src="{{ asset('assets/images/download-icon.svg') }}">
                                 </a>

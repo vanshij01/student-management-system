@@ -316,6 +316,13 @@
                         {{ ucfirst($action) }}</option>
                 @endforeach
             </select>
+            <select class="form-select select2" name="actionBy" id="actionBy" data-placeholder="Select Action By">
+                <option value="" selected>Select Action By</option>
+                @foreach ($users as $user)
+                    <option value="{{ $user->id }}" @if ($request->actionBy == $user->id) selected @endif>
+                        {{ ucfirst($user->name) }}</option>
+                @endforeach
+            </select>
             <div class="d-flex gap-1">
                 <button class="btn primary_btn" type="submit" id="filter" name="filter">Filter</button>
                 <button class="btn secondary_btn" type="submit" name="reset" id="reset">Reset</button>

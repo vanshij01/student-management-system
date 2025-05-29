@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class ActivityLogController extends Controller
@@ -15,8 +16,8 @@ class ActivityLogController extends Controller
             $to = ($request->to) ? \DateTime::createFromFormat('d/m/Y', $request->to)->format('Y-m-d') : null;
 
             $data = ActivityLog::select('activity_log.*')
-            ->leftJoin('users', 'users.id', 'activity_log.causer_id')
-            ->orderBy('activity_log.id', 'DESC');
+                ->leftJoin('users', 'users.id', 'activity_log.causer_id')
+                ->orderBy('activity_log.id', 'DESC');
 
             if ($request->moduleId) {
                 $data->where('activity_log.log_name', $request->moduleId);
@@ -24,6 +25,10 @@ class ActivityLogController extends Controller
 
             if ($request->actionId) {
                 $data->where('activity_log.event', $request->actionId);
+            }
+
+            if ($request->actionBy) {
+                $data->where('activity_log.causer_id', $request->actionBy);
             }
 
             if ($from != null && $to != null) {
@@ -51,8 +56,9 @@ class ActivityLogController extends Controller
 
             $modules = ActivityLog::pluck('log_name')->unique();
             $actions = ActivityLog::pluck('event')->unique();
+            $users = User::all();
 
-            return view('backend.activity_log.index', compact('allData', 'request', 'modules', 'actions'));
+            return view('backend.activity_log.index', compact('allData', 'request', 'modules', 'actions', 'users'));
         } catch (\Throwable $th) {
         }
     }

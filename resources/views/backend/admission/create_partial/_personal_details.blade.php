@@ -152,7 +152,7 @@
             @if ($oldAdmissionDetails && $oldAdmissionDetails->student_photo_url != '')
                 <div class="doc-download-box">
                     <a
-                        href="{{ route('images.download', ['id' => $oldAdmissionDetails->id, 'fieldName' => 'student_photo_url']) }}"><span>Passport
+                        href="{{ route('admission.images.download', ['id' => $oldAdmissionDetails->id, 'fieldName' => 'student_photo_url']) }}"><span>Passport
                             Size Photo</span>
                         <img src="{{ asset('assets/images/download-icon.svg') }}">
                     </a>
@@ -195,7 +195,7 @@
                         @endphp
                         @if ($document)
                             <div class="doc-download-box">
-                                <a href="{{ route('document.download', $document->id) }}"><span>Aadhar
+                                <a href="{{ route('admission.document.download', $document->id) }}"><span>Aadhar
                                         Card Front</span>
                                     <img src="{{ asset('assets/images/download-icon.svg') }}">
                                 </a>
@@ -229,7 +229,7 @@
                         @endphp
                         @if ($document)
                             <div class="doc-download-box">
-                                <a href="{{ route('document.download', $document->id) }}"><span>Aadhar
+                                <a href="{{ route('admission.document.download', $document->id) }}"><span>Aadhar
                                         Card Back</span>
                                     <img src="{{ asset('assets/images/download-icon.svg') }}">
                                 </a>
@@ -276,7 +276,7 @@
                         @endphp
                         @if ($document)
                             <div class="doc-download-box">
-                                <a href="{{ route('document.download', $document->id) }}"><span>Passport
+                                <a href="{{ route('admission.document.download', $document->id) }}"><span>Passport
                                         Front</span>
                                     <img src="{{ asset('assets/images/download-icon.svg') }}">
                                 </a>
@@ -311,7 +311,7 @@
                         @endphp
                         @if ($document)
                             <div class="doc-download-box">
-                                <a href="{{ route('document.download', $document->id) }}"><span>Passport
+                                <a href="{{ route('admission.document.download', $document->id) }}"><span>Passport
                                         Back</span>
                                     <img src="{{ asset('assets/images/download-icon.svg') }}">
                                 </a>
@@ -409,7 +409,7 @@
                     @if ($oldAdmissionDetails && $oldAdmissionDetails->licence_doc_url != '')
                         <div class="doc-download-box">
                             <a
-                                href="{{ route('images.download', ['id' => $oldAdmissionDetails->id, 'fieldName' => 'licence_doc_url']) }}"><span>Licence</span>
+                                href="{{ route('admission.images.download', ['id' => $oldAdmissionDetails->id, 'fieldName' => 'licence_doc_url']) }}"><span>Licence</span>
                                 <img src="{{ asset('assets/images/download-icon.svg') }}">
                             </a>
                             <img src="{{ asset($oldAdmissionDetails->licence_doc_url) }}" alt=""
@@ -439,7 +439,7 @@
                     @if ($oldAdmissionDetails && $oldAdmissionDetails->insurance_doc_url != '')
                         <div class="doc-download-box">
                             <a
-                                href="{{ route('images.download', ['id' => $oldAdmissionDetails->id, 'fieldName' => 'insurance_doc_url']) }}"><span>Insurance</span>
+                                href="{{ route('admission.images.download', ['id' => $oldAdmissionDetails->id, 'fieldName' => 'insurance_doc_url']) }}"><span>Insurance</span>
                                 <img src="{{ asset('assets/images/download-icon.svg') }}">
                             </a>
                             <img src="{{ asset($oldAdmissionDetails->insurance_doc_url) }}" alt=""
@@ -476,7 +476,7 @@
                     @if ($oldAdmissionDetails && $oldAdmissionDetails->rcbook_front_doc_url != '')
                         <div class="doc-download-box">
                             <a
-                                href="{{ route('images.download', ['id' => $oldAdmissionDetails->id, 'fieldName' => 'rcbook_front_doc_url']) }}"><span>RC
+                                href="{{ route('admission.images.download', ['id' => $oldAdmissionDetails->id, 'fieldName' => 'rcbook_front_doc_url']) }}"><span>RC
                                     Book Front</span>
                                 <img src="{{ asset('assets/images/download-icon.svg') }}">
                             </a>
@@ -508,7 +508,7 @@
                     @if ($oldAdmissionDetails && $oldAdmissionDetails->rcbook_back_doc_url != '')
                         <div class="doc-download-box">
                             <a
-                                href="{{ route('images.download', ['id' => $oldAdmissionDetails->id, 'fieldName' => 'rcbook_back_doc_url']) }}"><span>RC
+                                href="{{ route('admission.images.download', ['id' => $oldAdmissionDetails->id, 'fieldName' => 'rcbook_back_doc_url']) }}"><span>RC
                                     Book Back</span>
                                 <img src="{{ asset('assets/images/download-icon.svg') }}">
                             </a>

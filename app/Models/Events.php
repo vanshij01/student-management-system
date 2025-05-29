@@ -46,7 +46,7 @@ class Events extends Model
 
         return LogOptions::defaults()
             ->logOnly(['*'])
-            ->useLogName('events')
+            ->useLogName('Event')
             ->setDescriptionForEvent(function (string $eventName) use ($userName) {
                 return "{$userName} has {$eventName} Event";
             });

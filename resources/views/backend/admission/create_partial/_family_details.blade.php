@@ -205,7 +205,7 @@
                             @endphp
                             @if ($document)
                                 <div class="doc-download-box">
-                                    <a href="{{ route('document.download', $document->id) }}"><span>Aadhar
+                                    <a href="{{ route('admission.document.download', $document->id) }}"><span>Aadhar
                                             Card Front</span>
                                         <img src="{{ asset('assets/images/download-icon.svg') }}">
                                     </a>
@@ -244,7 +244,7 @@
                             @endphp
                             @if ($document)
                                 <div class="doc-download-box">
-                                    <a href="{{ route('document.download', $document->id) }}"><span>Aadhar
+                                    <a href="{{ route('admission.document.download', $document->id) }}"><span>Aadhar
                                             Card Back</span>
                                         <img src="{{ asset('assets/images/download-icon.svg') }}">
                                     </a>
@@ -291,7 +291,7 @@
                         @endphp
                         @if ($document)
                             <div class="doc-download-box">
-                                <a href="{{ route('document.download', $document->id) }}"><span>Passport
+                                <a href="{{ route('admission.document.download', $document->id) }}"><span>Passport
                                         Front</span>
                                     <img src="{{ asset('assets/images/download-icon.svg') }}">
                                 </a>
@@ -329,7 +329,7 @@
                         @endphp
                         @if ($document)
                             <div class="doc-download-box">
-                                <a href="{{ route('document.download', $document->id) }}"><span>Passport
+                                <a href="{{ route('admission.document.download', $document->id) }}"><span>Passport
                                         Back</span>
                                     <img src="{{ asset('assets/images/download-icon.svg') }}">
                                 </a>

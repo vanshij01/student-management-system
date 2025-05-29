@@ -115,8 +115,8 @@ Route::middleware('auth', 'twofactor', 'adminRole')->group(function () {
         Route::get('/getCoursesById', [AdmissionController::class, 'getCoursesById'])->name('admission.getCoursesById');
         Route::get('getStudentAdmissionDataBackend/{id}/{studentid}', [AdmissionController::class, 'getStudentAdmissionData'])->name('admission.getStudentAdmissionData');
         Route::get('fetch-student-data/{studentId}', [AdmissionController::class, 'fetchStudentAdmissionData'])->name('admission.fetch');
-        Route::get('document/{path}/download', [AdmissionController::class, 'download'])->name('document.download');
-        Route::get('images/{id}/download', [AdmissionController::class, 'downloadImage'])->name('images.download');
+        Route::get('document/{path}/download', [AdmissionController::class, 'download'])->name('admission.document.download');
+        Route::get('images/{id}/download', [AdmissionController::class, 'downloadImage'])->name('admission.images.download');
     });
 
     Route::prefix('apology_letter')->group(function () {
