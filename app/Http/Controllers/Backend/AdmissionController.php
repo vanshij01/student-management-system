@@ -94,25 +94,20 @@ class AdmissionController extends Controller
         if ($request->search) {
             $data->where(function ($w) use ($request) {
                 $search = $request->get('search');
-                $w->orWhere(DB::raw("CONCAT(admissions.first_name, ' ', admissions.middle_name, ' ', admissions.last_name)"), 'LIKE', "%$search%")
+                $w
+                    /* ->orWhere(DB::raw("CONCAT(admissions.first_name, ' ', admissions.middle_name, ' ', admissions.last_name)"), 'LIKE', "%$search%")
                     ->orWhere(DB::raw("CONCAT(admissions.first_name, ' ', admissions.last_name)"), 'LIKE', "%$search%")
                     ->orWhere(DB::raw("CONCAT(admissions.first_name, ' ', admissions.middle_name)"), 'LIKE', "%$search%")
                     ->orWhere('admissions.first_name', 'LIKE', "%$search%")
                     ->orWhere('admissions.middle_name', 'LIKE', "%$search%")
-                    ->orWhere('admissions.last_name', 'LIKE', "%$search%")
-                    ->orWhere('admissions.gender', 'LIKE', "%$search%")
+                    ->orWhere('admissions.last_name', 'LIKE', "%$search%") */
                     ->orWhere('admissions.phone', 'LIKE', "%$search%")
                     ->orWhere('admissions.email', 'LIKE', "%$search%")
                     ->orWhere('v.name', 'LIKE', "%$search%")
                     ->orWhere('admissions.father_full_name', 'LIKE', "%$search%")
                     ->orWhere('admissions.father_phone', 'LIKE', "%$search%")
-                    ->orWhere('c.course_name', 'LIKE', "%$search%")
-                    ->orWhere('admissions.semester', 'LIKE', "%$search%")
                     ->orWhere('admissions.institute_name', 'LIKE', "%$search%")
-                    ->orWhereRaw("DATE_FORMAT(admissions.addmission_date, '%d/%m/%Y') LIKE ?", ["%$search%"])
-                    ->orWhere('admissions.status', 'LIKE', "%$search%")
-                    ->orWhere('admissions.is_fees_paid', 'LIKE', "%$search%")
-                    ->orWhere('admissions.is_admission_new', 'LIKE', "%$search%");
+                    ->orWhereRaw("DATE_FORMAT(admissions.addmission_date, '%d/%m/%Y') LIKE ?", ["%$search%"]);
             });
         }
 

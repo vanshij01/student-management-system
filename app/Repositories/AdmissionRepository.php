@@ -546,7 +546,6 @@ class AdmissionRepository implements AdmissionRepositoryInterface
         MAX(r.room_number) as room_number,
         MAX(b.bed_number) as bed_number,
         MAX(a.gender) as gender,
-        student_admission_map.admission_year,
         MAX(s.phone) as phone,
         MAX(a.father_phone) as father_phone
     ')
@@ -561,7 +560,7 @@ class AdmissionRepository implements AdmissionRepositoryInterface
             $dueFeesReport->whereBetween('a.created_at', ["$year[0]-05-01", "$year[1]-04-30"]);
         }
 
-        return $dueFeesReport->groupBy('student_admission_map.admission_id', 'student_admission_map.admission_year')
+        return $dueFeesReport->groupBy('student_admission_map.admission_id')
             ->orderByRaw('MAX(r.room_number)')
             ->orderByRaw('MAX(b.bed_number)')
             ->get();

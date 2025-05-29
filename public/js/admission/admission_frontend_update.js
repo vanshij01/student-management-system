@@ -500,7 +500,7 @@ function displaySemester(education_type) {
                     }
                 }
             };
-            
+
             formValidationFields.addmission_date = {
                 validators: {
                     notEmpty: {
@@ -1527,7 +1527,8 @@ function displaySemester(education_type) {
             Diploma: (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate'],
             "Bachelor's Degree": (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate'],
             "Master's Degree": (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate', 'degree_certificate'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate', 'last_qualification_result', 'last_qualification_percentage', 'degree_certificate'],
-            "Professional Degree": (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate', 'degree_certificate'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate', 'last_qualification_result', 'last_qualification_percentage', 'degree_certificate'],
+            // "Professional Degree": (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate', 'degree_certificate'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate', 'last_qualification_result', 'last_qualification_percentage', 'degree_certificate'],
+            "Professional Degree": (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate'],
             Internship: (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate', 'degree_certificate', 'internship_letter'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate', 'last_qualification_result', 'last_qualification_percentage', 'degree_certificate', 'internship_letter'],
             Job: (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate', 'degree_certificate', 'job_letter'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate', 'last_qualification_result', 'last_qualification_percentage', 'degree_certificate', 'job_letter'],
             Other: (board_type) => ['last_qualification_result', 'last_qualification_percentage'],

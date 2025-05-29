@@ -6,6 +6,7 @@ $(document).ready(function () {
     $(".pagination li:first-child .page-link").text("Previous");
     $(".pagination li:last-child .page-link").text("Next");
 
+    var urlQueryParams = location.search.slice(1);
     var urlParams = new URLSearchParams(window.location.search);
 
     var year = urlParams.get('year') ?? "";
@@ -83,7 +84,7 @@ $(document).ready(function () {
         }
     });
 
-    $('.dataTables_filter input').keypress(function (e) {
+    /* $('.dataTables_filter input').keypress(function (e) {
         if (e.which == 13) { // Check if Enter key was pressed
             var inputValue = $(this).val();
             var currentPage = $('.dataTables_paginate .paginate_button.current')
@@ -93,7 +94,7 @@ $(document).ready(function () {
             urlParams.set("page", currentPage); // Set current page number in URL
             window.location.search = urlParams.toString();
         }
-    });
+    }); */
     $('.dataTables_filter input').focus();
 
     function fill_datatable() {
@@ -181,7 +182,7 @@ $(document).ready(function () {
     }, 3000);
 
     $('.select2').select2();
-    formatPagination();
+    // formatPagination();
 
 });
 
@@ -559,12 +560,12 @@ function formatPagination() {
             if (activePage > 2) visiblePages.push(activePage - 1);
             visiblePages.push(activePage);
             if (activePage < totalPages - 1) visiblePages.push(activePage + 1);
-            
+
             if (!visiblePages.includes(totalPages)) {
                 visiblePages.push(totalPages);
             }
         }
-        
+
         visiblePages = [...new Set(visiblePages)].sort((a, b) => a - b);
 
         $(".pagination li").each(function (index) {
@@ -583,9 +584,9 @@ function formatPagination() {
         for (let i = 0; i < visiblePages.length - 2; i++) {
             if (visiblePages[i + 1] - visiblePages[i] > 1) {
                 const gapKey = `${visiblePages[i]}-${visiblePages[i + 1]}`;
-                
+
                 if (activePage < 5) {
-                    if (visiblePages[i] === 5 && visiblePages[i+1] === totalPages && !ellipsisAdded.has(gapKey)) {
+                    if (visiblePages[i] === 5 && visiblePages[i + 1] === totalPages && !ellipsisAdded.has(gapKey)) {
                         let insertAfterElement = null;
                         $(".pagination li").each(function () {
                             const pageNum = parseInt($(this).text());

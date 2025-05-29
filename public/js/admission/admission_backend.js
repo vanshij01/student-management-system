@@ -543,7 +543,7 @@ function displaySemester(education_type) {
                     }
                 }
             };
-            
+
             formValidationFields.addmission_date = {
                 validators: {
                     notEmpty: {
@@ -581,7 +581,7 @@ function displaySemester(education_type) {
                 });
             }
         });
-        
+
         console.log("window.isNewStudent",window.isNewStudent);
         console.log("window.selectedCourseId", window.selectedCourseId);
         function ensureOtherDoc0Validation() {
@@ -981,10 +981,10 @@ function displaySemester(education_type) {
                 cache: false,
                 success: function (response) {
                     const courses = response.courses || [];
-                    
+
                     const courseId = $('#course_id').val();
                     let coursehtml = '<option value="">Select Course</option>';
-                    
+
                     $.each(courses, function (indexInArray, course) {
                         console.log("courses",courses);
                         const selected = (course.id == courseId) ? ' selected' : '';
@@ -1071,7 +1071,7 @@ function displaySemester(education_type) {
                                 success: function (response) {
                                     var course = response.course;
                                     console.log("course",course);
-                                    
+
                                     displaySemesterFields((course.duration * 2));
                                 }
                             });
@@ -1595,7 +1595,7 @@ function displaySemester(education_type) {
             Diploma: (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate'],
             "Bachelor's Degree": (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate'],
             "Master's Degree": (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate', 'degree_certificate'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate', 'last_qualification_result', 'last_qualification_percentage', 'degree_certificate'],
-            "Professional Degree": (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate', 'degree_certificate'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate', 'last_qualification_result', 'last_qualification_percentage', 'degree_certificate'],
+            "Professional Degree": (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate'],
             Internship: (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate', 'degree_certificate', 'internship_letter'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate', 'last_qualification_result', 'last_qualification_percentage', 'degree_certificate', 'internship_letter'],
             Job: (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate', 'degree_certificate', 'job_letter'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate', 'last_qualification_result', 'last_qualification_percentage', 'degree_certificate', 'job_letter'],
             Other: (board_type) => ['last_qualification_result', 'last_qualification_percentage'],
@@ -1799,24 +1799,24 @@ function displaySemester(education_type) {
         }).on('core.form.valid', function () {
             const $form = $('#admission_form');
             const $submitBtn = $form.find('button[type="submit"]');
-            
+
             const originalBtnText = $submitBtn.html();
-            
+
             $form.on('submit', function(e) {
                     $submitBtn.prop('disabled', true);
                     $submitBtn.html('Processing...');
-                    
+
                     setTimeout(function() {
                         $submitBtn.prop('disabled', false);
                         $submitBtn.html(originalBtnText);
-                    }, 60000); 
+                    }, 60000);
             });
-            
+
             if ($('.alert-danger').length > 0 || $('.invalid-feedback:visible').length > 0 || $('[data-error-message]').length > 0) {
                 $submitBtn.prop('disabled', false);
                 $submitBtn.html(originalBtnText);
             }
-            
+
             console.log('Submitted..!!');
         });
 
