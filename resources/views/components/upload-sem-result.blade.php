@@ -76,10 +76,17 @@
                                 @if ($document->doc_type == 'Semester ' . $label && $document->course_id == $admissionDetail->course_id)
                                     <div class="semester-download-box" data-course-id="{{ $document->course_id }}">
                                         <div class="doc-download-box">
-                                            <a href="{{ route('student.document.download', $document->id) }}">
-                                                <span>Semester {{ $label }}</span>
-                                                <img src="{{ asset('assets/images/download-icon.svg') }}">
-                                            </a>
+                                            @if (auth()->user()->role_id != 4)
+                                                <a href="{{ route('admission.document.download', $document->id) }}">
+                                                    <span>Semester {{ $label }}</span>
+                                                    <img src="{{ asset('assets/images/download-icon.svg') }}">
+                                                </a>
+                                            @else
+                                                <a href="{{ route('student.document.download', $document->id) }}">
+                                                    <span>Semester {{ $label }}</span>
+                                                    <img src="{{ asset('assets/images/download-icon.svg') }}">
+                                                </a>
+                                            @endif
                                             <img src="{{ asset($document->doc_url) }}" alt=""
                                                 id="semester{{ $label }}Img" class="uploaded-img">
                                         </div>
@@ -112,7 +119,10 @@
                                     ->where('course_id', $admissionDetail->course_id)
                                     ->first();
                             @endphp
-                            @if (!empty($document) && $document->doc_type == 'Semester ' . $label && $document->course_id == $admissionDetail->course_id)
+                            @if (
+                                !empty($document) &&
+                                    $document->doc_type == 'Semester ' . $label &&
+                                    $document->course_id == $admissionDetail->course_id)
                                 <input type="text" style="width: 100px" class="form-control"
                                     id="semester_{{ $label }}_percentage"
                                     name="semester_{{ $label }}_percentage"
@@ -170,10 +180,17 @@
                             @if ($document)
                                 <div class="semester-download-box" data-course-id="{{ $document->course_id }}">
                                     <div class="doc-download-box">
-                                        <a href="{{ route('student.document.download', $document->id) }}">
-                                            <span>Semester {{ $label }}</span>
-                                            <img src="{{ asset('assets/images/download-icon.svg') }}">
-                                        </a>
+                                        @if (auth()->user()->role_id != 4)
+                                            <a href="{{ route('admission.document.download', $document->id) }}">
+                                                <span>Semester {{ $label }}</span>
+                                                <img src="{{ asset('assets/images/download-icon.svg') }}">
+                                            </a>
+                                        @else
+                                            <a href="{{ route('student.document.download', $document->id) }}">
+                                                <span>Semester {{ $label }}</span>
+                                                <img src="{{ asset('assets/images/download-icon.svg') }}">
+                                            </a>
+                                        @endif
                                         <img src="{{ asset($document->doc_url) }}" alt=""
                                             id="semester{{ $label }}Img" class="uploaded-img">
                                     </div>

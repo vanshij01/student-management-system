@@ -7,7 +7,7 @@
             <tbody>
                 {{-- {{ dd($oldAdmissionDetails) }} --}}
                 @if (isset($oldAdmissionDocuments) && count($oldAdmissionDocuments) > 0)
-                @foreach ($oldAdmissionDocuments as $index => $doc)
+                    @foreach ($oldAdmissionDocuments as $index => $doc)
                         @if (str_contains($doc->doc_url ?? '', 'Other_Document') && $doc->course_id == $oldAdmissionDetails->course_id)
                             <tr data-id="{{ $doc->id }}">
                                 <!-- Document Type Field -->
@@ -68,9 +68,17 @@
                                         <div class="col-12">
                                             <div class="OtherDoc-download-wrap d-flex ">
                                                 <div class="doc-download-box">
-                                                    <a href="{{ route('student.document.download', $doc->id) }}">
-                                                        <span>{{ Str::words($doc->doc_type, 2, '') }}</span>
-                                                        <img src="{{ asset('assets/images/download-icon.svg') }}">
+                                                    @if (auth()->user()->role_id != 4)
+                                                        <a href="{{ route('admission.document.download', $doc->id) }}">
+                                                            <span>{{ Str::words($doc->doc_type, 2, '') }}</span>
+                                                            <img src="{{ asset('assets/images/download-icon.svg') }}">
+                                                        @else
+                                                            <a
+                                                                href="{{ route('student.document.download', $doc->id) }}">
+                                                                <span>{{ Str::words($doc->doc_type, 2, '') }}</span>
+                                                                <img
+                                                                    src="{{ asset('assets/images/download-icon.svg') }}">
+                                                    @endif
                                                     </a>
                                                 </div>
                                             </div>

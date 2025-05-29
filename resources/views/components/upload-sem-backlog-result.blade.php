@@ -189,10 +189,17 @@
                             @endphp
                             @if ($document)
                                 <div class="doc-download-box">
-                                    <a href="{{ route('student.document.download', $document->id) }}"><span>Semester
-                                            {{ $label }} Backlog</span>
-                                        <img src="{{ asset('assets/images/download-icon.svg') }}">
-                                    </a>
+                                    @if (auth()->user()->role_id != 4)
+                                        <a href="{{ route('admission.document.download', $document->id) }}"><span>Semester
+                                                {{ $label }} Backlog</span>
+                                            <img src="{{ asset('assets/images/download-icon.svg') }}">
+                                        </a>
+                                    @else
+                                        <a href="{{ route('student.document.download', $document->id) }}"><span>Semester
+                                                {{ $label }} Backlog</span>
+                                            <img src="{{ asset('assets/images/download-icon.svg') }}">
+                                        </a>
+                                    @endif
                                     <img src="{{ asset($document->doc_url) }}" alt=""
                                         id="semester{{ $label }}BacklogImg" class="uploaded-img">
                                 </div>
@@ -322,10 +329,17 @@
                             @endphp
                             @if ($document)
                                 <div class="doc-download-box">
-                                    <a href="{{ route('student.document.download', $document->id) }}"><span>Semester
-                                            {{ $label }} Backlog</span>
-                                        <img src="{{ asset('assets/images/download-icon.svg') }}">
-                                    </a>
+                                    @if (auth()->user()->role_id != 4)
+                                        <a href="{{ route('admission.document.download', $document->id) }}"><span>Semester
+                                                {{ $label }} Backlog</span>
+                                            <img src="{{ asset('assets/images/download-icon.svg') }}">
+                                        </a>
+                                    @else
+                                        <a href="{{ route('student.document.download', $document->id) }}"><span>Semester
+                                                {{ $label }} Backlog</span>
+                                            <img src="{{ asset('assets/images/download-icon.svg') }}">
+                                        </a>
+                                    @endif
                                     <img src="{{ asset($document->doc_url) }}" alt=""
                                         id="semester{{ $label }}BacklogImg" class="uploaded-img">
                                 </div>

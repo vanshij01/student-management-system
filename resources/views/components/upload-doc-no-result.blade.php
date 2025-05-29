@@ -1,11 +1,4 @@
-@props([
-    'label',
-    'docType',
-    'percentageFieldName',
-    'admissionDetail',
-    'admissionDocuments',
-    'formType',
-])
+@props(['label', 'docType', 'percentageFieldName', 'admissionDetail', 'admissionDocuments', 'formType'])
 
 @if ($formType == 'create')
     <div class="col-6 {{ $label }}-doc mb-4">
@@ -36,8 +29,13 @@
                     @endphp
                     @if ($document)
                         <div class="doc-download-box">
-                            <a href="{{ route('student.document.download', $document->id) }}"><span>{{ $docType }}</span>
-                                <img src="{{ asset('assets/images/download-icon.svg') }}">
+                            @if (auth()->user()->role_id != 4)
+                                <a href="{{ route('admission.document.download', $document->id) }}"><span>{{ $docType }}</span>
+                                    <img src="{{ asset('assets/images/download-icon.svg') }}">
+                                @else
+                                    <a href="{{ route('student.document.download', $document->id) }}"><span>{{ $docType }}</span>
+                                        <img src="{{ asset('assets/images/download-icon.svg') }}">
+                            @endif
                             </a>
                             <img src="{{ asset($document->doc_url) }}" alt="" id="{{ $label }}Img"
                                 class="uploaded-img">
@@ -76,9 +74,15 @@
                     @endphp
                     @if ($document)
                         <div class="doc-download-box">
-                            <a href="{{ route('student.document.download', $document->id) }}"><span>{{ $docType }}</span>
-                                <img src="{{ asset('assets/images/download-icon.svg') }}">
-                            </a>
+                            @if (auth()->user()->role_id != 4)
+                                <a href="{{ route('admission.document.download', $document->id) }}"><span>{{ $docType }}</span>
+                                    <img src="{{ asset('assets/images/download-icon.svg') }}">
+                                </a>
+                            @else
+                                <a href="{{ route('student.document.download', $document->id) }}"><span>{{ $docType }}</span>
+                                    <img src="{{ asset('assets/images/download-icon.svg') }}">
+                                </a>
+                            @endif
                             <img src="{{ asset($document->doc_url) }}" alt="" id="{{ $label }}Img"
                                 class="uploaded-img">
                         </div>
