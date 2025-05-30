@@ -67,12 +67,13 @@ function dataTableData() {
 
                     if (updateCheck) {
                         $html += '<li><a class="dropdown-item dropdown-trigger-17500btn waves-effect edit_button" data-id="' + data + '">Edit</a></li>';
+                        $html += '<li><a class="dropdown-item dropdown-trigger-17500btn waves-effect" href="javascript:void(0)" data-id="' + data + '" onclick="changeLeaveStatus(' + data + ')">Change Status</a></li>';
                     }
                     if (readCheck) {
                         $html += '<li><a class="dropdown-item dropdown-trigger-17500btn waves-effect view_button" data-id="' + data + '">View</a></li>';
                     }
                     if (isSuperAdmin != 0) {
-                        $html += '<li><a class="dropdown-item dropdown-trigger-17500btn waves-effect delete_button" href="javascript:void(0)" data-id="' + data + '" onclick="deleteLeave(' + data + ')">Delete</a></li>';
+                        $html += '<li><a class="dropdown-item dropdown-trigger-17500btn waves-effect" href="javascript:void(0)" data-id="' + data + '" onclick="deleteLeave(' + data + ')">Delete</a></li>';
                     }
 
                     return '<div class="dropdown">' +
@@ -283,4 +284,47 @@ function updateFileNameSwap(input, targetId) {
     const defaultText = label.getAttribute('data-default') || 'Upload'; // Default text stored here
     const fileName = input.files.length > 0 ? input.files[0].name : defaultText;
     label.textContent = fileName;
+}
+
+function changeLeaveStatus(id) {
+    $.ajax({
+        type: "get",
+        url: "/leave/getLeaveDataById/" + id,
+        success: function (response) {
+            var leave = response.leave;
+            var student = response.student;
+            console.log('leave', leave);
+            console.log('student', student);
+
+            $('.dtr-bs-modal').modal('hide');
+            $('.changeLeaveStatusModal').modal('show');
+            $(".changeLeaveStatusForm").parsley();
+            $('.leave_id').val(leave.id);
+            $('.student_id').val(student.id);
+            $('.student_name').val(student.first_name + ' ' + student.middle_name + ' ' + student.last_name);
+            $('.student_email').val(student.email);
+            $('.from_date').text(moment(leave.leave_from).format("DD/MM/YYYY"));
+            $('.to_date').text(moment(leave.leave_to).format("DD/MM/YYYY"));
+            $('.ticket').attr("href", "http://www.google.com/")
+
+            $('.leave_status').val(leave.leave_status).trigger('change');
+
+            $('.changeLeaveStatusForm').submit(function (e) {
+                e.preventDefault(); // Prevent form submission
+                var formData = $(this).serialize(); // Serialize form data
+
+                $.ajax({
+                    url: '/leave/changeLeaveStatus',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.status == 'success') {
+                            $('.changeLeaveStatusModal').modal('hide');
+                            window.location.reload();
+                        }
+                    }
+                });
+            });
+        }
+    });
 }

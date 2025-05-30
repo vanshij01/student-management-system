@@ -162,4 +162,33 @@ class LeaveController extends Controller
             'message' => 'Leave deleted successfully',
         ]);
     }
+
+    public function getLeaveDataById($id)
+    {
+        $leave = $this->leaveRepository->getById($id);
+        $student = $this->studentRepository->getById($leave->leave_apply_by);
+
+        return response()->json([
+            'status' => 'success',
+            'leave' => $leave,
+            'student' => $student,
+        ]);
+    }
+
+    public function changeLeaveStatus(Request $request)
+    {
+        $params = $request->all();
+
+        $this->leaveRepository->update($params, $params['leave_id']);
+
+        $leave = $this->leaveRepository->getById($params['leave_id']);
+        $studentData = Student::find($params['student_id']);
+
+        event(new LeaveStatusChangeEvent($leave, $studentData));
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Note send to user successfully'
+        ]);
+    }
 }

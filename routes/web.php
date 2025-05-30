@@ -327,6 +327,8 @@ Route::middleware('auth', 'twofactor', 'adminRole')->group(function () {
         Route::group(['middleware' => 'permission:Leave,delete'], function () {
             Route::get('delete/{id}', [LeaveController::class, 'destroy'])->name('leave.destroy');
         });
+        Route::get('getLeaveDataById/{id}', [LeaveController::class, 'getLeaveDataById'])->name('admission.getLeaveDataById');
+        Route::post('/changeLeaveStatus', [LeaveController::class, 'changeLeaveStatus'])->name('admission.changeLeaveStatus');
     });
 
     Route::prefix('reservation')->group(function () {
