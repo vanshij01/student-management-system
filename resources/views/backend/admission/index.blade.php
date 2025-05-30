@@ -410,6 +410,7 @@
                     <thead>
                         <tr>
                             <th></th>
+                            <th><input type="checkbox" id="selectAll" class="form-check-input"></th>
                             <th>Action</th>
                             <th>Sr. No.</th>
                             <th>Student Name</th>
@@ -430,6 +431,7 @@
                     <tbody>
                         @foreach ($allData as $key => $item)
                             <tr>
+                                <td></td>
                                 <td></td>
                                 <td>
                                     @php

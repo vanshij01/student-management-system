@@ -91,7 +91,7 @@
 
         .isAdmissionNew {
             /* padding: 6px 20px;
-                        min-height: auto; */
+                                    min-height: auto; */
             pointer-events: none;
         }
 
@@ -142,6 +142,10 @@
     </style>
 @endsection
 @section('content')
+    @php
+        $updateCheck = \App\Models\Permission::checkCRUDPermissionToUser('Admission', 'update');
+        $isSuperAdmin = \App\Models\Permission::isSuperAdmin();
+    @endphp
     <div class="card mb-4">
         <div class="card-header d-md-flex d-sm-block align-items-center justify-content-between py-md-2">
             <h5 class="card-title m-0 me-2 text-white d-none d-md-block">View Admission Details <button type="button"
@@ -151,10 +155,14 @@
 
             <div class="d-flex gap-2 mt-4 mt-md-0 header-button">
                 <button type="button" class="btn secondary_btn back">Back</button>
-                <button type="button" class="btn secondary_btn edit"
-                    data-id="{{ $admission->admission_id }}">Update</button>
-                <button type="button" class="btn secondary_btn status_btn"
-                    onclick="sendStatusRemark({{ $admission->admission_id }})">Admission Status</button>
+                @if ($updateCheck)
+                    <button type="button" class="btn secondary_btn edit"
+                        data-id="{{ $admission->admission_id }}">Update</button>
+                @endif
+                @if ($isSuperAdmin)
+                    <button type="button" class="btn secondary_btn status_btn"
+                        onclick="sendStatusRemark({{ $admission->admission_id }})">Admission Status</button>
+                @endif
                 <button type="button" class="btn secondary_btn status_btn"
                     onclick="sendComment({{ $admission->admission_id }})">Add Comment</button>
             </div>

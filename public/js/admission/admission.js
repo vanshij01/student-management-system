@@ -1,4 +1,5 @@
 $(document).ready(function () {
+
     setTimeout(function () {
         $('#overlay').css('display', 'none');
     }, 100);
@@ -136,7 +137,16 @@ $(document).ready(function () {
                 render: function (data, type, full, meta) {
                     return '';
                 }
-            },],
+            }, {
+                targets: 1, // checkbox column
+                orderable: false,
+                searchable: false,
+                className: 'dt-body-center',
+                render: function () {
+                    return '<input type="checkbox" class="dt-checkboxes form-check-input">';
+                }
+            }
+            ],
             responsive: {
                 details: {
                     display: $.fn.dataTable.Responsive.display.modal({
@@ -174,6 +184,18 @@ $(document).ready(function () {
                 }
             }
         });
+        $('#selectAll').on('change', function () {
+            const checked = $(this).is(':checked');
+            $('#admission_table tbody input.dt-checkboxes').prop('checked', checked);
+        });
+
+        // When any row checkbox is toggled, update the header checkbox state
+        $('#admission_table').on('change', 'input.dt-checkboxes', function () {
+            const total = $('#admission_table tbody input.dt-checkboxes').length;
+            const checked = $('#admission_table tbody input.dt-checkboxes:checked').length;
+            $('#selectAll').prop('checked', total === checked);
+        });
+
         $('.dataTables_filter input').val(search);
     }
 
