@@ -14,6 +14,7 @@ use App\Repositories\CourseRepository;
 use App\Repositories\EventsRepository;
 use App\Repositories\HostelRepository;
 use App\Repositories\LeaveRepository;
+use App\Repositories\NoticeRepository;
 use App\Repositories\RoomRepository;
 use App\Repositories\StudentRepository;
 use Illuminate\Http\Request;
@@ -29,6 +30,7 @@ class DashboardController extends Controller
     private $leaveRepository;
     private $admissionRepository;
     private $eventsRepository;
+    private $noticeRepository;
 
     public function __construct(
         StudentRepository $studentRepository,
@@ -38,7 +40,8 @@ class DashboardController extends Controller
         LeaveRepository $leaveRepository,
         CourseRepository $courseRepository,
         AdmissionRepository $admissionRepository,
-        EventsRepository $eventsRepository
+        EventsRepository $eventsRepository,
+        NoticeRepository $noticeRepository,
     ) {
         $this->studentRepository = $studentRepository;
         $this->bedRepository = $bedRepository;
@@ -48,6 +51,7 @@ class DashboardController extends Controller
         $this->leaveRepository = $leaveRepository;
         $this->admissionRepository = $admissionRepository;
         $this->eventsRepository = $eventsRepository;
+        $this->noticeRepository = $noticeRepository;
     }
 
     public function index(Request $request)
@@ -94,10 +98,11 @@ class DashboardController extends Controller
         // dd($isStudentAdmissionExist);
 
         $events = $this->eventsRepository->getUpcoming();
+        $notice = $this->noticeRepository->getByFirst();
 
         // $comments = $this->admissionRepository->getCommentsByAdmissionId();
 
-        return view('frontend.dashboard', compact('admissions', 'admission',  'admissionDate', 'admissionLabel', 'isStudentAdmissionExist', 'apologyLetterCount', 'events'));
+        return view('frontend.dashboard', compact('admissions', 'admission',  'admissionDate', 'admissionLabel', 'isStudentAdmissionExist', 'apologyLetterCount', 'events', 'notice'));
     }
 
     public function yearInfo(Request $request)

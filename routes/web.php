@@ -15,6 +15,7 @@ use App\Http\Controllers\Backend\EventsController;
 use App\Http\Controllers\Backend\FeesController;
 use App\Http\Controllers\Backend\HostelController;
 use App\Http\Controllers\Backend\LeaveController;
+use App\Http\Controllers\Backend\NoticeController;
 use App\Http\Controllers\Backend\ReportController;
 use App\Http\Controllers\Backend\ReservationController;
 use App\Http\Controllers\Backend\RoleController;
@@ -287,6 +288,25 @@ Route::middleware('auth', 'twofactor', 'adminRole')->group(function () {
         });
         Route::group(['middleware' => 'permission:Hostel,delete'], function () {
             Route::get('delete/{id}', [HostelController::class, 'destroy'])->name('hostel.destroy');
+        });
+    });
+
+    Route::prefix('notices')->group(function () {
+        Route::get('', [NoticeController::class, 'index'])->name('notices.index');
+        Route::get('noticeData', [NoticeController::class, 'noticeData'])->name('notices.noticeData');
+        Route::group(['middleware' => 'permission:Leave,create'], function () {
+            Route::get('/create', [NoticeController::class, 'create'])->name('notices.create');
+            Route::post('/store', [NoticeController::class, 'store'])->name('notices.store');
+        });
+        Route::group(['middleware' => 'permission:Leave,update'], function () {
+            Route::get('/{id}/edit', [NoticeController::class, 'edit'])->name('notices.edit');
+            Route::put('/{id}', [NoticeController::class, 'update'])->name('notices.update');
+        });
+        Route::group(['middleware' => 'permission:Leave,read'], function () {
+            Route::get('/{id}', [NoticeController::class, 'show'])->name('notices.show');
+        });
+        Route::group(['middleware' => 'permission:Leave,delete'], function () {
+            Route::get('delete/{id}', [NoticeController::class, 'destroy'])->name('notices.destroy');
         });
     });
 

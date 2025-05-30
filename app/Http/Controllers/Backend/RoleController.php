@@ -137,6 +137,10 @@ class RoleController extends Controller
                 $filterArr['Leave'] = 'Leave';
             }
 
+            if ($tablesArr['notices']) {
+                $filterArr['Notice'] = 'Notice';
+            }
+
             if (route('report.dueFees') || route('report.availableBeds') || route('report.allotedStudents')) {
                 $filterArr['Report'] = 'Report';
             }
@@ -245,6 +249,10 @@ class RoleController extends Controller
 
             if ($tablesArr['leaves']) {
                 $filterArr['Leave'] = 'Leave';
+            }
+
+            if ($tablesArr['notices']) {
+                $filterArr['Notice'] = 'Notice';
             }
 
             if (route('report.dueFees') || route('report.availableBeds') || route('report.allotedStudents')) {

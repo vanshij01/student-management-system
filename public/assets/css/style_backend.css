@@ -2067,9 +2067,13 @@ input.form-control:focus {
     background: #FFB42D !important;
 }
 
-.dropdown-item:active{
+.dropdown-item:active {
     background-color: #FFB42D;
 
+}
+
+div.dataTables_processing>div:last-child>div {
+    background-color: #18a8b0 !important;
 }
 
 @media only screen and (max-width: 1750px) {

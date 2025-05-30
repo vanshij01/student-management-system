@@ -107,6 +107,7 @@
                 href="{{ route('event.index') }}"><i class="las la-microphone-alt"></i> Events</a>
         @endif
         @if ($isSuperAdmin == 1 ||
+            in_array('Notice', $permissions) ||
             in_array('Role', $permissions) ||
             in_array('Hostel', $permissions) ||
             in_array('Room', $permissions) ||
@@ -115,6 +116,7 @@
             in_array('Setting', $permissions))
             <li class="menu {{ in_array(Route::current()->getName(), [
                 'role.index', 'role.create', 'role.edit', 'role.show',
+                'notices.index', 'notices.create', 'notices.edit', 'notices.show',
                 'hostel.index', 'hostel.create', 'hostel.edit', 'hostel.show',
                 'room.index', 'room.create', 'room.edit', 'room.show',
                 'bed.index', 'bed.create', 'bed.edit', 'bed.show',
@@ -123,6 +125,10 @@
                 ]) ? 'open' : '' }}">
                 <a class="nav-link" href="#"><i class="las la-cog"></i> Configuration</a>
                 <ul class="menu-item">
+                    @if ($isSuperAdmin == 1 || in_array('Notice', $permissions))
+                        <li><a class="nav-link {{ in_array(Route::current()->getName(), ['notices.index', 'notices.create', 'notices.edit', 'notices.show']) ? 'active' : '' }}"
+                                href="{{ route('notices.index') }}">Notice</a></li>
+                    @endif
                     @if ($isSuperAdmin == 1 || in_array('Role', $permissions))
                         <li><a class="nav-link {{ in_array(Route::current()->getName(), ['role.index', 'role.create', 'role.edit', 'role.show']) ? 'active' : '' }}"
                                 href="{{ route('role.index') }}">Role</a></li>

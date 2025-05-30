@@ -195,13 +195,10 @@
                     <h3 class="admission-card-title"> Important Notice</h3>
                     <div class="imp-notice-wrapper ">
                         <div class="my-admission-edit my-admission-notice">
-                            <p class="mb-0">Check-in and Check-Out Entry</p>
+                            <p class="mb-0">{{ $notice->title }}</p>
                         </div>
                         <div class="imp-notice-desc">
-                            <p class="mb-0">
-                                Please maintain your daily entries properly. You are not allowed
-                                to leave the premises without doing your daily entry.
-                            </p>
+                            <p class="mb-0">{{ $notice->content }}</p>
                         </div>
                     </div>
                 </div>
