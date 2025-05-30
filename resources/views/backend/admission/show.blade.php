@@ -246,9 +246,12 @@
                         </div>
                     @endif
                 </div>
-                <div class="d-flex align-items-center">
-                    <img src="{{ asset($admission->student_photo_url) }}" alt="" class="student_img">
-                </div>
+                    <div class="d-flex align-items-center">
+                        {{-- <a href="img"><img src="{{ asset($admission->student_photo_url) }}" alt="" class="student_img"></a> --}}
+                        <a class="img">
+                            <img src="{{ asset($admission->student_photo_url) }}" alt="Student Photo" class="student_img">
+                        </a>
+                    </div>
             </div>
         </div>
     </div>
@@ -362,8 +365,12 @@
                     @endif
                 </div>
                 <div class="d-flex align-items-center student_img_div">
-                    <img src="{{ asset($admission->father_photo_url) }}" alt="" class="student_img">
-                    <img src="{{ asset($admission->mother_photo_url) }}" alt="" class="student_img">
+                    <a class="img">
+                    <img src="{{ asset($admission->father_photo_url) }}" alt="Father photo" class="student_img">
+                    </a>
+                    <a class="img">
+                    <img src="{{ asset($admission->mother_photo_url) }}" alt="Mother Photo" class="student_img">
+                    </a>
                 </div>
             </div>
         </div>
