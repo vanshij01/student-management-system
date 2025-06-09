@@ -997,7 +997,7 @@ function displaySemester(education_type) {
                         coursehtml += `<option value="${course.id}"${selected}>${course.course_name}</option>`;
                     });
 
-                    $("#edit_course_id").html(coursehtml);
+                    $("#course_id").html(coursehtml);
                     // Trigger semester logic if a course is pre-selected
                     if (courseId && courseId != 0) {
                         getCourseList(courseId);

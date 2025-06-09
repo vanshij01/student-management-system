@@ -2,7 +2,7 @@
     <div class="row mb-3">
         <div class="col">
             <label for="education_type" class="form-label">Education</label>
-            <select class="select2 form-select" id="edit_education_type" disabled>
+            <select class="select2 form-select" id="education_type" name="education_type">
                 <option value="">Select Education</option>
                 <option value="HSC" @if ($admissionDetail->education_type == 'HSC') selected @endif>HSC
                 </option>
@@ -21,15 +21,14 @@
                 <option value="Other" @if ($admissionDetail->education_type == 'Other') selected @endif>Other
                 </option>
             </select>
-            <input type="hidden" name="education_type" id="education_type"
-                value="{{ $admissionDetail->education_type }}">
+            {{-- <input type="hidden" name="education_type" id="education_type"
+                value="{{ $admissionDetail->education_type }}"> --}}
         </div>
         <div class="col">
-            <input type="hidden" name="course_id" id="course_id" value="{{ $admissionDetail->course_id ?? 0 }}">
+            {{-- <input type="hidden" name="course_id" id="course_id" value="{{ $admissionDetail->course_id ?? 0 }}"> --}}
             <label for="course_name" class="form-label">Course</label>
             <div class="error-message">
-                <select id="edit_course_id" class="select2 form-select" data-placeholder="Select course" required
-                    disabled>
+                <select id="course_id" name="course_id" class="select2 form-select" data-placeholder="Select course" required>
                     <option value="">Select Course</option>
                 </select>
             </div>
