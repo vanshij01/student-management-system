@@ -3,13 +3,6 @@ $('#addmission_date, #college_fees_receipt_date, #arriving_date').datepicker({
     dateFormat: 'dd/mm/yy',
 });
 
-/* function updateFileNameSwap(input, targetId) {
-    const label = document.getElementById(targetId);
-    const defaultText = label.getAttribute('data-default') || 'Upload'; // Default text stored here
-    const fileName = input.files.length > 0 ? input.files[0].name : defaultText;
-    label.textContent = fileName;
-} */
-
 $('.semester-group').addClass('d-none');
 function updateFileNameSwap(input, targetId) {
     const label = document.getElementById(targetId);
@@ -23,7 +16,6 @@ function updateFileNameSwap(input, targetId) {
     }
 }
 window.selectedCourseId = null;
-// console.log("currentCourseID:", currentCourseID);
 
 $('#dob').datepicker({
     dateFormat: 'dd/mm/yy',
@@ -66,7 +58,6 @@ function displaySemester(education_type) {
         $('.otherDocs').addClass('d-none').removeClass('d-block');
     }
 }
-
 
 (function () {
     const admissonForm = document.querySelector('#admission_form');
@@ -497,8 +488,15 @@ function displaySemester(education_type) {
             },
             board_type: {
                 validators: {
-                    notEmpty: {
-                        message: 'Please select the board type.'
+                    callback: {
+                        message: 'Please select the board type.',
+                        callback: function (input) {
+                            const educationType = $('#education_type').val();
+                            if (educationType !== 'Job') {
+                                return input.value !== '';
+                            }
+                            return true;
+                        }
                     }
                 }
             },
@@ -728,7 +726,6 @@ function displaySemester(education_type) {
         //     }
         // });
 
-        console.log("window.selectedCourseId", window.selectedCourseId);
         function ensureOtherDoc0Validation() {
             const typeSelector = '[name="otherDoc[0][type]"]';
             const fileSelector = '[name="otherDoc[0][file]"]';
@@ -1202,7 +1199,7 @@ function displaySemester(education_type) {
                     var semesterhtml = "";
                     for (let i = 1; i <= totalSemesters; i++) {
                         semesterhtml += '<option value="' + i + '"' + ((current_semester > 0 && current_semester == i && course_id == last_course) ? ' selected' : '') + '>' + i + '</option>';
-                        if (last_course != $('#course_id').val()) {
+                        if (last_course != 0 && last_course != $('#course_id').val()) {
                             $.ajax({
                                 type: "get",
                                 url: "/students/getCoursesById",
@@ -1689,7 +1686,8 @@ function displaySemester(education_type) {
             }
 
             var currentCourse = $('#course_id').val();
-            if ((currentCourse != oldCourse) && !isNewStudent) {
+
+            if (oldCourse != 0 && (currentCourse != oldCourse) && !isNewStudent) {
                 $.ajax({
                     type: "get",
                     url: "/students/getCoursesById",
@@ -1790,6 +1788,30 @@ function displaySemester(education_type) {
             const excludedTypes = ['Job', 'Internship', 'Other'];
             const isJobOrInternship = excludedTypes.includes(education_type);
 
+            const docRule = educationDocMap[education_type];
+
+            const requiredFields = typeof docRule === 'function' ? docRule(board_type) : (docRule || []);
+
+            toggleDocs(requiredFields);
+
+            /* requiredFields.forEach(field => {
+                FormValidation3.addField(field, validationRules[field]);
+            }); */
+
+            // Apply validators only if not 'Job'
+            if (education_type !== 'Job') {
+                requiredFields.forEach(field => {
+                    FormValidation3.addField(field, validationRules[field]);
+                });
+            } else {
+                // Still show fields, but remove their validation if previously added
+                requiredFields.forEach(field => {
+                    if (FormValidation3.getFields()[field]) {
+                        FormValidation3.removeField(field);
+                    }
+                });
+            }
+
             if (isJobOrInternship) {
                 $('.semester-group').addClass('d-none');
                 $('.degree-results').addClass('d-none');
@@ -1814,15 +1836,6 @@ function displaySemester(education_type) {
                     return; // Exit early to prevent other validations from being applied
                 }
             }
-
-            const docRule = educationDocMap[education_type];
-            const requiredFields = typeof docRule === 'function' ? docRule(board_type) : (docRule || []);
-
-            toggleDocs(requiredFields);
-
-            requiredFields.forEach(field => {
-                FormValidation3.addField(field, validationRules[field]);
-            });
 
             // Degree results visibility is controlled by student type
             if (studentNew === 'true') {
