@@ -455,9 +455,16 @@ function displaySemester(education_type) {
                 },
                 board_type: {
                     validators: {
-                        notEmpty: {
-                            message: 'Please select the board type.'
+                        callback: {
+                        message: 'Please select the board type.',
+                        callback: function (input) {
+                            const educationType = $('#education_type').val();
+                            if (educationType !== 'Job') {
+                                return input.value !== '';
+                            }
+                            return true;
                         }
+                    }
                     }
                 },
                 semester: {
@@ -1625,9 +1632,23 @@ function displaySemester(education_type) {
 
             toggleDocs(requiredFields);
 
-            requiredFields.forEach(field => {
-                FormValidation3.addField(field, validationRules[field]);
-            });
+            // requiredFields.forEach(field => {
+            //     FormValidation3.addField(field, validationRules[field]);
+            // });
+
+            // Apply validators only if not 'Job'
+            if (education_type !== 'Job') {
+                requiredFields.forEach(field => {
+                    FormValidation3.addField(field, validationRules[field]);
+                });
+            } else {
+                // Still show fields, but remove their validation if previously added
+                requiredFields.forEach(field => {
+                    if (FormValidation3.getFields()[field]) {
+                        FormValidation3.removeField(field);
+                    }
+                });
+            }
 
             // Degree results visibility is controlled by student type
             if (studentNew === 'true') {

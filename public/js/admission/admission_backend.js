@@ -498,8 +498,15 @@ function displaySemester(education_type) {
             },
             board_type: {
                 validators: {
-                    notEmpty: {
-                        message: 'Please select the board type.'
+                    callback: {
+                        message: 'Please select the board type.',
+                        callback: function (input) {
+                            const educationType = $('#education_type').val();
+                            if (educationType !== 'Job') {
+                                return input.value !== '';
+                            }
+                            return true;
+                        }
                     }
                 }
             },
@@ -1062,7 +1069,7 @@ function displaySemester(education_type) {
                     var semesterhtml = "";
                     for (let i = 1; i <= totalSemesters; i++) {
                         semesterhtml += '<option value="' + i + '"' + ((current_semester > 0 && current_semester == i && course_id == last_course) ? ' selected' : '') + '>' + i + '</option>';
-                        if (last_course != $('#course_id').val()) {
+                        if (last_course != 0 && last_course != $('#course_id').val()) {
                             $.ajax({
                                 type: "get",
                                 url: "/admission/getCoursesById",
@@ -1681,10 +1688,25 @@ function displaySemester(education_type) {
 
             toggleDocs(requiredFields);
 
-            requiredFields.forEach(field => {
-                FormValidation3.addField(field, validationRules[field]);
-            });
+            // requiredFields.forEach(field => {
+            //     FormValidation3.addField(field, validationRules[field]);
+            // });
 
+            // Apply validators only if not 'Job'
+            if (education_type !== 'Job') {
+                requiredFields.forEach(field => {
+                    FormValidation3.addField(field, validationRules[field]);
+                });
+            } else {
+                // Still show fields, but remove their validation if previously added
+                requiredFields.forEach(field => {
+                    if (FormValidation3.getFields()[field]) {
+                        FormValidation3.removeField(field);
+                    }
+                });
+            }
+            console.log("education_type",education_type);
+            
             // Degree results visibility is controlled by student type
             if (studentNew === 'true') {
                 $('.degree-results').removeClass('d-none');
