@@ -321,15 +321,15 @@
     </div>
 
     <div class="row mb-3 ca-results">
-        <x-upload-doc label="ipcc" docType="IPCC" :admissionDetail="$oldAdmissionDetails" :admissionDocuments="$oldAdmissionDocuments" formType="create" />
         <x-upload-doc label="cpt" docType="CPT" :admissionDetail="$oldAdmissionDetails" :admissionDocuments="$oldAdmissionDocuments" formType="create" />
+        <x-upload-doc label="ipcc" docType="IPCC" :admissionDetail="$oldAdmissionDetails" :admissionDocuments="$oldAdmissionDocuments" formType="create" />
         <x-upload-doc label="ca_final" docType="CA Final" :admissionDetail="$oldAdmissionDetails" :admissionDocuments="$oldAdmissionDocuments" formType="create" />
     </div>
 
     <div class="row mb-3 ca-backlog-results">
-        <x-upload-doc label="ipcc_backlog" docType="IPCC Backlog" :admissionDetail="$oldAdmissionDetails" :admissionDocuments="$oldAdmissionDocuments"
-            formType="create" />
         <x-upload-doc label="cpt_backlog" docType="CPT Backlog" :admissionDetail="$oldAdmissionDetails" :admissionDocuments="$oldAdmissionDocuments"
+            formType="create" />
+        <x-upload-doc label="ipcc_backlog" docType="IPCC Backlog" :admissionDetail="$oldAdmissionDetails" :admissionDocuments="$oldAdmissionDocuments"
             formType="create" />
         <x-upload-doc label="ca_final_backlog" docType="CA Final Backlog" :admissionDetail="$oldAdmissionDetails" :admissionDocuments="$oldAdmissionDocuments"
             formType="create" />

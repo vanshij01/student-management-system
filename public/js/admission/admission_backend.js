@@ -457,7 +457,7 @@ function displaySemester(education_type) {
                             window.selectedCourseId = input.value;
 
                             // Always enable first
-                            $('#course_id').prop('disabled', false);
+                            // $('#course_id').prop('disabled', false);
 
                             // Skip this validation for excluded types
                             if (excludedTypes.includes(educationType)) {
@@ -474,7 +474,7 @@ function displaySemester(education_type) {
 
                             const isCompleted = completed >= duration;
 
-                            if (isCompleted) {
+                            /* if (isCompleted) {
 
                                 // Optionally show a toast/alert here
                                 if (completed == 0) {
@@ -488,7 +488,7 @@ function displaySemester(education_type) {
                                 if (completed == 0) {
                                     $('#course_id').prop('disabled', false);
                                 }
-                            }
+                            } */
 
                             return true;
                         }
@@ -1455,35 +1455,35 @@ function displaySemester(education_type) {
         }
 
         function showCAUpload() {
-            const ipccResultField = 'ipcc_result';
-            const ipccBacklogField = 'ipcc_backlog_result';
             const cptResultField = 'cpt_result';
             const cptBacklogField = 'cpt_backlog_result';
+            const ipccResultField = 'ipcc_result';
+            const ipccBacklogField = 'ipcc_backlog_result';
             const ca_finalResultField = 'ca_final_result';
             const ca_finalBacklogField = 'ca_final_backlog_result';
 
-            const ipccResultPercentage = 'ipcc_percentage';
-            const ipccBacklogPercentage = 'ipcc_backlog_percentage';
             const cptResultPercentage = 'cpt_percentage';
             const cptBacklogPercentage = 'cpt_backlog_percentage';
+            const ipccResultPercentage = 'ipcc_percentage';
+            const ipccBacklogPercentage = 'ipcc_backlog_percentage';
             const ca_finalResultPercentage = 'ca_final_percentage';
             const ca_finalBacklogPercentage = 'ca_final_backlog_percentage';
 
-            const ipccImg = $('#ipccImg').attr('src') || '';
             const cptImg = $('#cptImg').attr('src') || '';
+            const ipccImg = $('#ipccImg').attr('src') || '';
             const ca_finalImg = $('#ca_finalImg').attr('src') || '';
 
-            const ipccResultInput = $(`#${ipccResultField}_upload`).get(0);
-            const ipccBacklogInput = document.getElementById(`${ipccBacklogField}_upload`);
             const cptResultInput = $(`#${cptResultField}_upload`).get(0);
             const cptBacklogInput = document.getElementById(`${cptBacklogField}_upload`);
+            const ipccResultInput = $(`#${ipccResultField}_upload`).get(0);
+            const ipccBacklogInput = document.getElementById(`${ipccBacklogField}_upload`);
             const ca_finalResultInput = $(`#${ca_finalResultField}_upload`).get(0);
             const ca_finalBacklogInput = document.getElementById(`${ca_finalBacklogField}_upload`);
 
-            const ipccResultFile = ipccResultInput?.files?.length > 0;
-            const ipccBacklogFile = ipccBacklogInput && ipccBacklogInput.files && ipccBacklogInput.files.length > 0;
             const cptResultFile = cptResultInput?.files?.length > 0;
             const cptBacklogFile = cptBacklogInput && cptBacklogInput.files && cptBacklogInput.files.length > 0;
+            const ipccResultFile = ipccResultInput?.files?.length > 0;
+            const ipccBacklogFile = ipccBacklogInput && ipccBacklogInput.files && ipccBacklogInput.files.length > 0;
             const ca_finalResultFile = ca_finalResultInput?.files?.length > 0;
             const ca_finalBacklogFile = ca_finalBacklogInput && ca_finalBacklogInput.files && ca_finalBacklogInput.files.length > 0;
 
@@ -1491,40 +1491,40 @@ function displaySemester(education_type) {
             $('.ca-upload-group').removeClass('d-none').addClass('d-block');
 
             // Cleanup existing validations
-            [ipccResultField, ipccBacklogField, cptResultField, cptBacklogField, ca_finalResultField, ca_finalBacklogField, ipccResultPercentage, ipccBacklogPercentage, cptResultPercentage, cptBacklogPercentage, ca_finalResultPercentage, ca_finalBacklogPercentage].forEach(field => {
+            [cptResultField, cptBacklogField, ca_finalResultField, ipccResultField, ipccBacklogField, ca_finalBacklogField, ipccResultPercentage, ipccBacklogPercentage, cptResultPercentage, cptBacklogPercentage, ca_finalResultPercentage, ca_finalBacklogPercentage].forEach(field => {
                 if (FormValidation3.getFields()[field]) {
                     FormValidation3.removeField(field);
                 }
             });
 
-            if (ipccBacklogFile) {
-                if (FormValidation3.getFields()[ipccResultField]) {
-                    FormValidation3.removeField(ipccResultField);
+            if (cptBacklogFile) {
+                if (FormValidation3.getFields()[cptResultField]) {
+                    FormValidation3.removeField(cptResultField);
                 }
-                if (FormValidation3.getFields()[ipccBacklogField]) {
-                    FormValidation3.removeField(ipccBacklogField);
+                if (FormValidation3.getFields()[cptBacklogField]) {
+                    FormValidation3.removeField(cptBacklogField);
                 }
-            } else if (!ipccImg || !ipccResultFile) {
-                FormValidation3.addField('ipcc_result', !ipccImg ? createFileValidator('Please upload your IPCC result.') : '');
-                FormValidation3.addField('ipcc_percentage', !ipccImg ? createFileValidator('Please enter your IPCC percentile.') : '');
+            } else if (!cptImg || !cptResultFile) {
+                FormValidation3.addField('cpt_result', !cptImg ? createFileValidator('Please upload your CPT result.') : '');
+                FormValidation3.addField('cpt_percentage', !cptImg ? createFileValidator('Please enter your CPT percentile.') : '');
             }
 
-            if (ipccImg) {
-                if (cptImg || cptBacklogFile) {
-                    if (FormValidation3.getFields()[cptResultField]) {
-                        FormValidation3.removeField(cptResultField);
+            if (cptImg) {
+                if (ipccImg || ipccBacklogFile) {
+                    if (FormValidation3.getFields()[ipccResultField]) {
+                        FormValidation3.removeField(ipccResultField);
                     }
-                    if (FormValidation3.getFields()[cptBacklogField]) {
-                        FormValidation3.removeField(cptBacklogField);
+                    if (FormValidation3.getFields()[ipccBacklogField]) {
+                        FormValidation3.removeField(ipccBacklogField);
                     }
-                } else if (!cptImg || !cptResultFile) {
-                    // FormValidation3.addField(cptResultField, createFileValidator('Please upload your CPT result.'));
-                    FormValidation3.addField(cptResultField, !cptImg ? createFileValidator('Please upload your CPT result.') : '');
-                    FormValidation3.addField(cptResultPercentage, !cptImg ? createFileValidator('Please enter your CPT percentile.') : '');
+                } else if (!ipccImg || !ipccResultFile) {
+                    // FormValidation3.addField(ipccResultField, createFileValidator('Please upload your ipcc result.'));
+                    FormValidation3.addField(ipccResultField, !ipccImg ? createFileValidator('Please upload your IPCC result.') : '');
+                    FormValidation3.addField(ipccResultPercentage, !ipccImg ? createFileValidator('Please enter your IPCC percentile.') : '');
                 }
             }
 
-            if (ipccImg && cptImg) {
+            if (cptImg && ipccImg) {
                 if (ca_finalImg || ca_finalBacklogFile) {
                     if (FormValidation3.getFields()[ca_finalResultField]) {
                         FormValidation3.removeField(ca_finalResultField);
@@ -1551,7 +1551,7 @@ function displaySemester(education_type) {
         // Course selection change handler
         $('#course_id').on('change', function () {
             const course_id = $(this).val();
-            $('#course_id').prop('disabled', false);
+            // $('#course_id').prop('disabled', false);
 
             if (course_id > 0) {
                 getCourseList(course_id);
@@ -1580,14 +1580,14 @@ function displaySemester(education_type) {
             degree_certificate: (degree_certificateImg == null) ? createFileValidator('Please upload your degree certificate.') : '',
             internship_letter: (internship_letterImg == null) ? createFileValidator('Please upload your internship letter.') : '',
             job_letter: (job_letterImg == null) ? createFileValidator('Please upload your job letter.') : '',
-            ipcc_result: createFileValidator('Please upload your ipcc result.'),
             cpt_result: createFileValidator('Please upload your cpt result.'),
+            ipcc_result: createFileValidator('Please upload your ipcc result.'),
             ca_final_result: createFileValidator('Please upload your ca_final result.'),
             ssc_percentage: percentileValidator,
             hsc_percentage: percentileValidator,
             last_qualification_percentage: percentileValidator,
-            ipcc_percentage: percentileValidator,
             cpt_percentage: percentileValidator,
+            ipcc_percentage: percentileValidator,
             ca_final_percentage: percentileValidator,
         };
 
@@ -1706,7 +1706,7 @@ function displaySemester(education_type) {
                 });
             }
             console.log("education_type",education_type);
-            
+
             // Degree results visibility is controlled by student type
             if (studentNew === 'true') {
                 $('.degree-results').removeClass('d-none');
