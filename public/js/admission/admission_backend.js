@@ -589,7 +589,7 @@ function displaySemester(education_type) {
             }
         });
 
-        console.log("window.isNewStudent",window.isNewStudent);
+        console.log("window.isNewStudent", window.isNewStudent);
         console.log("window.selectedCourseId", window.selectedCourseId);
         function ensureOtherDoc0Validation() {
             const typeSelector = '[name="otherDoc[0][type]"]';
@@ -993,7 +993,7 @@ function displaySemester(education_type) {
                     let coursehtml = '<option value="">Select Course</option>';
 
                     $.each(courses, function (indexInArray, course) {
-                        console.log("courses",courses);
+                        console.log("courses", courses);
                         const selected = (course.id == courseId) ? ' selected' : '';
                         coursehtml += `<option value="${course.id}"${selected}>${course.course_name}</option>`;
                     });
@@ -1077,7 +1077,7 @@ function displaySemester(education_type) {
                                 cache: false,
                                 success: function (response) {
                                     var course = response.course;
-                                    console.log("course",course);
+                                    console.log("course", course);
 
                                     displaySemesterFields((course.duration * 2));
                                 }
@@ -1487,55 +1487,50 @@ function displaySemester(education_type) {
             const ca_finalResultFile = ca_finalResultInput?.files?.length > 0;
             const ca_finalBacklogFile = ca_finalBacklogInput && ca_finalBacklogInput.files && ca_finalBacklogInput.files.length > 0;
 
-            // Show the CA upload group if it's not shown yet
+            // Show the CA upload group if it's not shown yet 
             $('.ca-upload-group').removeClass('d-none').addClass('d-block');
 
-            // Cleanup existing validations
-            [cptResultField, cptBacklogField, ca_finalResultField, ipccResultField, ipccBacklogField, ca_finalBacklogField, ipccResultPercentage, ipccBacklogPercentage, cptResultPercentage, cptBacklogPercentage, ca_finalResultPercentage, ca_finalBacklogPercentage].forEach(field => {
-                if (FormValidation3.getFields()[field]) {
-                    FormValidation3.removeField(field);
-                }
-            });
+            // Cleanup existing validations 
+            [cptResultField, cptBacklogField, ca_finalResultField, ipccResultField, ipccBacklogField, ca_finalBacklogField,
+                ipccResultPercentage, ipccBacklogPercentage, cptResultPercentage, cptBacklogPercentage,
+                ca_finalResultPercentage, ca_finalBacklogPercentage].forEach(field => {
+                    if (FormValidation3.getFields()[field]) {
+                        FormValidation3.removeField(field);
+                    }
+                });
 
+            // CPT validation - skip if backlog file exists
             if (cptBacklogFile) {
-                if (FormValidation3.getFields()[cptResultField]) {
-                    FormValidation3.removeField(cptResultField);
-                }
-                if (FormValidation3.getFields()[cptBacklogField]) {
-                    FormValidation3.removeField(cptBacklogField);
-                }
+                console.log('CPT backlog file exists, skipping CPT validation');
             } else if (!cptImg || !cptResultFile) {
+                console.log('Adding CPT validation');
                 FormValidation3.addField('cpt_result', !cptImg ? createFileValidator('Please upload your CPT result.') : '');
                 FormValidation3.addField('cpt_percentage', !cptImg ? createFileValidator('Please enter your CPT percentile.') : '');
             }
 
-            if (cptImg) {
-                if (ipccImg || ipccBacklogFile) {
-                    if (FormValidation3.getFields()[ipccResultField]) {
-                        FormValidation3.removeField(ipccResultField);
-                    }
-                    if (FormValidation3.getFields()[ipccBacklogField]) {
-                        FormValidation3.removeField(ipccBacklogField);
-                    }
-                } else if (!ipccImg || !ipccResultFile) {
-                    // FormValidation3.addField(ipccResultField, createFileValidator('Please upload your ipcc result.'));
-                    FormValidation3.addField(ipccResultField, !ipccImg ? createFileValidator('Please upload your IPCC result.') : '');
-                    FormValidation3.addField(ipccResultPercentage, !ipccImg ? createFileValidator('Please enter your IPCC percentile.') : '');
+            // IPCC validation - skip if CPT backlog exists OR if IPCC backlog/image exists
+            if (cptBacklogFile) {
+                console.log('CPT backlog file exists, skipping IPCC validation');
+            } else if (cptImg) {
+                if (ipccBacklogFile || ipccImg) {
+                    console.log('IPCC backlog or image exists, skipping IPCC validation');
+                } else if (!ipccResultFile) {
+                    console.log('Adding IPCC validation');
+                    FormValidation3.addField(ipccResultField, createFileValidator('Please upload your IPCC result.'));
+                    FormValidation3.addField(ipccResultPercentage, createFileValidator('Please enter your IPCC percentile.'));
                 }
             }
 
-            if (cptImg && ipccImg) {
-                if (ca_finalImg || ca_finalBacklogFile) {
-                    if (FormValidation3.getFields()[ca_finalResultField]) {
-                        FormValidation3.removeField(ca_finalResultField);
-                    }
-                    if (FormValidation3.getFields()[ca_finalBacklogField]) {
-                        FormValidation3.removeField(ca_finalBacklogField);
-                    }
-                } else if (!ca_finalImg || !ca_finalResultFile) {
-                    // FormValidation3.addField(ca_finalResultField, createFileValidator('Please upload your ca_final result.'));
-                    FormValidation3.addField(ca_finalResultField, !ca_finalImg ? createFileValidator('Please upload your CA Final result.') : '');
-                    FormValidation3.addField(ca_finalResultPercentage, !ca_finalImg ? createFileValidator('Please enter your CA Final percentile.') : '');
+            // CA Final validation - skip if CPT backlog exists OR if CA Final backlog/image exists
+            if (cptBacklogFile) {
+                console.log('CPT backlog file exists, skipping CA Final validation');
+            } else if (cptImg && ipccImg) {
+                if (ca_finalBacklogFile || ca_finalImg) {
+                    console.log('CA Final backlog or image exists, skipping CA Final validation');
+                } else if (!ca_finalResultFile) {
+                    console.log('Adding CA Final validation');
+                    FormValidation3.addField(ca_finalResultField, createFileValidator('Please upload your CA Final result.'));
+                    FormValidation3.addField(ca_finalResultPercentage, createFileValidator('Please enter your CA Final percentile.'));
                 }
             }
         }
@@ -1705,7 +1700,7 @@ function displaySemester(education_type) {
                     }
                 });
             }
-            console.log("education_type",education_type);
+            console.log("education_type", education_type);
 
             // Degree results visibility is controlled by student type
             if (studentNew === 'true') {
@@ -1824,14 +1819,14 @@ function displaySemester(education_type) {
 
             const originalBtnText = $submitBtn.html();
 
-            $form.on('submit', function(e) {
-                    $submitBtn.prop('disabled', true);
-                    $submitBtn.html('Processing...');
+            $form.on('submit', function (e) {
+                $submitBtn.prop('disabled', true);
+                $submitBtn.html('Processing...');
 
-                    setTimeout(function() {
-                        $submitBtn.prop('disabled', false);
-                        $submitBtn.html(originalBtnText);
-                    }, 60000);
+                setTimeout(function () {
+                    $submitBtn.prop('disabled', false);
+                    $submitBtn.html(originalBtnText);
+                }, 60000);
             });
 
             if ($('.alert-danger').length > 0 || $('.invalid-feedback:visible').length > 0 || $('[data-error-message]').length > 0) {

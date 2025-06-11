@@ -56,7 +56,7 @@
             <label for="admission_date" class="form-label">Admission Date</label>
             <input type="text" class="form-control" name="addmission_date"
                 value="{{ $oldAdmissionDetails && $oldAdmissionDetails->addmission_date ? date('d/m/Y', strtotime($oldAdmissionDetails->addmission_date)) : '' }}"
-                placeholder="DD/MM/YYYY" id="addmission_date" />
+                placeholder="DD/MM/YYYY" id="addmission_date" autocomplete="off" />
         </div>
         <div class="col">
             <label for="admission_year" class="form-label">Admission Year</label>
@@ -98,7 +98,7 @@
             <label for="arriving_date" class="form-label">Arriving Date at Hostel</label>
             <input type="text" class="form-control" name="arriving_date"
                 value="{{ $oldAdmissionDetails && $oldAdmissionDetails->arriving_date ? date('d/m/Y', strtotime($oldAdmissionDetails->arriving_date)) : '' }}"
-                placeholder="DD/MM/YYYY" id="arriving_date" />
+                placeholder="DD/MM/YYYY" id="arriving_date" autocomplete="off" />
         </div>
     </div>
 
@@ -109,7 +109,7 @@
         <div class="col">
             <label for="fees_receipt_date" class="form-label">Fees Receipt Date</label>
             <input type="text" class="form-control" name="college_fees_receipt_date" {{-- value="{{ $oldAdmissionDetails->college_fees_receipt_date ? date('d/m/Y', strtotime($oldAdmissionDetails->college_fees_receipt_date)): '' }}" placeholder="DD/MM/YYYY" --}}
-                id="college_fees_receipt_date" />
+                id="college_fees_receipt_date" autocomplete="off" />
         </div>
         <div class="col">
             <label class="form-label">Upload your current Fee Receipt</label>
@@ -199,8 +199,9 @@
             :admissionDocuments="$oldAdmissionDocuments" formType="create" />
         <x-upload-doc-no-result label="degree_certificate" docType="Degree Certificate" :admissionDetail="$oldAdmissionDetails"
             :admissionDocuments="$oldAdmissionDocuments" formType="create" />
-        <x-upload-doc label="last_qualification" docType="Qualification Result" percentageFieldName="last_qualification_percentage"
-            :admissionDetail="$oldAdmissionDetails" :admissionDocuments="$oldAdmissionDocuments" formType="create" />
+        <x-upload-doc label="last_qualification" docType="Qualification Result"
+            percentageFieldName="last_qualification_percentage" :admissionDetail="$oldAdmissionDetails" :admissionDocuments="$oldAdmissionDocuments"
+            formType="create" />
         <x-upload-doc-no-result label="leaving_certificate" docType="Leaving Certificate"
             percentageFieldName="leaving_certificate_percentage" :admissionDetail="$oldAdmissionDetails" :admissionDocuments="$oldAdmissionDocuments"
             formType="create" />
@@ -259,7 +260,7 @@
 
     <div class="row mb-3 otherDocs">
         <h3 class="form-sm-title">Other Documents</h3>
-        <x-upload-other-result :oldAdmissionDetails="$oldAdmissionDetails" :oldAdmissionDocuments="$oldAdmissionDocuments" :admissionDetail="$admissionDetail" mode="create"/>
+        <x-upload-other-result :oldAdmissionDetails="$oldAdmissionDetails" :oldAdmissionDocuments="$oldAdmissionDocuments" :admissionDetail="$admissionDetail" mode="create" />
     </div>
 
     <div id="degreeResultsSection"
@@ -323,11 +324,11 @@
     </div>
 
     <div class="row mb-3 ca-backlog-results">
-        <x-upload-doc label="ipcc_backlog" docType="IPCC Backlog" :admissionDetail="$oldAdmissionDetails" :admissionDocuments="$oldAdmissionDocuments"
-            formType="create" />
         <x-upload-doc label="cpt_backlog" docType="CPT Backlog" :admissionDetail="$oldAdmissionDetails" :admissionDocuments="$oldAdmissionDocuments"
             formType="create" />
         <x-upload-doc label="ca_final_backlog" docType="CA Final Backlog" :admissionDetail="$oldAdmissionDetails" :admissionDocuments="$oldAdmissionDocuments"
+            formType="create" />
+        <x-upload-doc label="ipcc_backlog" docType="IPCC Backlog" :admissionDetail="$oldAdmissionDetails" :admissionDocuments="$oldAdmissionDocuments"
             formType="create" />
     </div>
     <div class="d-flex step-btn-wrapper justify-content-between">

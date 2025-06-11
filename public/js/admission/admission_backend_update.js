@@ -400,62 +400,62 @@ function displaySemester(education_type) {
         // Property Area
         const formValidationFields = {
             education_type: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Please select an education type.'
+                validators: {
+                    notEmpty: {
+                        message: 'Please select an education type.'
+                    }
+                }
+            },
+            course_id: {
+                validators: {
+                    notEmpty: {
+                        message: 'Please select a course.'
+                    },
+                    callback: {
+                        message: 'You have already completed this course. Please select a different one.',
+                        callback: function (input) {
+                            const educationType = $('#education_type').val();
+                            const excludedTypes = ['Job', 'Internship', 'Professional Degree', 'Other'];
+
+                            // Always enable first
+                            $('#course_id').prop('disabled', false);
+
+                            // Skip this validation for excluded types
+                            if (excludedTypes.includes(educationType)) {
+                                return true;
+                            }
+
+                            // Skip for new students or update mode
+                            if (window.isNewStudent === 'true' || window.isUpdateMode) {
+                                return true;
+                            }
+
+                            const selectedCourseId = input.value;
+                            const completed = window.completedCourseYears?.[selectedCourseId] || 0;
+                            const duration = window.courseDurations?.[selectedCourseId] || 0;
+
+                            const isCompleted = completed >= duration;
+
+                            console.log('isCompleted', isCompleted);
+
+                            if (isCompleted) {
+
+                                // Optionally show a toast/alert here
+                                return false;
+                            } else {
+                                $('#course_id').prop('disabled', !isCompleted);
+
+                            }
+
+                            return true;
                         }
                     }
                 },
-                course_id: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Please select a course.'
-                        },
-                        callback: {
-                            message: 'You have already completed this course. Please select a different one.',
-                            callback: function (input) {
-                                const educationType = $('#education_type').val();
-                                const excludedTypes = ['Job', 'Internship', 'Professional Degree', 'Other'];
-
-                                // Always enable first
-                                $('#course_id').prop('disabled', false);
-
-                                // Skip this validation for excluded types
-                                if (excludedTypes.includes(educationType)) {
-                                    return true;
-                                }
-
-                                // Skip for new students or update mode
-                                if (window.isNewStudent === 'true' || window.isUpdateMode) {
-                                    return true;
-                                }
-
-                                const selectedCourseId = input.value;
-                                const completed = window.completedCourseYears?.[selectedCourseId] || 0;
-                                const duration = window.courseDurations?.[selectedCourseId] || 0;
-
-                                const isCompleted = completed >= duration;
-
-                                console.log('isCompleted', isCompleted);
-
-                                if (isCompleted) {
-
-                                    // Optionally show a toast/alert here
-                                    return false;
-                                } else {
-                                    $('#course_id').prop('disabled', !isCompleted);
-
-                                }
-
-                                return true;
-                            }
-                        }
-                    },
-                    trigger: 'change' // Important: ensure validation runs on change
-                },
-                board_type: {
-                    validators: {
-                        callback: {
+                trigger: 'change' // Important: ensure validation runs on change
+            },
+            board_type: {
+                validators: {
+                    callback: {
                         message: 'Please select the board type.',
                         callback: function (input) {
                             const educationType = $('#education_type').val();
@@ -465,37 +465,37 @@ function displaySemester(education_type) {
                             return true;
                         }
                     }
-                    }
-                },
-                semester: {
-                    validators: {
-                        callback: {
-                            message: 'Please select a semester.',
-                            callback: function (input) {
-                                const educationType = $('#education_type').val();
-                                const requiredTypes = ["HSC", "Bachelor's Degree", "Master's Degree"];
-                                if (requiredTypes.includes(educationType)) {
-                                    return input.value !== '';
-                                }
-                                return true; // Not required for other education types
+                }
+            },
+            semester: {
+                validators: {
+                    callback: {
+                        message: 'Please select a semester.',
+                        callback: function (input) {
+                            const educationType = $('#education_type').val();
+                            const requiredTypes = ["HSC", "Bachelor's Degree", "Master's Degree"];
+                            if (requiredTypes.includes(educationType)) {
+                                return input.value !== '';
                             }
-                        }
-                    }
-                },
-                year_of_addmission: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Please select the admission year.'
-                        }
-                    }
-                },
-                arriving_date: {
-                    validators: {
-                        notEmpty: {
-                            message: 'Please select the arriving date.'
+                            return true; // Not required for other education types
                         }
                     }
                 }
+            },
+            year_of_addmission: {
+                validators: {
+                    notEmpty: {
+                        message: 'Please select the admission year.'
+                    }
+                }
+            },
+            arriving_date: {
+                validators: {
+                    notEmpty: {
+                        message: 'Please select the arriving date.'
+                    }
+                }
+            }
         };
 
         // Add institute_name and admission_date validation only for old students
@@ -1422,85 +1422,85 @@ function displaySemester(education_type) {
         }
 
         function showCAUpload() {
-            const ipccResultField = 'ipcc_result';
-            const ipccBacklogField = 'ipcc_backlog_result';
             const cptResultField = 'cpt_result';
             const cptBacklogField = 'cpt_backlog_result';
+            const ipccResultField = 'ipcc_result';
+            const ipccBacklogField = 'ipcc_backlog_result';
             const ca_finalResultField = 'ca_final_result';
             const ca_finalBacklogField = 'ca_final_backlog_result';
 
-            const ipccResultPercentage = 'ipcc_percentage';
-            const ipccBacklogPercentage = 'ipcc_backlog_percentage';
             const cptResultPercentage = 'cpt_percentage';
             const cptBacklogPercentage = 'cpt_backlog_percentage';
+            const ipccResultPercentage = 'ipcc_percentage';
+            const ipccBacklogPercentage = 'ipcc_backlog_percentage';
             const ca_finalResultPercentage = 'ca_final_percentage';
             const ca_finalBacklogPercentage = 'ca_final_backlog_percentage';
 
-            const ipccImg = $('#ipccImg').attr('src') || '';
             const cptImg = $('#cptImg').attr('src') || '';
+            const cpt_backlogImg = $('#cpt_backlogImg').attr('src') || '';
+            const ipccImg = $('#ipccImg').attr('src') || '';
+            const ipcc_backlogImg = $('#ipcc_backlogImg').attr('src') || '';
             const ca_finalImg = $('#ca_finalImg').attr('src') || '';
+            const ca_final_backlogImg = $('#ca_final_backlogImg').attr('src') || '';
 
-            const ipccResultInput = $(`#${ipccResultField}_upload`).get(0);
-            const ipccBacklogInput = document.getElementById(`${ipccBacklogField}_upload`);
             const cptResultInput = $(`#${cptResultField}_upload`).get(0);
             const cptBacklogInput = document.getElementById(`${cptBacklogField}_upload`);
+            const ipccResultInput = $(`#${ipccResultField}_upload`).get(0);
+            const ipccBacklogInput = document.getElementById(`${ipccBacklogField}_upload`);
             const ca_finalResultInput = $(`#${ca_finalResultField}_upload`).get(0);
             const ca_finalBacklogInput = document.getElementById(`${ca_finalBacklogField}_upload`);
 
-            const ipccResultFile = ipccResultInput?.files?.length > 0;
-            const ipccBacklogFile = ipccBacklogInput && ipccBacklogInput.files && ipccBacklogInput.files.length > 0;
             const cptResultFile = cptResultInput?.files?.length > 0;
             const cptBacklogFile = cptBacklogInput && cptBacklogInput.files && cptBacklogInput.files.length > 0;
+            const ipccResultFile = ipccResultInput?.files?.length > 0;
+            const ipccBacklogFile = ipccBacklogInput && ipccBacklogInput.files && ipccBacklogInput.files.length > 0;
             const ca_finalResultFile = ca_finalResultInput?.files?.length > 0;
             const ca_finalBacklogFile = ca_finalBacklogInput && ca_finalBacklogInput.files && ca_finalBacklogInput.files.length > 0;
 
-            // Show the CA upload group if it's not shown yet
+            // Show the CA upload group if it's not shown yet 
             $('.ca-upload-group').removeClass('d-none').addClass('d-block');
 
-            // Cleanup existing validations
-            [ipccResultField, ipccBacklogField, cptResultField, cptBacklogField, ca_finalResultField, ca_finalBacklogField, ipccResultPercentage, ipccBacklogPercentage, cptResultPercentage, cptBacklogPercentage, ca_finalResultPercentage, ca_finalBacklogPercentage].forEach(field => {
-                if (FormValidation3.getFields()[field]) {
-                    FormValidation3.removeField(field);
-                }
-            });
+            // Cleanup existing validations 
+            [cptResultField, cptBacklogField, ca_finalResultField, ipccResultField, ipccBacklogField, ca_finalBacklogField,
+                ipccResultPercentage, ipccBacklogPercentage, cptResultPercentage, cptBacklogPercentage,
+                ca_finalResultPercentage, ca_finalBacklogPercentage].forEach(field => {
+                    if (FormValidation3.getFields()[field]) {
+                        FormValidation3.removeField(field);
+                    }
+                });
 
-            if (ipccBacklogFile) {
-                if (FormValidation3.getFields()[ipccResultField]) {
-                    FormValidation3.removeField(ipccResultField);
-                }
-                if (FormValidation3.getFields()[ipccBacklogField]) {
-                    FormValidation3.removeField(ipccBacklogField);
-                }
-            } else if (!ipccImg || !ipccResultFile) {
-                FormValidation3.addField(ipccResultField, !ipccImg ? createFileValidator('Please upload your IPCC result.') : '');
-                FormValidation3.addField(ipccResultPercentage, !ipccImg ? createFileValidator('Please enter your IPCC percentile.') : '');
+            // CPT validation - skip if backlog file exists
+            if (cptBacklogFile || cpt_backlogImg) {
+                console.log('CPT backlog file exists, skipping CPT validation');
+            } else if (!cptImg || !cptResultFile) {
+                console.log('Adding CPT validation');
+                FormValidation3.addField('cpt_result', !cptImg ? createFileValidator('Please upload your CPT result.') : '');
+                FormValidation3.addField('cpt_percentage', !cptImg ? createFileValidator('Please enter your CPT percentile.') : '');
             }
 
-            if (ipccImg) {
-                if (cptImg || cptBacklogFile) {
-                    if (FormValidation3.getFields()[cptResultField]) {
-                        FormValidation3.removeField(cptResultField);
-                    }
-                    if (FormValidation3.getFields()[cptBacklogField]) {
-                        FormValidation3.removeField(cptBacklogField);
-                    }
-                } else if (!cptImg || !cptResultFile) {
-                    // FormValidation3.addField(cptResultField, createFileValidator('Please upload your CPT result.'));
-                    FormValidation3.addField(cptResultField, !cptImg ? createFileValidator('Please upload your CPT result.') : '');
-                    FormValidation3.addField(cptResultPercentage, !cptImg ? createFileValidator('Please enter your CPT percentile.') : '');
+            // IPCC validation - skip if CPT backlog exists OR if IPCC backlog/image exists
+            if (cptBacklogFile || cpt_backlogImg) {
+                console.log('CPT backlog file exists, skipping IPCC validation');
+            } else if (cptImg) {
+                if (ipccBacklogFile || ipcc_backlogImg) {
+                    console.log('IPCC backlog or image exists, skipping IPCC validation');
+                } else if (!ipccResultFile) {
+                    console.log('Adding IPCC validation');
+                    FormValidation3.addField(ipccResultField, createFileValidator('Please upload your IPCC result.'));
+                    FormValidation3.addField(ipccResultPercentage, createFileValidator('Please enter your IPCC percentile.'));
                 }
             }
 
-            if (ipccImg && cptImg) {
-                if (ca_finalImg || ca_finalBacklogFile) {
-                    if (FormValidation3.getFields()[ca_finalResultField]) {
-                        FormValidation3.removeField(ca_finalResultField);
-                    }
-                    if (FormValidation3.getFields()[ca_finalBacklogField]) {
-                        FormValidation3.removeField(ca_finalBacklogField);
-                    }
-                } else if (!ca_finalImg || !ca_finalResultFile) {
-                    FormValidation3.addField(ca_finalResultField, createFileValidator('Please upload your ca_final result.'));
+            // CA Final validation - skip if CPT backlog exists OR if CA Final backlog/image exists
+            if (cptBacklogFile) {
+                console.log('CPT backlog file exists, skipping CA Final validation');
+            } else if (cptImg && ipccImg) {
+                if (ca_finalBacklogFile || ca_final_backlogImg) {
+                    console.log('CA Final backlog or image exists, skipping CA Final validation');
+                } else if (!ca_finalResultFile) {
+                    console.log('Adding CA Final validation');
+                    FormValidation3.addField(ca_finalResultField, createFileValidator('Please upload your CA Final result.'));
+                    FormValidation3.addField(ca_finalResultPercentage, createFileValidator('Please enter your CA Final percentile.'));
                 }
             }
         }
@@ -1768,14 +1768,14 @@ function displaySemester(education_type) {
 
             const originalBtnText = $submitBtn.html();
 
-            $form.on('submit', function(e) {
-                    $submitBtn.prop('disabled', true);
-                    $submitBtn.html('Processing...');
+            $form.on('submit', function (e) {
+                $submitBtn.prop('disabled', true);
+                $submitBtn.html('Processing...');
 
-                    setTimeout(function() {
-                        $submitBtn.prop('disabled', false);
-                        $submitBtn.html(originalBtnText);
-                    }, 60000);
+                setTimeout(function () {
+                    $submitBtn.prop('disabled', false);
+                    $submitBtn.html(originalBtnText);
+                }, 60000);
             });
 
             if ($('.alert-danger').length > 0 || $('.invalid-feedback:visible').length > 0 || $('[data-error-message]').length > 0) {
