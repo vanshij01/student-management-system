@@ -101,11 +101,11 @@
     </div>
 
     <!-- Create Fees Modal -->
-    <div class="modal fade" id="createFeesModal" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="createFeesModal" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Create Fees</h4>
+                    <h4 class="modal-title">Create Donation</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="createFeesForm" action="{{ route('fees.store') }}" method="post" class="fees_form"
@@ -307,7 +307,7 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Update Fees</h4>
+                    <h4 class="modal-title">Update Donation</h4>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <form id="updateFeesForm" method="post" class="fees_form" enctype="multipart/form-data">

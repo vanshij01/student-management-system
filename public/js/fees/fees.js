@@ -5,10 +5,10 @@ $('#from').datepicker({
 $('#to').datepicker({
     dateFormat: 'dd/mm/yy'
 }).prop('disabled', true).css({
-    'background-color': 'white',  
-    'color': '#000',              
-    'opacity': '1'                
-  });
+    'background-color': 'white',
+    'color': '#000',
+    'opacity': '1'
+});
 
 $('#from').on('change', function () {
     var fromDate = $(this).datepicker('getDate');
@@ -17,6 +17,16 @@ $('#from').on('change', function () {
 
 $(document).ready(function () {
     dataTableData();
+
+    $('#admission_id, #payment_type, #donation_type, #payment_method').select2({
+        dropdownParent: $('#createFeesModal'), // replace with your popup's container
+        minimumResultsForSearch: 0 // optional: force search box to always show
+    });
+
+    $('#update_admission_id, #update_payment_type, #update_donation_type, #update_payment_method').select2({
+        dropdownParent: $('#updateFeesModal'), // replace with your popup's container
+        minimumResultsForSearch: 0 // optional: force search box to always show
+    });
 });
 
 function dataTableData() {
@@ -184,9 +194,6 @@ function dataTableData() {
             }
         },
     });
-    console.log(dataTable.buttons().count()); // Should return > 0 if buttons were added
-
-
 }
 
 $("#fees_table").on('click', '.view_button', function () {
