@@ -34,7 +34,7 @@ $('#dob').datepicker({
 $('.select2').select2();
 
 function displaySemester(education_type) {
-    if (education_type == "HSC" || education_type == "Bachelor's Degree" || education_type == "Master's Degree") {
+    if (education_type == "HSC" || education_type == "Diploma" || education_type == "Bachelor's Degree" || education_type == "Master's Degree") {
         $('.semester-div').removeClass('d-none');
     } else {
         $('.semester-div').addClass('d-none');
