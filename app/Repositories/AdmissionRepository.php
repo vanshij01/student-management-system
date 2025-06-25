@@ -400,7 +400,7 @@ class AdmissionRepository implements AdmissionRepositoryInterface
 
     public function getCommentsByAdmissionId($admission_id)
     {
-        $comments = Comment::where('admission_id', $admission_id)->get();
+        $comments = Comment::where('admission_id', $admission_id)->orderBy('created_at', 'DESC')->get();
         return $comments;
     }
 

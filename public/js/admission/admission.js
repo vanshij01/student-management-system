@@ -124,7 +124,7 @@ $(document).ready(function () {
                 text: '<i class="las la-download"></i> Export Data',
                 className: 'secondary_btn',
                 exportOptions: {
-                    columns: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14]
+                    columns: [3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]
                 },
             }],
             columnDefs: [{
@@ -195,7 +195,7 @@ $(document).ready(function () {
             const checked = $('#admission_table tbody input.dt-checkboxes:checked').length;
             $('#selectAll').prop('checked', total === checked);
         });
-
+// let search = '';
         $('.dataTables_filter input').val(search);
     }
 

@@ -524,7 +524,7 @@
                                                         <td>{{ $comment->user->name }}</td>
                                                         <td>{{ ucfirst(str_replace('_', ' ', $comment->comment_type)) }}
                                                         </td>
-                                                        <td>{{ date('d/m/Y', strtotime($comment->created_at)) }}</td>
+                                                        <td>{{ date('d/m/Y H:i', strtotime($comment->created_at)) }}</td>
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -707,7 +707,7 @@
                             <div class="col-sm-12 col-lg-12 mb-4">
                                 <label for="admin_comment">Admin Comment</label>
                                 <textarea class="form-control admin_comment complaint_desc_field" name="admin_comment"
-                                    placeholder="Enter Admin Comment" required data-parsley-required-message="The admin comment field is required.">{{ old('admin_comment') }}</textarea>
+                                    placeholder="Enter Admin Comment"  data-parsley-required-message="The admin comment field is required.">{{ old('admin_comment') }}</textarea>
                             </div>
                             <div class="col-sm-12 col-lg-12 mb-4">
                                 <div class="form-check checkbox_field_box">
@@ -777,7 +777,7 @@
                             <div class="col-sm-12 col-lg-6 mb-4">
                                 <label for="admin_comment">Admin Comment</label>
                                 <textarea class="form-control admin_comment complaint_desc_field" name="admin_comment" id="" cols="30"
-                                    rows="10" placeholder="Enter Admin Comment" required
+                                    rows="10" placeholder="Enter Admin Comment" 
                                     data-parsley-required-message="The admin comment field is required.">{{ old('admin_comment') }}</textarea>
                             </div>
                         </div>

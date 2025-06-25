@@ -725,7 +725,7 @@ class AdmissionController extends Controller
         $countries = $this->countryRepository->getAll();
         $comments = $this->admissionRepository->getCommentsByAdmissionId($id);
         $activities = ActivityLog::where('admission_id', $id)
-            ->orWhere('student_id', $student_id)
+            ->orWhere('student_id', $student_id)->orderBy('created_at', 'DESC')
             ->get();
         // dd($activities);
         return view('backend.admission.show', compact('admission', 'documents', 'reservation', 'courses', 'villages', 'docTypes', 'countries', 'comments', 'activities'));
