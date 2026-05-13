@@ -91,7 +91,7 @@
 
         .isAdmissionNew {
             /* padding: 6px 20px;
-                                    min-height: auto; */
+                                                    min-height: auto; */
             pointer-events: none;
         }
 
@@ -145,11 +145,16 @@
     @php
         $updateCheck = \App\Models\Permission::checkCRUDPermissionToUser('Admission', 'update');
         $isSuperAdmin = \App\Models\Permission::isSuperAdmin();
+
     @endphp
     <div class="card mb-4">
+        <div id="alertBox" class="alert alert-success alert-dismissible fade show d-none" role="alert">
+            <strong id="alertMessage"></strong>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
         <div class="card-header d-md-flex d-sm-block align-items-center justify-content-between py-md-2">
             <h5 class="card-title m-0 me-2 text-white d-none d-md-block">View Admission Details <button type="button"
-                    class="btn secondary_btn isAdmissionNew">{{ $admission->isAdmissionNew == 1 ? 'New' : 'Old' }}</button>
+                    class="btn secondary_btn isAdmissionNew">{{ $admission->is_admission_new == 1 ? 'New' : 'Old' }}</button>
             </h5>
             <h3 class="card-title m-0 me-2 text-white d-block d-md-none">View Admission Details</h3>
 
@@ -162,6 +167,8 @@
                 @if ($isSuperAdmin)
                     <button type="button" class="btn secondary_btn status_btn"
                         onclick="sendStatusRemark({{ $admission->admission_id }})">Admission Status</button>
+                    <button type="button" class="btn secondary_btn status_btn"
+                        onclick="sendBacklogStatus({{ $admission->admission_id }})">Update Backlog Status</button>
                 @endif
                 <button type="button" class="btn secondary_btn status_btn"
                     onclick="sendComment({{ $admission->admission_id }})">Add Comment</button>
@@ -246,12 +253,12 @@
                         </div>
                     @endif
                 </div>
-                    <div class="d-flex align-items-center">
-                        {{-- <a href="img"><img src="{{ asset($admission->student_photo_url) }}" alt="" class="student_img"></a> --}}
-                        <a class="img">
-                            <img src="{{ asset($admission->student_photo_url) }}" alt="Student Photo" class="student_img">
-                        </a>
-                    </div>
+                <div class="d-flex align-items-center">
+                    {{-- <a href="img"><img src="{{ asset($admission->student_photo_url) }}" alt="" class="student_img"></a> --}}
+                    <a class="img">
+                        <img src="{{ asset($admission->student_photo_url) }}" alt="Student Photo" class="student_img">
+                    </a>
+                </div>
             </div>
         </div>
     </div>
@@ -366,10 +373,10 @@
                 </div>
                 <div class="d-flex align-items-center student_img_div">
                     <a class="img">
-                    <img src="{{ asset($admission->father_photo_url) }}" alt="Father photo" class="student_img">
+                        <img src="{{ asset($admission->father_photo_url) }}" alt="Father photo" class="student_img">
                     </a>
                     <a class="img">
-                    <img src="{{ asset($admission->mother_photo_url) }}" alt="Mother Photo" class="student_img">
+                        <img src="{{ asset($admission->mother_photo_url) }}" alt="Mother Photo" class="student_img">
                     </a>
                 </div>
             </div>
@@ -435,6 +442,10 @@
                 <div class="col-md-4 border-right mb-2 mb-md-0">
                     <h6>Fees Receipt Date</h6>
                     <label>{{ $admission->college_fees_receipt_date ? date('d/m/Y', strtotime($admission->college_fees_receipt_date)) : '-' }}</label>
+                </div>
+                <div class="col-md-4 border-right mb-2 mb-md-0">
+                    <h6>Backlog</h6>
+                    <label>{{ $hasBacklog ? 'Yes' : 'No' }}</label>
                 </div>
                 <hr class="d-md-none">
                 <hr class="mb-0 mt-0 mb-md-4 mt-md-4">
@@ -588,7 +599,6 @@
                                                         }
                                                     }
                                                 @endphp
-
                                                 @foreach ($activities as $key => $item)
                                                     @php
                                                         $index = $key;
@@ -707,7 +717,7 @@
                             <div class="col-sm-12 col-lg-12 mb-4">
                                 <label for="admin_comment">Admin Comment</label>
                                 <textarea class="form-control admin_comment complaint_desc_field" name="admin_comment"
-                                    placeholder="Enter Admin Comment"  data-parsley-required-message="The admin comment field is required.">{{ old('admin_comment') }}</textarea>
+                                    placeholder="Enter Admin Comment" data-parsley-required-message="The admin comment field is required.">{{ old('admin_comment') }}</textarea>
                             </div>
                             <div class="col-sm-12 col-lg-12 mb-4">
                                 <div class="form-check checkbox_field_box">
@@ -721,7 +731,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn secondary_btn" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn primary_btn ">Save</button>
+                        <button type="submit" class="btn primary_btn submitCommentBtn">Save</button>
                     </div>
                 </form>
             </div>
@@ -777,14 +787,61 @@
                             <div class="col-sm-12 col-lg-6 mb-4">
                                 <label for="admin_comment">Admin Comment</label>
                                 <textarea class="form-control admin_comment complaint_desc_field" name="admin_comment" id="" cols="30"
-                                    rows="10" placeholder="Enter Admin Comment" 
+                                    rows="10" placeholder="Enter Admin Comment"
                                     data-parsley-required-message="The admin comment field is required.">{{ old('admin_comment') }}</textarea>
                             </div>
                         </div>
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn secondary_btn" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn primary_btn ">Save</button>
+                        <button type="submit" class="btn primary_btn submitStatusRemarkBtn">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Change Backlog Status Modal -->
+    <div class="modal fade createBacklogStatusModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Update Backlog Status</h4>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form class="createBacklogStatusForm" action="{{ route('admission.sendBacklogStatus') }}"
+                    method="POST">
+                    @csrf
+                    <input type="hidden" name="student_id" class="student_id">
+                    <input type="hidden" name="admission_id" class="admission_id">
+                    <div class="modal-body pb-0">
+                        <div class="row">
+                            <div class="col-sm-12 col-lg-6 mb-4">
+                                <label for="name">Student Name</label>
+                                <input type="text" class="form-control student_name" disabled />
+                            </div>
+                            <div class="col-sm-12 col-lg-6 mb-4">
+                                <label for="name">Student Email</label>
+                                <input type="text" class="form-control student_email" disabled />
+                            </div>
+                            <div class="col-sm-12 col-lg-6 mb-4">
+                                <label for="has_backlog">Backlog Status</label>
+                                <select name="has_backlog" class="form-select has_backlog select2" required>
+                                    <option value="">Select Backlog Status</option>
+                                    <option value="true">Yes</option>
+                                    <option value="false">No</option>
+                                </select>
+                            </div>
+                            <div class="col-sm-12 col-lg-6 mb-4">
+                                <label for="admin_comment">Admin Comment</label>
+                                <textarea class="form-control complaint_desc_field" name="admin_comment" cols="30"
+                                    rows="10" placeholder="Enter Comment">{{ old('admin_comment') }}</textarea>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn secondary_btn" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn primary_btn submitBacklogStatusBtn">Save</button>
                     </div>
                 </form>
             </div>
@@ -799,7 +856,8 @@
             $('#commentTable').DataTable();
             $('#historyTable').DataTable();
 
-            $('.img').on('click', function() {
+            // Delegate click for dynamically rendered .img elements
+            $(document).on('click', '.img', function() {
                 $('.viewDocumentModal').modal('show');
                 var src = $(this).find('img').prop('src');
                 var alt = $(this).find('img').prop('alt');
@@ -815,12 +873,12 @@
             });
 
             // Toggle zoom on click
-            $('.view_img').on('click', function() {
+            $(document).on('click', '.view_img', function() {
                 $(this).toggleClass('magnified');
             });
 
             // Zoom follows mouse only if magnified
-            $('.image-container').on('mousemove', function(e) {
+            $(document).on('mousemove', '.image-container', function(e) {
                 let image = $(this).find('.view_img');
                 if (!image.hasClass('magnified')) return;
 

@@ -93,6 +93,7 @@ class Admission extends Model
         'parents_aadhar_front',
         'parents_aadhar_back',
         'parents_passport_front',
+        'has_backlog'
     ];
 
     protected static $logAttributes = ['*'];

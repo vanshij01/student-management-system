@@ -153,6 +153,10 @@
                         <li><a class="nav-link {{ in_array(Route::current()->getName(), ['setting.index', 'setting.create']) ? 'active' : '' }}"
                                 href="{{ route('setting.index') }}">Setting</a></li>
                     @endif
+                    @if ($isSuperAdmin == 1 || in_array('Room', $permissions))
+                        <li><a class="nav-link {{ in_array(Route::current()->getName(), ['room.import.form', 'room.import']) ? 'active' : '' }}"
+                                href="{{ route('room.import.form') }}">Room Allocation</a></li>
+                    @endif
                 </ul>
             </li>
         @endif

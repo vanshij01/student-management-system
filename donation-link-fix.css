@@ -1,0 +1,12 @@
+/* Remove blue color from links in DataTable cells */
+table td a {
+    color: inherit !important;
+    text-decoration: none !important;
+}
+
+/* Alternative more specific selector if the above doesn't work */
+.datatables-basic td a,
+.table td a {
+    color: inherit !important;
+    text-decoration: none !important;
+}

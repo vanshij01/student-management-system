@@ -41,7 +41,7 @@
                 </div>
             @endif
             <div class="quick-links-inr">
-                @if ($admissionDate)
+                {{-- @if ($admissionDate)
                     @if (date('Y-m-d') <= $admissionDate)
                     @else
                         <a href="#" class="quick-links-box" rel="noopener noreferrer">
@@ -52,8 +52,8 @@
                                 <h3 class="quick-links-title">{{ $admissionLabel }}</h3>
                             </div>
                     @endif
-                @endif
-                @if (!$isStudentAdmissionExist)
+                @endif --}}
+                {{-- @if (!$isStudentAdmissionExist)
                     @if ($admissionDate)
                         @if (date('Y-m-d') <= $admissionDate)
                             @if ($apologyLetterCount <= 3)
@@ -67,8 +67,8 @@
                                     </div>
                                 </a>
                             @endif
-                        @endif
-                    @elseif(!$admissionDate && count($admissions) == 0)
+                        @endif --}}
+                    {{-- @elseif(!$admissionDate && count($admissions) == 0) --}}
                         <a href="{{ route('student.admission.create') }}" class="quick-links-box" rel="noopener noreferrer">
                             <div class="quick-links-icon">
                                 <img src="/assets/images/apply-admissions.png" alt="" class="hover-image">
@@ -77,8 +77,8 @@
                                 <h3 class="quick-links-title">Apply for an Admissions</h3>
                             </div>
                         </a>
-                    @endif
-                @endif
+                    {{-- @endif
+                @endif --}}
                 {{-- <a href="{{ route('student.admission.create') }}" class="quick-links-box" rel="noopener noreferrer">
                     <div class="quick-links-icon">
                         <img src="/assets/images/apply-admissions.png" alt="" class="hover-image">
@@ -195,10 +195,10 @@
                     <h3 class="admission-card-title"> Important Notice</h3>
                     <div class="imp-notice-wrapper ">
                         <div class="my-admission-edit my-admission-notice">
-                            <p class="mb-0">{{ $notice->title }}</p>
+                            <p class="mb-0">{{ $notice->title ?? 'N/A' }}</p>
                         </div>
                         <div class="imp-notice-desc">
-                            <p class="mb-0">{{ $notice->content }}</p>
+                            <p class="mb-0">{{ $notice->content ?? 'N/A'}}</p>
                         </div>
                     </div>
                 </div>

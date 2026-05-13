@@ -25,7 +25,7 @@
                 value="{{ $admissionDetail->education_type }}"> --}}
         </div>
         <div class="col">
-            {{-- <input type="hidden" name="course_id" id="course_id" value="{{ $admissionDetail->course_id ?? 0 }}"> --}}
+            <input type="hidden" id="old_course_id" value="{{ $admissionDetail->course_id ?? 0 }}">
             <label for="course_name" class="form-label">Course</label>
             <div class="error-message">
                 <select id="course_id" name="course_id" class="select2 form-select" data-placeholder="Select course" required>
@@ -195,12 +195,12 @@
             <div class="d-flex gap-3">
                 <div class="form-check m-0">
                     <input class="form-check-input" type="radio" name="having_any_backlog" id="backlog_yes"
-                        value="true">
+                        value="true" {{ old('having_any_backlog', $admissionDetail->has_backlog) ? 'checked' : '' }}>
                     <label class="form-check-label" for="backlog_yes">Yes</label>
                 </div>
                 <div class="form-check m-0">
                     <input class="form-check-input" type="radio" name="having_any_backlog" id="backlog_no"
-                        value="false" checked>
+                        value="false" {{ old('having_any_backlog', $admissionDetail->has_backlog) ? '' : 'checked' }}>
                     <label class="form-check-label" for="backlog_no">No</label>
                 </div>
             </div>

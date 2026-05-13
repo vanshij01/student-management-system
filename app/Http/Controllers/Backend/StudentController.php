@@ -13,6 +13,7 @@ use App\Repositories\VillageRepository;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Yajra\DataTables\Facades\DataTables;
@@ -56,7 +57,12 @@ class StudentController extends Controller
         $genderId = $request->gender;
         $countryId = $request->country_id;
         $student = $this->studentRepository->studentData($genderId, $countryId);
-        return datatables()->of($student)->addIndexColumn()->make(true);
+        // dd($student);
+        return datatables()->of($student)->filter(function ($query) use ($request) {
+                if ($request->has('search') && $search = $request->input('search')['value']) {
+                    $query->where(DB::raw("CONCAT_WS(' ', first_name, middle_name, last_name)"), 'like', "%{$search}%");
+                }
+            })->addIndexColumn()->make(true);
     }
 
     /**
@@ -64,8 +70,8 @@ class StudentController extends Controller
      */
     public function create()
     {
-        $countries  = $this->countryRepository->getAll();
-        $villages  = $this->villageRepository->getAll();
+        $countries = $this->countryRepository->getAll();
+        $villages = $this->villageRepository->getAll();
         return view('backend.student.create', compact('countries', 'villages'));
     }
 
@@ -124,8 +130,8 @@ class StudentController extends Controller
     public function show(string $id)
     {
         $student = $this->studentRepository->getById($id);
-        $countries  = $this->countryRepository->getAll();
-        $villages  = $this->villageRepository->getAll();
+        $countries = $this->countryRepository->getAll();
+        $villages = $this->villageRepository->getAll();
         $donations = $this->feesRepository->getAllFeesByStudentId($id);
         $admissions = $this->admissionRepository->getAllAdmissionByStudentId($id);
         $activities = ActivityLog::where('student_id', $id)->orderBy('id', 'desc')->get();
@@ -139,8 +145,8 @@ class StudentController extends Controller
     public function edit(string $id)
     {
         $student = $this->studentRepository->getById($id);
-        $countries  = $this->countryRepository->getAll();
-        $villages  = $this->villageRepository->getAll();
+        $countries = $this->countryRepository->getAll();
+        $villages = $this->villageRepository->getAll();
         return view('backend.student.update', compact('student', 'countries', 'villages'));
     }
 

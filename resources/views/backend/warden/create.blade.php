@@ -97,7 +97,7 @@
                         <label for="dob" class="form-label">DOB</label>
                         <input type="text" class="form-control" name="dob" value="{{ old('dob') }}"
                             placeholder="DD/MM/YYYY" id="dob" required
-                            data-parsley-required-message="The dob field is required." />
+                            data-parsley-required-message="The dob field is required." autocomplete="off"/>
                         @error('dob')
                             <small class="red-text ml-10" role="alert">
                                 {{ $message }}

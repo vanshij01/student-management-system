@@ -38,7 +38,7 @@
                         <input type="text" class="form-control time" name="start_datetime"
                             value="{{ date('d/m/Y H:i', old(strtotime('start_datetime'), strtotime($event->start_datetime))) }}"
                             placeholder="DD/MM/YYYY" id="start_datetime" required
-                            data-parsley-required-message="The start datetime field is required." />
+                            data-parsley-required-message="The start datetime field is required." autocomplete="off"/>
                         @error('start_datetime')
                             <small class="red-text ml-10" role="alert">
                                 {{ $message }}
@@ -50,7 +50,7 @@
                         <input type="text" class="form-control time" name="end_datetime"
                             value="{{ date('d/m/Y H:i', old(strtotime('end_datetime'), strtotime($event->end_datetime))) }}"
                             placeholder="DD/MM/YYYY" id="end_datetime" required
-                            data-parsley-required-message="The end datetime field is required." />
+                            data-parsley-required-message="The end datetime field is required." autocomplete="off"/>
                         @error('end_datetime')
                             <small class="red-text ml-10" role="alert">
                                 {{ $message }}

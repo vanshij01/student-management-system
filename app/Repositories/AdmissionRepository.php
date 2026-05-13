@@ -17,18 +17,19 @@ class AdmissionRepository implements AdmissionRepositoryInterface
 {
     public function getAll($data = [], $year = null)
     {
-        $currentYear =  date('Y') . "-05-01";
-        $nextYear =  (date('Y') + 1) . "-04-30";
+        $currentYear = date('Y') . "-05-01";
+        $nextYear = (date('Y') + 1) . "-04-30";
 
         $admissions = Admission::select('admissions.*', 'c.course_name', 'sam.student_id as student_id', 'sam.hostel_id', 'sam.room_id', 'sam.bed_id', 'h.hostel_name', 'r.room_number', 'b.bed_number', 'v.name as village_name', 'sam.is_bed_release')
             ->leftjoin('courses as c', 'c.id', 'admissions.course_id')
             ->join('student_admission_map as sam', 'sam.admission_id', 'admissions.id')
+            ->leftJoin('fees as fe', 'fe.admission_id', 'admissions.id')
             ->leftJoin('students as stud', 'stud.id', 'sam.student_id')
             ->leftjoin('hostels as h', 'h.id', 'sam.hostel_id')
             ->leftjoin('rooms as r', 'r.id', 'sam.room_id')
             ->leftjoin('beds as b', 'b.id', 'sam.bed_id')
             ->Join('villages as v', 'v.id', 'stud.village_id');
-
+        // dd($admissions);
         /* if ($year != null && $year != '') {
             $year = explode('-', $year);
             $admissions->whereBetween('sam.created_at', ["$year[0]-05-01", "$year[1]-04-30"]);
@@ -36,13 +37,52 @@ class AdmissionRepository implements AdmissionRepositoryInterface
             // dd($currentYear);
             $admissions->whereBetween('sam.created_at', ["$currentYear", "$nextYear"]);
         } */
-
+        // dd($data);
         if ($data) {
             if (!empty($data['year']) && $data['year'] != 'all') {
                 $year = explode('-', $data['year']);
                 // dd("$year[0]-05-01");
                 $admissions->whereBetween('sam.created_at', ["$year[0]-05-01", "$year[1]-04-30"]);
                 // dd($admissions->get());
+            }
+
+            if (isset($data['has_backlog']) && $data['has_backlog'] !== '') {
+                if ($data['has_backlog'] == 'yes') {
+                    $admissions->whereExists(function ($query) {
+                        $query->select(DB::raw(1))
+                            ->from('student_documents as sdoc')
+                            ->whereRaw("sdoc.student_id = sam.student_id")
+                            ->whereRaw("sdoc.course_id = admissions.course_id")
+                            ->whereRaw("LOWER(sdoc.doc_type) LIKE '%backlog%'")
+                            ->whereRaw("YEAR(sdoc.created_at) = YEAR(sam.created_at)");
+                    });
+                }
+            }
+
+            if (!empty($data['admin_id'])) {
+                $latestCommentsSub = DB::table('comments as c1')
+                    ->select('c1.admission_id')
+                    ->where('c1.commented_by', $data['admin_id'])
+                    ->whereRaw('c1.id = (
+                        SELECT MAX(c2.id) FROM comments as c2
+                        WHERE c2.admission_id = c1.admission_id
+                    )');
+
+                $admissions->whereIn('admissions.id', $latestCommentsSub);
+            }
+
+            if (isset($data['is_used_vehicle'])) {
+                if ($data['is_used_vehicle'] !== '') {
+                    $admissions->where('admissions.is_used_vehicle', $data['is_used_vehicle']);
+                }
+            }
+
+            if (isset($data['fees_status']) && $data['fees_status'] === '1') {
+                $admissions->where('fe.status', 1);
+            }
+
+            if (isset($data['fees_status']) && $data['fees_status'] === '0') {
+                $admissions->whereNull('fe.id');
             }
 
             if (!empty($data['gender']) && $data['gender'] != 'all') {
@@ -74,7 +114,7 @@ class AdmissionRepository implements AdmissionRepositoryInterface
             }
 
             if (!empty($data['roomAlloted']) && $data['roomAlloted'] != 'all') {
-                if ($data['roomAlloted'] === 'no') {
+                if (isset($data['roomAlloted']) && $data['roomAlloted'] === 'no') {
                     $admissions->where([['sam.hostel_id', '0'], ['sam.room_id', '0'], ['sam.bed_id', '0']]);
                 } else {
                     $admissions->where([['sam.hostel_id', '<>', '0'], ['sam.room_id', '<>', '0'], ['sam.bed_id', '<>', '0']]);
@@ -84,15 +124,15 @@ class AdmissionRepository implements AdmissionRepositoryInterface
             $admissions->whereBetween('sam.created_at', ["$currentYear", "$nextYear"]);
         }
 
-        $admissions =  $admissions->orderBy("created_at", "desc");
+        $admissions = $admissions->orderBy("created_at", "desc");
 
         return $admissions;
     }
 
     public function getAdmissionByStudentId($year = null)
     {
-        $currentYear =  date('Y') . "-05-01";
-        $nextYear =  (date('Y') + 1) . "-05-30";
+        $currentYear = date('Y') . "-05-01";
+        $nextYear = (date('Y') + 1) . "-05-30";
 
         $admission = Admission::select('admissions.*', 'c.course_name', 'sam.student_id as student_id', 'stud.village_id')
             ->leftJoin('courses as c', 'c.id', 'admissions.course_id')
@@ -100,7 +140,7 @@ class AdmissionRepository implements AdmissionRepositoryInterface
             ->leftJoin('students as stud', 'stud.id', 'sam.student_id')
             ->leftJoin('comments as cmt', 'cmt.student_id', 'sam.student_id')
             ->where('stud.user_id', Auth::user()->id)
-            ->orderBy("year_of_addmission", "desc");
+            ->orderBy("created_at", "desc");
 
         if ($year != null && $year != '') {
             $year = explode('-', $year);
@@ -195,7 +235,7 @@ class AdmissionRepository implements AdmissionRepositoryInterface
         if (isset($data['gender']) && !empty($data['gender'])) {
             $dueFeesReport->where('a.gender', $data['gender']);
         }
-        return $dueFeesReport->orderBy("r.room_number", "asc")->orderBy("b.bed_number", "asc")->get();
+        return $dueFeesReport->orderBy("r.room_number", "asc")->orderBy("b.bed_number", "asc");
     }
 
     public function isConfirmAdmission($data)
@@ -245,11 +285,11 @@ class AdmissionRepository implements AdmissionRepositoryInterface
 
     public function studentDetails()
     {
-        $studentDetail =  Student::join('student_admission_map as sam', 'sam.student_id', 'students.id')
+        $studentDetail = Student::join('student_admission_map as sam', 'sam.student_id', 'students.id')
             ->join('admissions as add', 'add.id', 'sam.admission_id')
             ->join('student_documents as sd', 'sd.student_id', 'students.id')
             ->where('students.user_id', Auth::user()->id)->first();
-        $studentAddDetail = ($studentDetail != null) ? $studentDetail :  Student::where('user_id', Auth::user()->id)->first();
+        $studentAddDetail = ($studentDetail != null) ? $studentDetail : Student::where('user_id', Auth::user()->id)->first();
         return $studentAddDetail;
     }
 
@@ -283,7 +323,7 @@ class AdmissionRepository implements AdmissionRepositoryInterface
                 $searchResult->where('admissions.is_admission_confirm', '0');
             }
         }
-        $searchResult =  $searchResult->orderBy("created_at", "desc")->get();
+        $searchResult = $searchResult->orderBy("created_at", "desc")->get();
         $searchResult->map(function ($data) {
             $data->role = Auth::user()->role;
         });
@@ -354,7 +394,7 @@ class AdmissionRepository implements AdmissionRepositoryInterface
             $allotedList->where('a.gender', $data['gender']);
         }
 
-        return $allotedList->orderBy("r.room_number", "asc")->orderBy("b.bed_number", "asc")->get();
+        return $allotedList->orderBy("r.room_number", "asc")->orderBy("b.bed_number", "asc");
     }
 
     public function releaseStudentData($admissionId)
@@ -400,7 +440,7 @@ class AdmissionRepository implements AdmissionRepositoryInterface
 
     public function getCommentsByAdmissionId($admission_id)
     {
-        $comments = Comment::where('admission_id', $admission_id)->orderBy('created_at', 'DESC')->get();
+        $comments = Comment::where('admission_id', $admission_id)->with('user')->orderBy('created_at', 'DESC')->get();
         return $comments;
     }
 
@@ -424,13 +464,13 @@ class AdmissionRepository implements AdmissionRepositoryInterface
             ->leftJoin('students as stud', 'stud.id', 'sam.student_id')
             ->where('stud.user_id', Auth::user()->id)
             ->orderBy("year_of_addmission", "desc")
-            ->latest()->first();
+            ->first();
     }
 
     public function idCardStudentsRecord($data)
     {
-        $currentYear =  date('Y') . "-05-01";
-        $nextYear =  (date('Y') + 1) . "-04-30";
+        $currentYear = date('Y') . "-05-01";
+        $nextYear = (date('Y') + 1) . "-04-30";
         $allotedList = StudentAdmissionMap::select('s.first_name', 's.middle_name', 's.last_name', 'b.bed_number', 'r.room_number', 'a.gender', 's.phone', 'a.father_phone', 'a.mother_phone', 'a.guardian_phone', 'a.id as admission_id', 'c.course_name')
             ->join('students as s', 's.id', 'student_admission_map.student_id')
             ->join('admissions as a', 'a.id', 'student_admission_map.admission_id')
@@ -461,7 +501,7 @@ class AdmissionRepository implements AdmissionRepositoryInterface
             $allotedList->whereBetween('student_admission_map.created_at', ["$currentYear", "$nextYear"]);
         }
 
-        return $allotedList->orderBy("r.room_number", "asc")->orderBy("b.bed_number", "asc")->get();
+        return $allotedList->orderBy("r.room_number", "asc")->orderBy("b.bed_number", "asc");
     }
 
     public function firstHalfReportData($year = null)

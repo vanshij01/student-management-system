@@ -35,10 +35,10 @@
         }
 
         /* .dataTables_scrollBody {
-                                                                                                                                    overflow-x: scroll !important;
-                                                                                                                                    overflow-y: hidden !important;
-                                                                                                                                    position: static !important;
-                                                                                                                                } */
+                                                                                                                                                                overflow-x: scroll !important;
+                                                                                                                                                                overflow-y: hidden !important;
+                                                                                                                                                                position: static !important;
+                                                                                                                                                            } */
 
         .pagination .page-item {
             display: flex;
@@ -170,10 +170,10 @@
             color: #fff;
         }
 
-        #admission_table_wrapper .data-table-header {
+        /* #admission_table_wrapper .data-table-header {
             display: grid !important;
             grid-template-columns: 88% 10%;
-        }
+        } */
 
         #admission_table_wrapper .dt-buttons {
             text-align: right;
@@ -362,6 +362,30 @@
                 <option value="1" @if ($request->isAdmissionNew == '1') selected @endif>New</option>
                 <option value="0" @if ($request->isAdmissionNew == '0') selected @endif>Old</option>
             </select>
+            <select class="form-select select2" name="is_used_vehicle" id="is_used_vehicle"
+                aria-label="Default select example">
+                <option value="" selected>Select vehicle Status</option>
+                <option value="1" @if ($request->is_used_vehicle == '1') selected @endif>Yes</option>
+                <option value="0" @if ($request->is_used_vehicle == '0') selected @endif>No</option>
+            </select>
+            <select class="form-select select2" name="has_backlog" id="has_backlog">
+                <option value="" selected>Select Backlog Status</option>
+                <option value="yes" @if ($request->has_backlog == 'yes') selected @endif>Yes</option>
+                <option value="no" @if ($request->has_backlog == 'no') selected @endif>No</option>
+            </select>
+            <select name="admin_id" id="admin_id" class="form-select select2">
+                <option value="" selected>Select Comment By</option>
+                @foreach ($admins as $admin)
+                    <option value="{{ $admin->id }}" {{ request()->admin_id == $admin->id ? 'selected' : '' }}>
+                        {{ $admin->name }}
+                    </option>
+                @endforeach
+            </select>
+            <select class="form-select select2" name="fees_status" id="fees_status">
+                <option value="" selected>Select Fees Status</option>
+                <option value="1" @if ($request->fees_status === '1') selected @endif>Paid</option>
+                <option value="0" @if ($request->fees_status === '0') selected @endif>Not Paid</option>
+            </select>
             <div class="d-flex gap-1">
                 <button class="btn primary_btn" type="submit" id="filter" name="filter">Filter</button>
                 <button class="btn secondary_btn" type="submit" name="reset" id="reset">Reset</button>
@@ -413,6 +437,7 @@
                             <th><input type="checkbox" id="selectAll" class="form-check-input"></th>
                             <th>Action</th>
                             <th>Sr. No.</th>
+                            <th>Admission ID</th>
                             <th>Student Name</th>
                             <th>Gender</th>
                             <th>Status</th>
@@ -420,16 +445,24 @@
                             <th>Email Id</th>
                             <th>Village</th>
                             {{-- <th>Father's Name</th> --}}
-                            {{-- <th>Father's No</th> --}}
                             <th>Qualification</th>
-                            {{-- <th>Semester</th> --}}
+                            
                             <th>Collage Name/Institute Name</th>
                             <th>Admission Date</th>
                             <th>Admission Old/New</th>
+                            <th>Fees Status</th>
+                            <th>Commented By</th>
                         </tr>
                     </thead>
                     <tbody>
+                        {{-- {{ dd($allData) }} --}}
                         @foreach ($allData as $key => $item)
+                            @php
+                                $comments = \App\Models\Comment::where('admission_id', $item->id)
+                                    ->latest()
+                                    ->value('commented_by');
+                                $commentUser = $comments ? \App\Models\User::find($comments) : null;
+                            @endphp
                             <tr>
                                 <td></td>
                                 <td></td>
@@ -502,7 +535,11 @@
                                             $html .=
                                                 '<li><a class="dropdown-item dropdown-trigger-17500btn waves-effect" href="admission/' .
                                                 $item->id .
-                                                '">View </a></li>';
+                                                '">View</a></li>';
+                                            $html .=
+                                                '<li><a class="dropdown-item dropdown-trigger-17500btn waves-effect" href="javascript:void(0)" onclick="loadCommentModal(' .
+                                                $item->id .
+                                                ')">View Comments</a></li>';
                                         }
                                         if ($isSuperAdmin) {
                                             $html .=
@@ -529,6 +566,7 @@
                                     </div>
                                 </td>
                                 <td>{{ $key + 1 }}</td>
+                                <td>{{ $item->id }}</td>
                                 <td>{{ $item->full_name }}</td>
                                 <td>{{ ucfirst($item->gender) }}</td>
                                 @php
@@ -556,9 +594,16 @@
                                 {{-- <td>{{ $item->father_phone }}</td> --}}
                                 <td>{{ $item->course_name }}</td>
                                 {{-- <td>{{ $item->semester }}</td> --}}
+
                                 <td>{{ $item->institute_name }}</td>
                                 <td>{{ $item->created_at->format('d/m/Y') }}</td>
-                                <td>{{ $item->isAdmissionNew == 0 ? 'Old' : 'New' }}</td>
+                                {{-- {{ dd($item->isAdmissionNew) }} --}}
+                                <td>{{ isset($item->is_admission_new) && (int) $item->is_admission_new == 1 ? 'New' : 'Old' }}
+                                </td>
+                                <td>{{ $item->fees_status }}</td>
+                                <td>
+                                    {{ $commentUser && $commentUser->role_id == 1 ? $commentUser->name : '' }}
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -572,6 +617,22 @@
                         {{-- {{dd($allData->links())}} --}}
                         {!! $allData->withQueryString()->links('pagination::bootstrap-5') !!}
                     </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- View Comment Modal -->
+    <div class="modal fade" id="viewCommentModal" tabindex="-1" aria-labelledby="viewCommentModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Comments</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" style="max-height: 400px; overflow-y: auto;" id="commentModalBody">
+                    <div class="text-center py-5">No comments loaded.</div>
                 </div>
             </div>
         </div>
@@ -632,7 +693,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn secondary_btn" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn primary_btn ">Save</button>
+                        <button type="submit" class="btn primary_btn submitStatusRemarkBtn">Save</button>
                     </div>
                 </form>
             </div>
@@ -696,6 +757,8 @@
                                     </option>
                                     <option @if (old('payment_type') == 'Card') selected @endif value="Card">Credit
                                         Card</option>
+                                    <option @if (old('payment_type') == 'E-Wallet') selected @endif value="E-Wallet">E-Wallet
+                                    </option>
                                 </select>
                                 @error('payment_type')
                                     <small class="red-text ml-10" role="alert">
@@ -794,7 +857,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn secondary_btn" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn primary_btn ">Save</button>
+                        <button type="submit" class="btn primary_btn" id="submitFees">Save</button>
                     </div>
                 </form>
             </div>

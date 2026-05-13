@@ -245,10 +245,12 @@
                                     </option>
                                     <option @if (old('payment_type') == 'Bank') selected @endif value="Bank">Bank
                                         Transfer</option>
-                                    <option @if (old('payment_type') == 'Cheque') selected @endif value="Cheque">
-                                        Cheque</option>
-                                    <option @if (old('payment_type') == 'Card') selected @endif value="Card">
-                                        Credit Card</option>
+                                    <option @if (old('payment_type') == 'Cheque') selected @endif value="Cheque">Cheque
+                                    </option>
+                                    <option @if (old('payment_type') == 'Card') selected @endif value="Card">Credit
+                                        Card</option>
+                                    <option @if (old('payment_type') == 'E-Wallet') selected @endif value="E-Wallet">E-Wallet
+                                    </option>
                                 </select>
                                 @error('payment_type')
                                     <small class="red-text ml-10" role="alert">
@@ -457,9 +459,9 @@
                         @elseif(
                             !empty($fees->payment_type) &&
                                 isset($fees->payment_type) &&
-                                ($fees->payment_type == 'Card' || $fees->payment_type == 'E-wallet'))
+                                ( $fees->payment_type == 'E-wallet' || $fees->payment_type == 'Bank' || $fees->payment_type == 'Card'))
                             Bank Name: <span class="print_field text-center" style="width: calc(33% - 106px);">
-                                -</span>
+                                {{ $fees->bank_name }}</span>
                             Number: <span class="print_field"
                                 style="width: calc(33% - 110px);">{{ $fees->transaction_number }}</span>
                         @else

@@ -27,13 +27,13 @@
                         <label for="new_admission_date" class="form-label">New Admission Date</label>
                         <input type="text" class="form-control date" name="setting[0][value]"
                             value="{{ date('d/m/Y', strtotime(old('new_admission_date', $newDate))) }}"
-                            placeholder="DD/MM/YYYY" id="new_admission_date" required />
+                            placeholder="DD/MM/YYYY" id="new_admission_date" required autocomplete="off"/>
                     </div>
                     <div class="col-lg-4 col-md-6 mb-4">
                         <label for="old_admission_date" class="form-label">Old Admission Date</label>
                         <input type="text" class="form-control date" name="setting[1][value]"
                             value="{{ date('d/m/Y', strtotime(old('old_admission_date', $oldDate))) }}"
-                            placeholder="DD/MM/YYYY" id="old_admission_date" required />
+                            placeholder="DD/MM/YYYY" id="old_admission_date" required autocomplete="off"/>
                     </div>
                     <div class="col-lg-4 col-md-6 mb-4">
                         <label for="new_admission_label" class="form-label">New Admission Label</label>

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Events\SendNoteEvent;
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
+use App\Models\User;
 use App\Repositories\BedRepository;
 use App\Repositories\CountryRepository;
 use App\Repositories\CourseRepository;
@@ -28,6 +29,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Schema;
+use Maatwebsite\Excel\Facades\Excel;
+use App\Imports\RoomAllotmentImport;
 
 class AdmissionController extends Controller
 {
@@ -86,28 +89,30 @@ class AdmissionController extends Controller
         $countries = $this->countryRepository->getAll();
         $courses = $this->courseRepository->getAll();
         $villages = $this->villageRepository->getAll();
+        $admins = User::where('role_id', 1)->get();
 
         $postData = $request->all();
 
         $data = $this->admissionRepository->getAll($postData);
-
         if ($request->search) {
-            $data->where(function ($w) use ($request) {
-                $search = $request->get('search');
+            $search = $request->get('search');
+
+            $data->where(function ($w) use ($search) {
                 $w
-                    /* ->orWhere(DB::raw("CONCAT(admissions.first_name, ' ', admissions.middle_name, ' ', admissions.last_name)"), 'LIKE', "%$search%")
+                    ->orWhere(DB::raw("CONCAT(admissions.first_name, ' ', admissions.middle_name, ' ', admissions.last_name)"), 'LIKE', "%$search%")
                     ->orWhere(DB::raw("CONCAT(admissions.first_name, ' ', admissions.last_name)"), 'LIKE', "%$search%")
                     ->orWhere(DB::raw("CONCAT(admissions.first_name, ' ', admissions.middle_name)"), 'LIKE', "%$search%")
                     ->orWhere('admissions.first_name', 'LIKE', "%$search%")
                     ->orWhere('admissions.middle_name', 'LIKE', "%$search%")
-                    ->orWhere('admissions.last_name', 'LIKE', "%$search%") */
+                    ->orWhere('admissions.last_name', 'LIKE', "%$search%")
                     ->orWhere('admissions.phone', 'LIKE', "%$search%")
                     ->orWhere('admissions.email', 'LIKE', "%$search%")
                     ->orWhere('v.name', 'LIKE', "%$search%")
                     ->orWhere('admissions.father_full_name', 'LIKE', "%$search%")
                     ->orWhere('admissions.father_phone', 'LIKE', "%$search%")
                     ->orWhere('admissions.institute_name', 'LIKE', "%$search%")
-                    ->orWhereRaw("DATE_FORMAT(admissions.addmission_date, '%d/%m/%Y') LIKE ?", ["%$search%"]);
+                    ->orWhere('admissions.is_used_vehicle', 'LIKE', "%$search%")
+                    ->orWhereRaw("YEAR(admissions.created_at) = ?", [$search]);
             });
         }
 
@@ -117,8 +122,9 @@ class AdmissionController extends Controller
             $admission->is_room_allocate = $this->admissionRepository->isRoomAllocation($admission->student_id);
             $admission->fees_status = $this->feesRepository->getByAdmissionId($admission->id) ? 'Paid' : 'Unpaid';
         });
-
-        return view('backend.admission.index', compact('hostels', 'students', 'yearList', 'countries', 'courses', 'villages', 'allData', 'request'));
+        // dd($data);
+        // dd($allData);
+        return view('backend.admission.index', compact('hostels', 'students', 'yearList', 'countries', 'courses', 'villages', 'allData', 'request', 'admins'));
     }
 
     private function nextFiveYears()
@@ -141,7 +147,7 @@ class AdmissionController extends Controller
     public function admissionData(Request $request)
     {
         $postData = $request->all();
-        dd($postData);
+        // dd($postData);
         $admissions = $this->admissionRepository->getAll($postData);
         $admissions->map(function ($admission) {
             $admission->is_room_allocate = $this->admissionRepository->isRoomAllocation($admission->student_id);
@@ -295,6 +301,7 @@ class AdmissionController extends Controller
         $params['chk_declaration'] = ($request->chk_declaration && $params['chk_declaration'] == 'on') ? true : false;
         // $params['is_admission_new'] = $params['student'] ?? false;
         $params['course_id'] = isset($request->course_id) ? $params['course_id'] : $params['old_course_id'];
+        $params['has_backlog'] = ($request->having_any_backlog && $params['having_any_backlog'] == 'true') ? true : false;
 
         // Define document fields
         $documentFields = [
@@ -727,8 +734,14 @@ class AdmissionController extends Controller
         $activities = ActivityLog::where('admission_id', $id)
             ->orWhere('student_id', $student_id)->orderBy('created_at', 'DESC')
             ->get();
-        // dd($activities);
-        return view('backend.admission.show', compact('admission', 'documents', 'reservation', 'courses', 'villages', 'docTypes', 'countries', 'comments', 'activities'));
+        $admissionYear = explode(' - ', $admission->admission_year)[0];
+        $hasBacklog = StudentDocument::where('student_id', $student_id)
+            ->where('course_id', $admission->cId)
+            ->whereYear('created_at', $admissionYear)
+            ->whereRaw("LOWER(doc_type) LIKE '%backlog%'")
+            ->exists();
+        // dd($admission);
+        return view('backend.admission.show', compact('admission', 'documents', 'reservation', 'courses', 'villages', 'docTypes', 'countries', 'comments', 'activities', 'hasBacklog'));
     }
 
     /**
@@ -797,6 +810,7 @@ class AdmissionController extends Controller
         $payLoad['arriving_date'] = \DateTime::createFromFormat('d/m/Y', $payLoad['arriving_date'])->format('Y-m-d');
         $payLoad['college_fees_receipt_date'] = $request->college_fees_receipt_date ? \DateTime::createFromFormat('d/m/Y', $payLoad['college_fees_receipt_date'])->format('Y-m-d') : null;
         $payLoad['chk_declaration'] = ($request->chk_declaration && $payLoad['chk_declaration'] == 'on') ? true : false;
+        $payLoad['has_backlog'] = ($request->having_any_backlog && $payLoad['having_any_backlog'] == 'true') ? true : false;
 
         // Define document fields
         $documentFields = [
@@ -1130,16 +1144,19 @@ class AdmissionController extends Controller
 
         $admission = $this->admissionRepository->getById($id);
         $admin_comment = $this->admissionRepository->getLatestComment($id, Auth::user()->id);
+        // dd($admin_comment);
 
-        $activity = activity('Admission Status Change')
-            ->causedBy($admin_comment)
-            ->event('Email')
+        $activity = activity('Admission Comments')
+            ->causedBy(Auth::user()->id)
+            ->event('Comments')
             ->performedOn($admission)
             ->withProperties([
                 'attributes' => [
                     'id' => $admission->id,
                     'name' => $admission->full_name,
                     'email' => $admission->email,
+                    'comment' => $admin_comment->admin_comment,
+                    'updated_at' => $admin_comment->updated_at,
                 ]
             ])
             ->log(Auth::user()->name . ' has sent email to ' . $admission->full_name);
@@ -1155,27 +1172,43 @@ class AdmissionController extends Controller
 
         return response()->json([
             'status' => 'success',
-            'message' => 'Note send to user successfully'
+            'message' => 'Comment send to user successfully'
         ]);
     }
 
     public function sendStatusRemark(Request $request)
     {
         $params = $request->all();
+        // dd($params);
         $params['created_by'] = Auth::user()->id;
         $params['is_admission_confirm'] = $params['admission_status'];
         unset($params['admission_status']);
+        $id = $params['admission_id'];
+        $statusLabels = [
+            0 => 'Pending',
+            1 => 'Confirm',
+            2 => 'Reject',
+            3 => 'Cancelled',
+            4 => 'Release'
+        ];
 
-        if ($params['admin_comment'] != null) {
-            $data['student_id'] = $params['student_id'];
-            $data['admission_id'] = $params['admission_id'];
-            $data['admin_comment'] = $params['admin_comment'];
-            $data['comment_type'] = 'admission_status';
-            $data['commented_by'] = Auth::user()->id;
-            $this->commentRepository->create($data);
+        $changedStatusLabel = $statusLabels[$params['is_admission_confirm']] ?? 'Unknown';
+        $commentText = 'Status changed to: ' . $changedStatusLabel;
+
+        if (!empty(trim($params['admin_comment'] ?? ''))) {
+            $commentText .= ' - :' . trim($params['admin_comment']);
         }
 
-        $id = $params['admission_id'];
+        $studentId = $params['student_id'];
+
+        $this->commentRepository->create([
+            'student_id' => $studentId,
+            'admission_id' => $id,
+            'admin_comment' => $commentText,
+            'comment_type' => 'admission_status',
+            'commented_by' => Auth::user()->id
+        ]);
+
         unset($params['student_id'], $params['admission_id'], $params['created_by'], $params['admin_comment']);
         $this->admissionRepository->update($params, $id);
 
@@ -1183,22 +1216,28 @@ class AdmissionController extends Controller
         $admin_comment = $this->admissionRepository->getLatestComment($id, Auth::user()->id);
         // $AdminComment = $this->admissionRepository->getById($admin_comment->id);
 
+
+        // Log activity
         $activity = activity('Admission Status Change')
-            ->causedBy($admin_comment)
-            ->event('Email')
+            ->causedBy(Auth::user())
+            ->event('Status Change')
             ->performedOn($admission)
             ->withProperties([
                 'attributes' => [
                     'id' => $admission->id,
                     'name' => $admission->full_name,
                     'email' => $admission->email,
+                    'admission_status' => $changedStatusLabel,
+                    'admin_comment' => $admin_comment->admin_comment ?? null,
+                    'updated_at' => now()->format('Y/m/d H:i:s') ?? null,
                 ]
             ])
-            ->log(Auth::user()->name . ' has sent email to ' . $admission->full_name);
+            ->log(Auth::user()->name . ' has changed admission status for ' . $admission->full_name);
 
+        // Update log with foreign keys
         ActivityLog::where('id', $activity->id)->update([
-            'student_id' => $params['student_id'] ?? 0,
-            'admission_id' => $params['admission_id'] ?? 0
+            'student_id' => $studentId ?? 0,
+            'admission_id' => $admission->id ?? 0
         ]);
 
         event(new SendNoteEvent($admission, $admin_comment));
@@ -1261,6 +1300,31 @@ class AdmissionController extends Controller
         ]);
     }
 
+    public function sendBacklogStatus(Request $request)
+    {
+        $request->validate([
+            'admission_id' => 'required|exists:admissions,id',
+            'has_backlog' => 'required|in:true,false',
+        ]);
+
+        $admission = Admission::findOrFail($request->admission_id);
+        $admission->has_backlog = $request->has_backlog === 'true';
+        $admission->save();
+
+        $this->commentRepository->create([
+            'student_id' => $request->student_id,
+            'admission_id' => $admission->id,
+            'admin_comment' => $request->admin_comment,
+            'comment_type' => 'Backlog_status',
+            'commented_by' => Auth::user()->id
+        ]);
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Backlog status updated successfully.',
+        ]);
+    }
+
     public function feesReceipt($id)
     {
         $fees = $this->feesRepository->getDataByAdmissionId($id);
@@ -1271,4 +1335,36 @@ class AdmissionController extends Controller
             'admission' => $admission,
         ]);
     }
+
+    public function getComments($id)
+    {
+        $comments = $this->admissionRepository->getCommentsByAdmissionId($id);
+
+        return response()->json($comments);
+    }
+
+    public function showImportForm()
+    {
+        $logs = ActivityLog::where('log_name', 'Room Allotment')
+        ->orderByDesc('created_at')
+        ->get();
+        return view('backend.admission.room_allocation',compact('logs'));
+    }
+
+    public function importRoomAllotment(Request $request)
+    {
+        $request->validate([
+            'import_file' => 'required|file|mimes:xls,csv',
+        ]);
+
+        $import = new RoomAllotmentImport();
+        Excel::import($import, $request->file('import_file'));
+
+        if (!empty($import->errors)) {
+            return back()->with('importErrors', $import->errors);
+        }
+
+        return back()->with('success', 'Room allotment imported successfully.');
+    }
+
 }

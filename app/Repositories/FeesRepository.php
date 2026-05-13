@@ -23,7 +23,7 @@ class FeesRepository implements FeesRepositoryInterface
             $year = explode('-', $year);
             $fees->whereBetween('a.created_at', ["$year[0]-04-01", "$year[1]-03-31"]);
         }
-        return $fees->orderBy("fees.created_at", "desc")->get();
+        return $fees->where('financial_year',date('y') . '-' . date('y', strtotime('+1 year', strtotime('y'))))->orderBy("fees.serial_number", "desc")->get();
     }
 
     public function feesData($data)
@@ -71,7 +71,7 @@ class FeesRepository implements FeesRepositoryInterface
             $fees->where('a.gender', $data['gender']);
         }
 
-        return $fees->orderBy("fees.paid_at", "desc")->get();
+        return $fees->where('financial_year',date('y') . '-' . date('y', strtotime('+1 year', strtotime('y'))))->orderBy("fees.serial_number", "desc")->get();
     }
 
     public function getById($id)
@@ -86,7 +86,7 @@ class FeesRepository implements FeesRepositoryInterface
             ->leftjoin('beds as b', 'b.id', 'sam.bed_id')
             ->Join('villages as v', 'v.id', 'stud.village_id');
 
-        return $fees->orderBy("fees.paid_at", "desc")->get();
+        return $fees->where('financial_year',date('y') . '-' . date('y', strtotime('+1 year', strtotime('y'))))->orderBy("fees.serial_number", "desc")->get();
     }
 
     public function getAllFeesByStudentId($id)

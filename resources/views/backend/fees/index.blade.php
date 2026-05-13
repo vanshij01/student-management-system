@@ -19,12 +19,16 @@
             padding: 14.5px 20px 14.5px 34.5px;
         }
 
-        .dataTables_scrollBody{
+        .dataTables_scrollBody {
             overflow: unset !important;
         }
     </style>
 @endsection
 @section('content')
+    <div id="alertBox" class="alert alert-success alert-dismissible fade show d-none" role="alert">
+        <strong id="alertMessage"></strong>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
     <div class="dashboard-header-container">
         <div class="d-flex d-board-inr">
             <button class="sidebar-toggle" id="sidebarToggle"><i class="bi bi-list"></i></button>
@@ -46,9 +50,9 @@
     <form>
         <div class="admission-filter-bar">
             <input type="text" class="form-control" placeholder="From" name="from" id="from"
-                value="{{ old('from') }}" autocomplete="off"/>
+                value="{{ old('from') }}" autocomplete="off" />
             <input type="text" class="form-control" placeholder="To" name="to" id="to"
-                value="{{ old('to') }}" autocomplete="off"/>
+                value="{{ old('to') }}" autocomplete="off" />
             <select class="form-select select2" name="student_id" id="student_id" aria-label="Default select example"
                 data-placeholder="Select Student">
                 <option value="" selected>Select Student</option>
@@ -197,6 +201,8 @@
                                     </option>
                                     <option @if (old('payment_type') == 'Card') selected @endif value="Card">Credit
                                         Card</option>
+                                    <option @if (old('payment_type') == 'E-Wallet') selected @endif value="E-Wallet">E-Wallet
+                                    </option>
                                 </select>
                                 @error('payment_type')
                                     <small class="red-text ml-10" role="alert">
@@ -400,6 +406,8 @@
                                         Cheque</option>
                                     <option @if (old('payment_type') == 'Card') selected @endif value="Card">
                                         Credit Card</option>
+                                    <option @if (old('payment_type') == 'E-Wallet') selected @endif value="E-Wallet">E-Wallet
+                                    </option>
                                 </select>
                                 @error('payment_type')
                                     <small class="red-text ml-10" role="alert">
@@ -506,8 +514,7 @@
         </div>
     </div>
     <input type="hidden" id="isSuperAdmin" value="{{ \App\Models\Permission::isSuperAdmin() }}">
-    <input type="hidden" id="readCheck"
-        value="{{ \App\Models\Permission::checkCRUDPermissionToUser('Fee', 'read') }}">
+    <input type="hidden" id="readCheck" value="{{ \App\Models\Permission::checkCRUDPermissionToUser('Fee', 'read') }}">
     <input type="hidden" id="updateCheck"
         value="{{ \App\Models\Permission::checkCRUDPermissionToUser('Fee', 'update') }}">
 @endsection

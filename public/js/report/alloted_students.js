@@ -20,9 +20,9 @@ function dataTableData() {
             extend: 'csvHtml5',
             text: '<i class="las la-download"></i> Export Data',
             className: 'secondary_btn',
-                exportOptions: {
-                    columns: [2, 3, 4, 5, 6, 7, 8]
-                },
+            exportOptions: {
+                columns: [2, 3, 4, 5, 6, 7, 8]
+            },
         }],
         destroy: true,
         ajax: {
@@ -120,6 +120,24 @@ function dataTableData() {
             }
         },
     });
+    var urlParams = new URLSearchParams(window.location.search);
+    var search = urlParams.get('search') ?? '';
+
+    $('.dataTables_filter input').val(search);
+
+    $('.dataTables_filter input')
+        .off()
+        .on('keypress', function (e) {
+            if (e.which === 13) {
+                let inputValue = $(this).val();
+
+                $('#allocated_students_table').DataTable().search(inputValue).draw();
+
+                urlParams.set('search', inputValue);
+                urlParams.set('page', 1);
+                history.replaceState(null, '', '?' + urlParams.toString());
+            }
+        });
 }
 
 var admissionId;

@@ -39,9 +39,9 @@ class ActivityLogController extends Controller
                 }
             }
 
-            if ($request->search) {
-                $data->where(function ($w) use ($request) {
-                    $search = $request->get('search');
+            if ($request->has('search') && is_array($request->search) && isset($request->search['value'])) {
+                $search = $request->search['value'];
+                $data->where(function ($w) use ($search) {
                     $w->orWhere('activity_log.log_name', 'LIKE', "%$search%")
                         ->orWhereRaw("DATE_FORMAT(activity_log.created_at, '%d/%m/%Y') LIKE ?", ["%$search%"])
                         ->orWhereRaw("DATE_FORMAT(activity_log.created_at, '%d/%m/%Y %H:%i:%s') LIKE ?", ["%$search%"])

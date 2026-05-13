@@ -108,6 +108,7 @@ Route::middleware('auth', 'twofactor', 'adminRole')->group(function () {
         });
         Route::post('/sendComment', [AdmissionController::class, 'sendComment'])->name('admission.sendComment');
         Route::post('/sendStatusRemark', [AdmissionController::class, 'sendStatusRemark'])->name('admission.sendStatusRemark');
+        Route::post('/sendBacklogStatus', [AdmissionController::class, 'sendBacklogStatus'])->name('admission.sendBacklogStatus');
         Route::get('getAdmissionDataById/{id}', [AdmissionController::class, 'getAdmissionDataById'])->name('admission.getAdmissionDataById');
         Route::get('feesReceipt/{id}', [AdmissionController::class, 'feesReceipt'])->name('admission.feesReceipt');
         Route::post('getCoursesByEducation', [AdmissionController::class, 'getCoursesByEducation'])->name('admission.getCoursesByEducation');
@@ -118,6 +119,9 @@ Route::middleware('auth', 'twofactor', 'adminRole')->group(function () {
         Route::get('fetch-student-data/{studentId}', [AdmissionController::class, 'fetchStudentAdmissionData'])->name('admission.fetch');
         Route::get('document/{path}/download', [AdmissionController::class, 'download'])->name('admission.document.download');
         Route::get('images/{id}/download', [AdmissionController::class, 'downloadImage'])->name('admission.images.download');
+        Route::get('/get-comments/{id}', [AdmissionController::class, 'getComments'])->name('admission.getComments');
+        Route::get('/room-allocation/import', [AdmissionController::class, 'showImportForm'])->name('room.import.form');
+        Route::post('/room-allocation/import', [AdmissionController::class, 'importRoomAllotment'])->name('room.import');
     });
 
     Route::prefix('apology_letter')->group(function () {
@@ -163,7 +167,7 @@ Route::middleware('auth', 'twofactor', 'adminRole')->group(function () {
         Route::get('getBedList/{id}', [BedController::class, 'getBedList'])->name('bed.getBedList');
     });
 
-    Route::prefix('complain')->group(function () {
+    Route::prefix('complains')->group(function () {
         Route::get('', [ComplainController::class, 'index'])->name('complain.index');
         Route::group(['middleware' => 'role:Complain'], function () {
             Route::get('complainData', [ComplainController::class, 'complainData'])->name('complain.complainData');
@@ -182,6 +186,8 @@ Route::middleware('auth', 'twofactor', 'adminRole')->group(function () {
         Route::group(['middleware' => 'permission:Complain,delete'], function () {
             Route::get('delete/{id}', [ComplainController::class, 'destroy'])->name('complain.destroy');
         });
+        Route::get('getComplainDataById/{id}', [ComplainController::class, 'getComplainDataById'])->name('admission.getComplainDataById');
+        Route::post('/changeComplainStatus', [ComplainController::class, 'changeComplainStatus'])->name('admission.changeComplainStatus');
     });
 
     Route::prefix('country')->group(function () {

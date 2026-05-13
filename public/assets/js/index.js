@@ -20,6 +20,7 @@ $(document).ready(function () {
 
     if (sidebarToggle && adminSidebar) {
         sidebarToggle.addEventListener('click', function () {
+            alert('sidebarToggle');
             if (adminSidebar.classList.contains('sidebar-collapsed')) {
                 closeSidebar();
             } else {

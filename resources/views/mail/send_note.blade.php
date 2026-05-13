@@ -215,20 +215,49 @@
 
                                                                             @switch($admission->is_admission_confirm)
                                                                                 @case(1)
-                                                                                    Your admission has been confirmed.
-
-                                                                                    {{ $adminComment->admin_comment }}
-                                                                                @break
-
-                                                                                @case(2)
-                                                                                    Your admission has been rejected.<br>
+                                                                                    Your admission has been confirmed.<br>
                                                                                     Remark:<br>
-                                                                                    {{ $adminComment->admin_comment }}
+                                                                                    {{ optional($adminComment)->admin_comment }}
+                                                                                    <br>
+                                                                                    <br>
+                                                                                    <span
+                                                                                        style="color: red; font-weight: bold; font-size:17px;">
+                                                                                        Ensure fees are paid within 10 days of
+                                                                                        admission confirmation, otherwise the
+                                                                                        admission will be automatically
+                                                                                        cancelled.
+                                                                                    </span>
+                                                                                @break
+                                                                                
+                                                                                @case(2)
+                                                                                Your admission has been rejected.<br>
+                                                                                Remark:<br>
+                                                                                {{ optional($adminComment)->admin_comment }}
+                                                                                @break
+                                                                                
+                                                                                @case(3)
+                                                                                    Remark:<br>
+                                                                                    {{ optional($adminComment)->admin_comment }}
+                                                                                    <br>
+                                                                                    <br>
+                                                                                    <br>
+                                                                                    Admission Status:<br>
+                                                                                    Cancelled
                                                                                 @break
 
+                                                                                @case(4)
+                                                                                    Remark:<br>
+                                                                                    {{ optional($adminComment)->admin_comment }}
+                                                                                    <br>
+                                                                                    <br>
+                                                                                    <br>
+                                                                                    Admission Status:<br>
+                                                                                    Release
+                                                                                @break
+                                                                                
                                                                                 @default
                                                                                     Remark:<br>
-                                                                                    {{ $adminComment->admin_comment }}
+                                                                                    {{ optional($adminComment)->admin_comment }}
                                                                                     <br>
                                                                                     <br>
                                                                                     <br>
@@ -338,14 +367,13 @@
                                 <tr>
                                     <td align="left"
                                         style="padding-top: 10px; font-weight: normal; font-size: 12px ; color:#60605B; font-family:  Helvetica, Arial, sans-serif; line-height: 24px; mso-line-height-rule: exactly;">
-                                        <span><strong>Contact Info:</strong> M: +91 9099211718 | E-mail:
-                                            student@sklpsahmedabad.com</span>
+                                        <span><strong>Contact Info:</strong> M: +91 9099211718 </span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td align="left"
                                         style="padding-top: 10px; font-weight: normal; font-size: 12px ; color:#60605B; font-family:  Helvetica, Arial, sans-serif; line-height: 24px; mso-line-height-rule: exactly;">
-                                        <span> © 2022 Shree Kutchi Leva Patel Samaj - Ahmedabad. All rights
+                                        <span> © 2025 Shree Kutchi Leva Patel Samaj - Ahmedabad. All rights
                                             reserved.</span>
                                     </td>
                                 </tr>

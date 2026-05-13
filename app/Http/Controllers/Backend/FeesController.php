@@ -13,6 +13,7 @@ use App\Repositories\FeesRepository;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Yajra\DataTables\Facades\DataTables;
@@ -72,12 +73,32 @@ class FeesController extends Controller
     public function feesData(Request $request)
     {
         $data = $request->all();
-        if (!empty($data['student_id']) || $data['from'] != null || $data['to'] != null || !empty($data['hostel_id']) || !empty($data['gender'])) {
-            $fees = $this->feesRepository->feesData($data);
-        } else {
-            $fees = $this->feesRepository->getAll();
-        }
-        return DataTables::of($fees)->addIndexColumn()->make(true);
+
+        $fees = (!empty($data['student_id']) || $data['from'] || $data['to'] || !empty($data['hostel_id']) || !empty($data['gender']))
+            ? $this->feesRepository->feesData($data)
+            : $this->feesRepository->getAll();
+
+        return DataTables::of($fees)
+            ->filter(function ($query) use ($request) {
+                if ($request->has('search') && $search = $request->input('search')['value']) {
+                    $query->where(function ($q) use ($search) {
+                        $q->where(DB::raw("CONCAT_WS(' ', stud.first_name, stud.middle_name, stud.last_name)"), 'like', "%{$search}%")
+                            ->orWhere('stud.first_name', 'like', "%{$search}%")
+                            ->orWhere('stud.middle_name', 'like', "%{$search}%")
+                            ->orWhere('stud.last_name', 'like', "%{$search}%")
+                            ->orWhere('a.gender', 'like', "%{$search}%")
+                            ->orWhere('fees.payment_type', 'like', "%{$search}%")
+                            ->orWhere('fees.payment_method', 'like', "%{$search}%")
+                            ->orWhere('fees.transaction_number', 'like', "%{$search}%")
+                            ->orWhere('h.hostel_name', 'like', "%{$search}%")
+                            ->orWhere('v.name', 'like', "%{$search}%")
+                            ->orWhere('fees.fees_amount', 'like', "%{$search}%")
+                            ->orWhereRaw("DATE_FORMAT(fees.paid_at, '%d/%m/%Y') LIKE ?", ["%{$search}%"]);
+                    });
+                }
+            })
+            ->addIndexColumn()
+            ->make(true);
     }
 
     /**
@@ -134,26 +155,27 @@ class FeesController extends Controller
                 if ($key == 0) {
                     $params['student_name'] = $admission->full_name;
                 } else {
+                    $params['serial_number']++;
                     unset($params['student_name']);
                     $params['father_name'] = $admission['father_full_name'];
                 }
-
                 $params['fees_amount'] = $fees;
                 $params['created_by'] = Auth::user()->id;
 
-                $this->feesRepository->create($params);
+                $fees = $this->feesRepository->create($params);
             }
         } else {
             $params['student_name'] = $admission->full_name;
             $params['created_by'] = Auth::user()->id;
 
-            $this->feesRepository->create($params);
+            $fees = $this->feesRepository->create($params);
         }
 
         return response()->json([
             'status' => 'success',
             'message' => 'Fees added successfully.',
             'data' => $params,
+            'id' => $fees
         ]);
     }
 
@@ -207,6 +229,7 @@ class FeesController extends Controller
     public function update(Request $request, string $id)
     {
         $payLoad = $request->all();
+        // dd($payLoad);
         unset($payLoad['_token'], $payLoad['_method']);
         $this->feesRepository->update($payLoad);
         return response()->json([
@@ -313,7 +336,8 @@ class FeesController extends Controller
                 $plural = (($counter = count($str)) && $number > 9) ? 's' : null;
                 $hundred = ($counter == 1 && $str[0]) ? ' and ' : null;
                 $str[] = ($number < 21) ? $words[$number] . ' ' . $digits[$counter] . $plural . ' ' . $hundred : $words[floor($number / 10) * 10] . ' ' . $words[$number % 10] . ' ' . $digits[$counter] . $plural . ' ' . $hundred;
-            } else $str[] = null;
+            } else
+                $str[] = null;
         }
         $Rupees = implode('', array_reverse($str));
         $paise = ($decimal > 0) ? "." . ($words[$decimal / 10] . " " . $words[$decimal % 10]) . ' Paise' : '';

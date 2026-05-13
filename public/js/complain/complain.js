@@ -27,7 +27,7 @@ function dataTableData() {
         ],
         "destroy": true,
         ajax: {
-            url: 'complain/complainData',
+            url: 'complains/complainData',
             data: {
                 complain_by: $('#complain_by').val(),
                 type: $('#type').val(),
@@ -52,6 +52,7 @@ function dataTableData() {
                     }
                     if (readCheck) {
                         $html += '<li><a class="dropdown-item dropdown-trigger-17500btn waves-effect view_button" data-id="' + data + '">View</a></li>';
+                        $html += '<li><a class="dropdown-item dropdown-trigger-17500btn waves-effect" href="javascript:void(0)" data-id="' + data + '" onclick="changeComplainStatus(' + data + ')">Change Status</a></li>';
                     }
                     if (isSuperAdmin != 0) {
                         $html += '<li><a class="dropdown-item dropdown-trigger-17500btn waves-effect delete_button" href="javascript:void(0)" data-id="' + data + '" onclick="deleteComplain(' + data + ')">Delete</a></li>';
@@ -172,21 +173,21 @@ $(".complain_form").parsley();
 
 $("#complain_table").on('click', '.edit_button', function () {
     var id = $(this).data('id');
-    location.href = "complain/" + id + "/edit";
+    location.href = "complains/" + id + "/edit";
 });
 
 $("#complain_table").on('click', '.view_button', function () {
     var id = $(this).data('id');
-    location.href = "complain/" + id;
+    location.href = "complains/" + id;
 });
 
 $('.back').on('click', function () {
-    location.href = "/complain";
+    location.href = "/complains";
 });
 
 $('.edit').on('click', function () {
     var id = $(this).data('id');
-    location.href = "/complain/" + id + "/edit";
+    location.href = "/complains/" + id + "/edit";
 });
 
 $('#filter').on('click', function () {
@@ -215,7 +216,7 @@ $("#complain_create_form").submit(function (event) {
         dataType: "JSON",
         success: function (response) {
             if (response.status == 'success') {
-                window.location.href = '/complain';
+                window.location.href = '/complains';
 
                 $('#complain_name_error').text('');
                 $('.alert-success').removeClass('hide');
@@ -242,7 +243,7 @@ $("#complain_create_form").submit(function (event) {
 });
 
 function deleteComplain(id) {
-    var url = "complain/delete/" + id;
+    var url = "complains/delete/" + id;
     var tableId = 'complain_table';
     deleteData(url, tableId);
 }
@@ -256,4 +257,50 @@ function updateFileNameSwap(input, targetId) {
     const defaultText = label.getAttribute('data-default') || 'Upload'; // Default text stored here
     const fileName = input.files.length > 0 ? input.files[0].name : defaultText;
     label.textContent = fileName;
+}
+
+function changeComplainStatus(id) {
+    $.ajax({
+        type: "get",
+        url: "/complains/getComplainDataById/" + id,
+        success: function (response) {
+            var complain = response.complain;
+            var student = response.student;
+            console.log(complain);
+
+            var filePath = complain.document;
+            $('.dtr-bs-modal').modal('hide');
+            $('.changeLeaveStatusModal').modal('show');
+            $(".changeLeaveStatusForm").parsley();
+            $('.complain_id').val(complain.id);
+            $('.student_id').val(student.id);
+            $('.student_name').val(student.first_name + ' ' + student.middle_name + ' ' + student.last_name);
+            $('.student_email').val(student.email);
+            $('#admin_comment').val(complain.admin_comment);
+            $('.statusChange').val(complain.status).trigger('change');
+            if (complain.document) {
+                var filePath = assetBaseUrl + encodeURI(complain.document);
+                $('.ticket').attr("href", filePath).removeClass('d-none').addClass('d-block');
+            } else {
+                $('.ticket').removeClass('d-block').addClass('d-none');
+            }
+
+            $('.changeLeaveStatusForm').submit(function (e) {
+                e.preventDefault(); // Prevent form submission
+                var formData = $(this).serialize(); // Serialize form data
+
+                $.ajax({
+                    url: '/complains/changeComplainStatus',
+                    type: 'POST',
+                    data: formData,
+                    success: function (response) {
+                        if (response.status == 'success') {
+                            $('.changeLeaveStatusModal').modal('hide');
+                            window.location.reload();
+                        }
+                    }
+                });
+            });
+        }
+    });
 }

@@ -218,12 +218,12 @@
             <div class="d-flex gap-3">
                 <div class="form-check m-0">
                     <input class="form-check-input" type="radio" name="having_any_backlog" id="backlog_yes"
-                        value="true">
+                        value="true" {{ old('having_any_backlog', $oldAdmissionDetails->has_backlog ?? false) == true ? 'checked' : '' }}>
                     <label class="form-check-label" for="backlog_yes">Yes</label>
                 </div>
                 <div class="form-check m-0">
                     <input class="form-check-input" type="radio" name="having_any_backlog" id="backlog_no"
-                        value="false" checked>
+                        value="false" {{ old('having_any_backlog', $oldAdmissionDetails->has_backlog ?? false) != true ? 'checked' : '' }}>
                     <label class="form-check-label" for="backlog_no">No</label>
                 </div>
             </div>

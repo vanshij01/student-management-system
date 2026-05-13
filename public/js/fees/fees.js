@@ -27,6 +27,8 @@ $(document).ready(function () {
         dropdownParent: $('#updateFeesModal'), // replace with your popup's container
         minimumResultsForSearch: 0 // optional: force search box to always show
     });
+
+
 });
 
 function dataTableData() {
@@ -97,7 +99,7 @@ function dataTableData() {
             },
             {
                 data: 'DT_RowIndex',
-                name: 'DT_RowIndex'
+                name: 'DT_RowIndex',
             },
             {
                 data: 'serial_number',
@@ -194,7 +196,32 @@ function dataTableData() {
             }
         },
     });
+
+    var urlParams = new URLSearchParams(window.location.search);
+    var search = urlParams.get('search') ?? '';
+
+    // 1. Pre-fill search input if there's a value in URL
+    $('.dataTables_filter input').val(search);
+
+    // 2. Only trigger search and update URL on Enter key
+    $('.dataTables_filter input')
+        .off()
+        .on('keypress', function (e) {
+            if (e.which === 13) {
+                let inputValue = $(this).val();
+
+                // a. Apply search in DataTable
+                $('#fees_table').DataTable().search(inputValue).draw();
+
+                // b. Update URL without page reload
+                urlParams.set('search', inputValue);
+                urlParams.set('page', 1); // optional: reset to first page
+                history.replaceState(null, '', '?' + urlParams.toString());
+            }
+        });
 }
+
+let reloadTimer = null;
 
 $("#fees_table").on('click', '.view_button', function () {
     var id = $(this).data('id');
@@ -223,22 +250,17 @@ $(".fees_form").parsley();
 $('.amount_error').addClass('d-none');
 
 $('#payment_type').on('change', function () {
-    if (($(this).val() == 'Bank') || ($(this).val() == 'Card')) {
-        $('.transaction_number_div').removeClass("d-none");
-        $('.transaction_date_div').removeClass("d-none");
-        $('#transaction_number').attr("required", true);
-        $('#transaction_date').attr("required", true);
-        $('.bank_name_div').addClass("d-none");
-        $('.cheque_number_div').addClass("d-none");
-        $('#bank_name').attr("required", false);
-        $('#cheque_number').attr("required", false);
-        $('#submit').on('click', function () {
-            var transaction_number = $('#transaction_number').val();
-            var transaction_date = $('#transaction_date').val();
-            $(".error").remove();
-        });
-        $('#transaction_date').flatpickr({
-            dateFormat: 'd/m/Y'
+    if (($(this).val() == 'Bank') || ($(this).val() == 'Card') || ($(this).val() == 'E-Wallet')) {
+        $(".transaction_number_div").removeClass("d-none");
+        $(".transaction_date_div").removeClass("d-none");
+        $(".bank_name_div").removeClass("d-none");
+        $("#transaction_number").attr("required", true);
+        $("#transaction_date").attr("required", true);
+        $("#bank_name").attr("required", true);
+        $(".cheque_number_div").addClass("d-none");
+        $("#cheque_number").attr("required", false);
+        $("#transaction_date").flatpickr({
+            dateFormat: "d/m/Y"
         });
     }
     else if ($(this).val() == 'Cheque') {
@@ -288,8 +310,8 @@ $('#createFeesForm').submit(function (e) {
             } else {
                 $('.amount_error').addClass('d-none');
                 $('#createFeesModal').modal('hide');
-                location.reload();
-                $('#fees_table').DataTable().ajax.reload();
+                window.location.href = "/fees/" + response.id.id;
+                // $('#fees_table').DataTable().ajax.reload();
             }
         }
     });
@@ -321,14 +343,14 @@ function updateFees(id) {
             $('#update_remarks').val(fees.remarks);
             paymentDetails();
             function paymentDetails() {
-                if (($('#update_payment_type').val() == 'Bank') || ($('#update_payment_type').val() == 'Card')) {
+                if (($('#update_payment_type').val() == 'Bank') || ($('#update_payment_type').val() == 'Card') || ($('#update_payment_type').val() == 'E-Wallet')) {
                     $('.transaction_number_div').removeClass("d-none");
                     $('.transaction_date_div').removeClass("d-none");
+                    $('.bank_name_div').removeClass("d-none");
                     $('#update_transaction_number').attr("required", true);
                     $('#transaction_date').attr("required", true);
-                    $('.bank_name_div').addClass("d-none");
+                    $('#update_bank_name').attr("required", true);
                     $('.cheque_number_div').addClass("d-none");
-                    $('#update_bank_name').attr("required", false);
                     $('#update_cheque_number').attr("required", false);
                     $('#transaction_date').flatpickr({
                         dateFormat: 'd/m/Y'
@@ -370,7 +392,12 @@ function updateFees(id) {
                     success: function (response) {
                         if (response.status == 'success') {
                             $('#updateFeesModal').modal('hide');
-                            window.location.reload();
+                            $("#alertMessage").text(response.message);
+                            $("#alertBox").removeClass("d-none");
+                            if (reloadTimer) clearTimeout(reloadTimer);
+                            reloadTimer = setTimeout(function () {
+                                window.location.reload();
+                            }, 3000);
                         }
                     }
                 });
@@ -379,7 +406,8 @@ function updateFees(id) {
     });
 }
 
-setTimeout(function () {
+if (reloadTimer) clearTimeout(reloadTimer);
+reloadTimer = setTimeout(function () {
     $('.alert').fadeOut('fast');
 }, 3000);
 

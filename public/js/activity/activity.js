@@ -56,34 +56,20 @@ $(document).ready(function () {
 
     fill_datatable();
 
-    $('.dataTables_filter input').on('input', function (e) {
-        var inputValue = $(this).val();
-        var currentPage = $('.dataTables_paginate .paginate_button.current')
-            .text(); // Get current page number
 
-        if (inputValue.length >= 5) {
-            urlParams.set("search", inputValue);
-            urlParams.set("page", currentPage); // Set current page number in URL
-            window.location.search = urlParams.toString();
-        } else if (inputValue.length === 0) {
-            urlParams.set("search", inputValue);
-            urlParams.set("page", currentPage); // Set current page number in URL
-            window.location.search = urlParams.toString();
-        }
-    });
+    $('.dataTables_filter input')
+        .off()
+        .on('keypress', function (e) {
+            if (e.which === 13) {
+                let inputValue = $(this).val();
+                urlParams.set("search", inputValue);
+                urlParams.set("page", 1); // go to page 1 on new search
+                window.location.search = urlParams.toString();
+            }
+        });
 
-    $('.dataTables_filter input').keypress(function (e) {
-        if (e.which == 13) { // Check if Enter key was pressed
-            var inputValue = $(this).val();
-            var currentPage = $('.dataTables_paginate .paginate_button.current')
-                .text(); // Get current page number
-
-            urlParams.set("search", inputValue);
-            urlParams.set("page", currentPage); // Set current page number in URL
-            window.location.search = urlParams.toString();
-        }
-    });
     $('.dataTables_filter input').focus();
+    $('.dataTables_filter input').val(search);
 
     function fill_datatable() {
         if ($.fn.dataTable.isDataTable('#donation_table')) {
@@ -162,7 +148,6 @@ $(document).ready(function () {
                 }
             }
         });
-        $('.dataTables_filter input').val(search);
     }
 });
 

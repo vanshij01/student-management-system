@@ -55,7 +55,7 @@ class StudentRepository implements StudentRepositoryInterface
             ->when($countryId, function ($query) use ($countryId) {
                 return $query->where('country_id', $countryId);
             })
-            ->orderBy("created_at", "desc")->get();
+            ->orderBy("created_at", "desc");
     }
 
     public function isExist($name, $email, $number)

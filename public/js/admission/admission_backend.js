@@ -109,6 +109,18 @@ function displaySemester(education_type) {
             }
         });
 
+        const getFileValidatorsUpdate = (label = 'file') => ({
+            file: {
+                extension: 'jpg,jpeg,png',
+                type: 'image/jpeg,image/png',
+                message: 'Only JPG, JPEG, and PNG image files are allowed.'
+            },
+            fileSize: {
+                max: 1048576,
+                message: 'The file size must not exceed 2MB.'
+            }
+        });
+
         // Utility: Add or remove multiple fields
         const manageFields = (fields, action) => {
             fields.forEach(([name, validators]) => {
@@ -149,7 +161,7 @@ function displaySemester(education_type) {
                 dob: { validators: { notEmpty: { message: 'Please select your date of birth.' } } },
                 residence_address: { validators: { notEmpty: { message: 'Please enter your address.' } } },
                 country: { validators: { notEmpty: { message: 'Please select a country.' } } },
-                passport_photo: (studentImg == null) ? { validators: getFileValidators('passport size photo') } : '',
+                passport_photo: (studentImg == null) ? { validators: getFileValidators('passport size photo') } : { validators: getFileValidatorsUpdate('passport size photo') },
                 is_any_illness: { validators: { notEmpty: { message: 'Please select.' } } },
                 is_used_vehicle: { validators: { notEmpty: { message: 'Please select.' } } },
                 is_indian_citizen: { validators: { notEmpty: { message: 'Please select.' } } },
@@ -184,8 +196,8 @@ function displaySemester(education_type) {
                         message: 'Aadhaar number must be exactly 12 digits long.'
                     }
                 }],
-                ['aadhar_front', (studentAadharFrontImg == null) ? getFileValidators('aadhar front') : ''],
-                ['aadhar_back', (studentAadharBackImg == null) ? getFileValidators('aadhar back') : ''],
+                ['aadhar_front', (studentAadharFrontImg == null) ? getFileValidators('aadhar front') : getFileValidatorsUpdate('aadhar front')],
+                ['aadhar_back', (studentAadharBackImg == null) ? getFileValidators('aadhar back') : getFileValidatorsUpdate('aadhar back')],
             ];
             const passportFields = [
                 ['passport_number', {
@@ -196,8 +208,8 @@ function displaySemester(education_type) {
                         message: 'Passport number must be between 6 and 9 characters long.'
                     }
                 }],
-                ['passport_front', (studentPassportFrontImg == null) ? getFileValidators('passport front') : ''],
-                ['passport_back', (studentPassportBackImg == null) ? getFileValidators('passport back') : '']
+                ['passport_front', (studentPassportFrontImg == null) ? getFileValidators('passport front') : getFileValidatorsUpdate('passport front')],
+                ['passport_back', (studentPassportBackImg == null) ? getFileValidators('passport back') : getFileValidatorsUpdate('passport back')]
             ];
 
             if (isIndian === 'true') {
@@ -257,10 +269,10 @@ function displaySemester(education_type) {
                         message: "Vehicle number must contain only uppercase letters and digits, with no spaces or special characters."
                     }
                 }],
-                ['licence_doc_url', (licenceImg == null) ? getFileValidators('driving license') : ''],
-                ['rcbook_front_doc_url', (rcBookFrontImg == null) ? getFileValidators('front of RC book') : ''],
-                ['rcbook_back_doc_url', (rcBookBackImg == null) ? getFileValidators('back of RC book') : ''],
-                ['insurance_doc_url', (insuranceImg == null) ? getFileValidators('insurance document') : '']
+                ['licence_doc_url', (licenceImg == null) ? getFileValidators('driving license') : getFileValidatorsUpdate('driving license')],
+                ['rcbook_front_doc_url', (rcBookFrontImg == null) ? getFileValidators('front of RC book') : getFileValidatorsUpdate('front of RC book')],
+                ['rcbook_back_doc_url', (rcBookBackImg == null) ? getFileValidators('back of RC book') : getFileValidatorsUpdate('back of RC book')],
+                ['insurance_doc_url', (insuranceImg == null) ? getFileValidators('insurance document') : getFileValidatorsUpdate('insurance document')]
             ];
 
             if (hasVehicle === 'true') {
@@ -822,6 +834,42 @@ function displaySemester(education_type) {
                 FormValidation3.removeField('otherDoc[0][file]');
             }
 
+            // Remove ALL semester-related fields from validation for any education type change
+            for (let i = 1; i <= 10; i++) {
+                const regularField = `semester_${i}_result`;
+                const backlogField = `semester_${i}_backlog_result`;
+                const percentageField = `semester_${i}_percentage`;
+                const backlogPercentageField = `semester_${i}_backlog_percentage`;
+
+                // Check if fields exist before removing them
+                if (FormValidation3.getFields()[regularField]) {
+                    FormValidation3.removeField(regularField);
+                }
+                if (FormValidation3.getFields()[backlogField]) {
+                    FormValidation3.removeField(backlogField);
+                }
+                if (FormValidation3.getFields()[percentageField]) {
+                    FormValidation3.removeField(percentageField);
+                }
+                if (FormValidation3.getFields()[backlogPercentageField]) {
+                    FormValidation3.removeField(backlogPercentageField);
+                }
+
+                // Clear any values in these fields
+                $(`#${regularField}_upload`).val('');
+                $(`#${backlogField}_upload`).val('');
+                $(`#${percentageField}`).val('');
+                $(`#${backlogPercentageField}`).val('');
+            }
+
+            // Hide all semester groups
+            $('.semester-group').addClass('d-none');
+
+            // Also remove semester field validation if it exists
+            if (FormValidation3.getFields()['semester']) {
+                FormValidation3.removeField('semester');
+            }
+
             if (education_type === 'Other') {
                 $('.backlog-option').hide();
                 $('.degree-results').hide();
@@ -829,42 +877,6 @@ function displaySemester(education_type) {
 
                 // First show the fields, then validate them
                 $('.otherDocs').show();
-
-                // Remove ALL semester-related fields from validation
-                for (let i = 1; i <= 10; i++) {
-                    const regularField = `semester_${i}_result`;
-                    const backlogField = `semester_${i}_backlog_result`;
-                    const percentageField = `semester_${i}_percentage`;
-                    const backlogPercentageField = `semester_${i}_backlog_percentage`;
-
-                    // Check if fields exist before removing them
-                    if (FormValidation3.getFields()[regularField]) {
-                        FormValidation3.removeField(regularField);
-                    }
-                    if (FormValidation3.getFields()[backlogField]) {
-                        FormValidation3.removeField(backlogField);
-                    }
-                    if (FormValidation3.getFields()[percentageField]) {
-                        FormValidation3.removeField(percentageField);
-                    }
-                    if (FormValidation3.getFields()[backlogPercentageField]) {
-                        FormValidation3.removeField(backlogPercentageField);
-                    }
-
-                    // Clear any values in these fields
-                    $(`#${regularField}_upload`).val('');
-                    $(`#${backlogField}_upload`).val('');
-                    $(`#${percentageField}`).val('');
-                    $(`#${backlogPercentageField}`).val('');
-                }
-
-                // Hide all semester groups
-                $('.semester-group').addClass('d-none');
-
-                // Also remove semester field validation if it exists
-                if (FormValidation3.getFields()['semester']) {
-                    FormValidation3.removeField('semester');
-                }
 
                 // Wait for DOM to update before adding validation
                 setTimeout(() => {
@@ -1319,32 +1331,33 @@ function displaySemester(education_type) {
             const excludedTypes = ['Job', 'Internship', 'Other'];
             const isJobOrInternship = excludedTypes.includes(education_type);
 
+            // Always hide all semester groups and remove validation first
+            $('.semester-group').each(function () {
+                const sem = parseInt($(this).data('sem'));
+                $(this).removeClass('d-block').addClass('d-none');
+
+                const regularField = `semester_${sem}_result`;
+                const backlogField = `semester_${sem}_backlog_result`;
+                const percentageField = `semester_${sem}_percentage`;
+                const backlogPercentageField = `semester_${sem}_backlog_percentage`;
+
+                // Remove validation fields
+                if (FormValidation3.getFields()[regularField]) {
+                    FormValidation3.removeField(regularField);
+                }
+                if (FormValidation3.getFields()[backlogField]) {
+                    FormValidation3.removeField(backlogField);
+                }
+                if (FormValidation3.getFields()[percentageField]) {
+                    FormValidation3.removeField(percentageField);
+                }
+                if (FormValidation3.getFields()[backlogPercentageField]) {
+                    FormValidation3.removeField(backlogPercentageField);
+                }
+            });
+
+            // Only show and validate semester fields if NOT Job/Internship/Other
             if (!isJobOrInternship) {
-                // Hide all semester groups and remove validation
-                $('.semester-group').each(function () {
-                    const sem = parseInt($(this).data('sem'));
-                    $(this).removeClass('d-block').addClass('d-none');
-
-                    const regularField = `semester_${sem}_result`;
-                    const backlogField = `semester_${sem}_backlog_result`;
-                    const percentageField = `semester_${sem}_percentage`;
-                    const backlogPercentageField = `semester_${sem}_backlog_percentage`;
-
-                    // Remove validation fields
-                    if (FormValidation3.getFields()[regularField]) {
-                        FormValidation3.removeField(regularField);
-                    }
-                    if (FormValidation3.getFields()[backlogField]) {
-                        FormValidation3.removeField(backlogField);
-                    }
-                    if (FormValidation3.getFields()[percentageField]) {
-                        FormValidation3.removeField(percentageField);
-                    }
-                    if (FormValidation3.getFields()[backlogPercentageField]) {
-                        FormValidation3.removeField(backlogPercentageField);
-                    }
-                });
-
                 // Show and validate semester fields from 1 to (semester - 1)
                 for (let i = 1; i < semester; i++) {
                     if (i != (semester - 1)) {
@@ -1359,10 +1372,16 @@ function displaySemester(education_type) {
 
         function showSemesterUpload(semNumber, isBacklog = false, optional = false) {
             const oldCourseName = $('#old_course_name').val();
-            const excludedTypes = ['Job', 'Internship'];
-            const isJobOrInternship = excludedTypes.includes(education_type);
+            const excludedTypes = ['Job', 'Internship', 'Other'];
+            const currentEducationType = $('#education_type').val();
+            const isExcludedType = excludedTypes.includes(currentEducationType);
 
-            if (oldCourseEducationType != 'HSC' && oldCourse != 27 && !isJobOrInternship) {
+            // Don't show semester uploads for excluded education types
+            if (isExcludedType) {
+                return;
+            }
+
+            if (oldCourseEducationType != 'HSC' && oldCourse != 27) {
                 const regularField = `semester_${semNumber}_result`;
                 const backlogField = `semester_${semNumber}_backlog_result`;
                 const percentageField = `semester_${semNumber}_percentage`; // Assume this is your percentage input field
@@ -1599,7 +1618,7 @@ function displaySemester(education_type) {
             "Master's Degree": (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate', 'degree_certificate'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate', 'last_qualification_result', 'last_qualification_percentage', 'degree_certificate'],
             "Professional Degree": (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate'],
             Internship: (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate', 'degree_certificate', 'internship_letter'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate', 'last_qualification_result', 'last_qualification_percentage', 'degree_certificate', 'internship_letter'],
-            Job: (board_type) => board_type === 'Other' ? ['last_qualification_result', 'last_qualification_percentage', 'leaving_certificate', 'degree_certificate', 'job_letter'] : ['ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate', 'last_qualification_result', 'last_qualification_percentage', 'degree_certificate', 'job_letter'],
+            Job: (board_type) => board_type === 'Other' ? ['job_letter', 'last_qualification_result', 'last_qualification_percentage', 'leaving_certificate', 'degree_certificate'] : ['job_letter', 'ssc_result', 'ssc_percentage', 'hsc_result', 'hsc_percentage', 'leaving_certificate', 'last_qualification_result', 'last_qualification_percentage', 'degree_certificate'],
             Other: (board_type) => ['last_qualification_result', 'last_qualification_percentage'],
         };
 
@@ -1660,6 +1679,27 @@ function displaySemester(education_type) {
                 $('.ca-backlog-results').addClass('d-none');
                 $('.backlog-option').addClass('d-none');
 
+                // Remove all semester validations for excluded types
+                for (let i = 1; i <= 10; i++) {
+                    const regularField = `semester_${i}_result`;
+                    const backlogField = `semester_${i}_backlog_result`;
+                    const percentageField = `semester_${i}_percentage`;
+                    const backlogPercentageField = `semester_${i}_backlog_percentage`;
+
+                    if (FormValidation3.getFields()[regularField]) {
+                        FormValidation3.removeField(regularField);
+                    }
+                    if (FormValidation3.getFields()[backlogField]) {
+                        FormValidation3.removeField(backlogField);
+                    }
+                    if (FormValidation3.getFields()[percentageField]) {
+                        FormValidation3.removeField(percentageField);
+                    }
+                    if (FormValidation3.getFields()[backlogPercentageField]) {
+                        FormValidation3.removeField(backlogPercentageField);
+                    }
+                }
+
                 // Special handling for 'Other' type
                 if (education_type === 'Other') {
                     $('.otherDocs').removeClass('d-none').addClass('d-block');
@@ -1687,17 +1727,25 @@ function displaySemester(education_type) {
             //     FormValidation3.addField(field, validationRules[field]);
             // });
 
-            // Apply validators only if not 'Job'
-            if (education_type !== 'Job') {
+            // Apply validators based on education type
+            if (education_type === 'Job') {
+                // For Job type: only job_letter is required, others are optional
                 requiredFields.forEach(field => {
-                    FormValidation3.addField(field, validationRules[field]);
+                    if (field === 'job_letter') {
+                        FormValidation3.addField(field, validationRules[field]);
+                    } else {
+                        // Make other fields optional by removing notEmpty validation
+                        const optionalValidators = { ...validationRules[field] };
+                        if (optionalValidators.validators && optionalValidators.validators.notEmpty) {
+                            delete optionalValidators.validators.notEmpty;
+                        }
+                        FormValidation3.addField(field, optionalValidators);
+                    }
                 });
             } else {
-                // Still show fields, but remove their validation if previously added
+                // For all other education types: apply normal validation
                 requiredFields.forEach(field => {
-                    if (FormValidation3.getFields()[field]) {
-                        FormValidation3.removeField(field);
-                    }
+                    FormValidation3.addField(field, validationRules[field]);
                 });
             }
             console.log("education_type", education_type);

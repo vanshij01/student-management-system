@@ -126,6 +126,7 @@
                             </div>
                             <div class="col-sm-12 col-lg-6 mb-4">
                                 Leave Duration: <span class="from_date"></span> to <span class="to_date"></span>
+                                <a href="" target="_blank" class="d-none ticket">ticket</a>
                             </div>
                         </div>
                     </div>
@@ -146,4 +147,7 @@
 @endsection
 @section('scripts')
     <script src="{{ asset('js/leave/leave.js') }}"></script>
+    <script>
+        var assetBaseUrl = "{{ asset('') }}"; // Outputs: http://192.168.0.129:8000/
+    </script>
 @endsection

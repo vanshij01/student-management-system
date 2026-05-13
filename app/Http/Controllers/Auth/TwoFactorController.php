@@ -53,7 +53,8 @@ class TwoFactorController extends Controller
         }
 
         $user->resetTwoFactorCode();
-
+        $user->two_factor_verified = true;
+        $user->save();
         if ($user->role_id == 4) {
             $activity = activity('Student')
                 ->causedBy($user)
@@ -70,10 +71,10 @@ class TwoFactorController extends Controller
                 ])
                 ->log($user->name . ' logged in');
 
-                $student = Student::where('user_id', $user->id)->first();
-                ActivityLog::where('id',$activity->id)->update([
-                    'student_id' => $student->id ?? 0
-                ]);
+            $student = Student::where('user_id', $user->id)->first();
+            ActivityLog::where('id', $activity->id)->update([
+                'student_id' => $student->id ?? 0
+            ]);
             return redirect()->to('/students/dashboard');
         }
 

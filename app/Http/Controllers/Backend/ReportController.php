@@ -9,6 +9,7 @@ use App\Repositories\CourseRepository;
 use App\Repositories\HostelRepository;
 use App\Repositories\StudentRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Yajra\DataTables\Facades\DataTables;
 
 class ReportController extends Controller
@@ -47,14 +48,31 @@ class ReportController extends Controller
     {
         $data = $request->all();
         $result = $this->admissionRepository->dueFeesReportData($data);
-        return DataTables::of($result)->addIndexColumn()->make(true);
+        return DataTables::of($result)->filter(function ($query) use ($request) {
+            if ($request->has('search') && $search = $request->input('search')['value']) {
+                $query->where(function ($q) use ($search) {
+                    $q->where(DB::raw("CONCAT_WS(' ', s.first_name, s.middle_name, s.last_name)"), 'like', "%{$search}%")
+                      ->orWhere('s.phone', 'like', "%{$search}%")
+                      ->orWhere('a.father_phone', 'like', "%{$search}%")
+                      ->orWhere('f.payment_method', 'like', "%{$search}%")
+                      ->orWhere('f.status', 'like', "%{$search}%");
+                });
+            }
+        })->addIndexColumn()->make(true);
     }
 
     public function availableBedsReportData(Request $request)
     {
         $data = $request->all();
         $bed = $this->bedRepository->getAvailableBedReport($data);
-        return Datatables::of($bed)->addIndexColumn()->make(true);
+        return Datatables::of($bed)->filter(function ($query) use ($request) {
+            if ($request->has('search') && $search = $request->input('search')['value']) {
+                $query->where(function ($q) use ($search) {
+                    $q->where('beds.bed_number', 'like', "%{$search}%")
+                      ->orWhere('r.room_number', 'like', "%{$search}%");
+                });
+            }
+        })->addIndexColumn()->make(true);
     }
 
     public function availableBeds()
@@ -76,7 +94,11 @@ class ReportController extends Controller
     public function allotedStudentsReportData(Request $request) {
         $data = $request->all();
         $bed = $this->admissionRepository->allotedStudentsRecord($data);
-        return Datatables::of($bed)->addIndexColumn()->make(true);
+        return Datatables::of($bed)->filter(function ($query) use ($request) {
+                if ($request->has('search') && $search = $request->input('search')['value']) {
+                    $query->where(DB::raw("CONCAT_WS(' ', s.first_name, s.middle_name, s.last_name)"), 'like', "%{$search}%");
+                }
+            })->addIndexColumn()->make(true);
     }
 
     private function nextFiveYears()
@@ -123,6 +145,20 @@ class ReportController extends Controller
     {
         $data = $request->all();
         $bed = $this->admissionRepository->idCardStudentsRecord($data);
-        return Datatables::of($bed)->addIndexColumn()->make(true);
+        return Datatables::of($bed)->filter(function ($query) use ($request) {
+            if ($request->has('search') && $search = $request->input('search')['value']) {
+                $query->where(function ($q) use ($search) {
+                    $q->where(DB::raw("CONCAT_WS(' ', s.first_name, s.middle_name, s.last_name)"), 'LIKE', "%{$search}%")
+                        ->orWhere('s.phone', 'LIKE', "%{$search}%")
+                        ->orWhere('a.father_phone', 'LIKE', "%{$search}%")
+                        ->orWhere('a.mother_phone', 'LIKE', "%{$search}%")
+                        ->orWhere('a.guardian_phone', 'LIKE', "%{$search}%")
+                        ->orWhere('a.gender', 'LIKE', "%{$search}%")
+                        ->orWhere('r.room_number', 'LIKE', "%{$search}%")
+                        ->orWhere('b.bed_number', 'LIKE', "%{$search}%")
+                        ->orWhere('c.course_name', 'LIKE', "%{$search}%");
+                });
+            }
+        })->addIndexColumn()->make(true);
     }
 }

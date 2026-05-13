@@ -295,7 +295,7 @@ function changeLeaveStatus(id) {
             var student = response.student;
             console.log('leave', leave);
             console.log('student', student);
-
+            var filePath = leave.ticket;
             $('.dtr-bs-modal').modal('hide');
             $('.changeLeaveStatusModal').modal('show');
             $(".changeLeaveStatusForm").parsley();
@@ -305,7 +305,12 @@ function changeLeaveStatus(id) {
             $('.student_email').val(student.email);
             $('.from_date').text(moment(leave.leave_from).format("DD/MM/YYYY"));
             $('.to_date').text(moment(leave.leave_to).format("DD/MM/YYYY"));
-            $('.ticket').attr("href", "http://www.google.com/")
+            if (leave.ticket) {
+                var filePath = assetBaseUrl + encodeURI(leave.ticket);
+                $('.ticket').attr("href", filePath).removeClass('d-none').addClass('d-block');
+            } else {
+                $('.ticket').removeClass('d-block').addClass('d-none');
+            }
 
             $('.leave_status').val(leave.leave_status).trigger('change');
 

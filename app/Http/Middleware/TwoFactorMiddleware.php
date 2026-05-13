@@ -21,7 +21,7 @@ class TwoFactorMiddleware
             $user = User::find(Auth::id());
             // dd($user->two_factor_expires_at);
 
-            if ($user->two_factor_code) {
+            if ($user->two_factor_code && $user->two_factor_verified != 1) {
                 if ($user->two_factor_expires_at < now()) {
                     $user->resetTwoFactorCode();
                     Auth::logout();

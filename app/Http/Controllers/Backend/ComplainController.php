@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Events\ComplainStatusChangeEvent;
 use App\Http\Controllers\Controller;
 use App\Models\Student;
 use App\Repositories\StudentRepository;
@@ -119,7 +120,7 @@ class ComplainController extends Controller
     public function update(Request $request, string $id)
     {
         $post_data = $request->all();
-
+        // dd($post_data);
         $defaultDocumentPath = "Uploads/Complain/" . date("Y") . "/" . $post_data['complain_by'] . "/";
         if ($request->hasFile('document')) {
             $document = $request->file('document');
@@ -134,23 +135,23 @@ class ComplainController extends Controller
         }
         $post_data['document'] = $filePath ?? $post_data['old_document'];
 
-        if ($post_data['status'] != 1) {
+        // if ($post_data['status'] != 1) {
 
-            $student = Student::find($post_data['complain_by']);
-            $studentData = User::find($student->user_id);
-            $mailArr = [
-                "email" => $studentData->email,
-                "title" => "Complain Status Change Mail",
-                'studentData' => $studentData,
-                'complain' => $post_data,
-            ];
+        //     $student = Student::find($post_data['complain_by']);
+        //     $studentData = User::find($student->user_id);
+        //     $mailArr = [
+        //         "email" => $studentData->email,
+        //         "title" => "Complain Status Change Mail",
+        //         'studentData' => $studentData,
+        //         'complain' => $post_data,
+        //     ];
 
-            Mail::send('mail/complain_status_change', $mailArr, function ($message) use ($mailArr) {
-                $message->to($mailArr['email'], 'John Doe');
-                $message->subject($mailArr['title']);
-            });
-            /* event(new ComplainStatusChangeEvent($studentData, $post_data)); */
-        }
+        //     Mail::send('mail/complain_status_change', $mailArr, function ($message) use ($mailArr) {
+        //         $message->to($mailArr['email'], 'John Doe');
+        //         $message->subject($mailArr['title']);
+        //     });
+        //     /* event(new ComplainStatusChangeEvent($studentData, $post_data)); */
+        // }
         $this->complainRepository->update($post_data, $id);
         return redirect('complain')->with([
             'status' => 'success',
@@ -168,6 +169,35 @@ class ComplainController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Complain deleted successfully!',
+        ]);
+    }
+
+    public function getComplainDataById($id)
+    {
+        $complain = $this->complainRepository->getById($id);
+        $student = $this->studentRepository->getById($complain->complain_by);
+
+        return response()->json([
+            'status' => 'success',
+            'complain' => $complain,
+            'student' => $student,
+        ]);
+    }
+
+    public function changeComplainStatus(Request $request)
+    {
+        $params = $request->all();
+        // dd($params);
+        $this->complainRepository->update($params, $params['complain_id']);
+
+        $complain = $this->complainRepository->getById($params['complain_id']);
+        $studentData = Student::find($params['student_id']);
+
+        event(new ComplainStatusChangeEvent($studentData,$complain));
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Note send to user successfully'
         ]);
     }
 }

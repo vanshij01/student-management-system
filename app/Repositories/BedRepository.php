@@ -78,7 +78,7 @@ class BedRepository implements BedRepositoryInterface
         if (!empty($data['hostel_id'])) {
             $availabelBeds->where('r.hostel_id', $data['hostel_id']);
         }
-        return $availabelBeds->get();
+        return $availabelBeds;
     }
 
     public function getBedByReservation($id)

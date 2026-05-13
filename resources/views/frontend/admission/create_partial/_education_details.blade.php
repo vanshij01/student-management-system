@@ -56,7 +56,7 @@
             <label for="admission_date" class="form-label">Admission Date</label>
             <input type="text" class="form-control" name="addmission_date"
                 value="{{ $oldAdmissionDetails && $oldAdmissionDetails->addmission_date ? date('d/m/Y', strtotime($oldAdmissionDetails->addmission_date)) : '' }}"
-                placeholder="DD/MM/YYYY" id="addmission_date" />
+                placeholder="DD/MM/YYYY" id="addmission_date" autocomplete="off"/>
         </div>
         <div class="col">
             <label for="admission_year" class="form-label">Admission Year</label>
@@ -102,7 +102,7 @@
             <label for="arriving_date" class="form-label">Arriving Date at Hostel</label>
             <input type="text" class="form-control" name="arriving_date"
                 value="{{ $oldAdmissionDetails && $oldAdmissionDetails->arriving_date ? date('d/m/Y', strtotime($oldAdmissionDetails->arriving_date)) : '' }}"
-                placeholder="DD/MM/YYYY" id="arriving_date" />
+                placeholder="DD/MM/YYYY" id="arriving_date"autocomplete="off" />
         </div>
     </div>
 
@@ -113,7 +113,7 @@
         <div class="col">
             <label for="fees_receipt_date" class="form-label">Fees Receipt Date</label>
             <input type="text" class="form-control" name="college_fees_receipt_date" {{-- value="{{ $oldAdmissionDetails->college_fees_receipt_date ? date('d/m/Y', strtotime($oldAdmissionDetails->college_fees_receipt_date)): '' }}" placeholder="DD/MM/YYYY" --}}
-                id="college_fees_receipt_date" />
+                id="college_fees_receipt_date" autocomplete="off"/>
         </div>
         <div class="col">
             <label class="form-label">Upload your current Fee Receipt</label>

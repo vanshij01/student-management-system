@@ -125,6 +125,24 @@ function dataTableData() {
             }
         },
     });
+    var urlParams = new URLSearchParams(window.location.search);
+    var search = urlParams.get('search') ?? '';
+
+    $('.dataTables_filter input').val(search);
+
+    $('.dataTables_filter input')
+        .off()
+        .on('keypress', function (e) {
+            if (e.which === 13) {
+                let inputValue = $(this).val();
+
+                $('#due_fees_table').DataTable().search(inputValue).draw();
+
+                urlParams.set('search', inputValue);
+                urlParams.set('page', 1); 
+                history.replaceState(null, '', '?' + urlParams.toString());
+            }
+        });
 }
 
 $('#filter').on('click', function () {

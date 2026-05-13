@@ -35,13 +35,15 @@ class AuthenticatedSessionController extends Controller
 
         $loginUser = User::where('email', $request->email)->first();
 
-        $request->user()->generateTwoFactorCode();
 
         $user = $request->user();
 
         // if ($user->hasVerifiedEmail()) {
         // $this->sendWhatsAppMessage($user);
-        event(new TwoFactorEvent($user));
+        if (!($user->role_id == 1 || $user->role_id == 2 || $user->role_id == 3 || $user->role_id == 5 || $user->two_factor_verified == 1)) {
+            $user->generateTwoFactorCode();
+            event(new TwoFactorEvent($user));
+        }
 
         $activity = activity('Student')
             ->causedBy($user)
@@ -62,12 +64,11 @@ class AuthenticatedSessionController extends Controller
         ActivityLog::where('id', $activity->id)->update([
             'student_id' => $student->id ?? 0
         ]);
-        // }
 
         if ($user->role_id == 4) {
-            return redirect()->intended(route('student.dashboard', absolute: false));
+            return redirect()->to('/students/dashboard');
         } else {
-            return redirect()->intended(route('dashboard', absolute: false));
+            return redirect()->to('/dashboard');
         }
     }
 
